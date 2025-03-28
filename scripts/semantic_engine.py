@@ -4,7 +4,7 @@
 from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
-from docparser import extract_pdf_text, extract_docx_text
+from scripts.docparser import extract_pdf_text, extract_docx_text
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
 

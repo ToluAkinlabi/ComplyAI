@@ -3,32 +3,34 @@
 
 import logging
 from logging.handlers import RotatingFileHandler
+from loguru import logger
+import sys
 import os
 
-def get_logger(name: str):
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.INFO)
+# Ensure logs directory exists
+if not os.path.exists("logs"):
+    os.makedirs("logs")
 
-    # Create log directory if not exists
-    if not os.path.exists("logs"):
-        os.makedirs("logs")
+# Remove default logger
+logger.remove()
 
-    # Log Formatter
-    formatter = logging.Formatter(
-        "%(asctime)s | %(levelname)s | %(name)s | %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S"
-    )
+# Console Logger with Color
+logger.add(sys.stdout, 
+           format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level}</level> | <cyan>{name}</cyan> | {message}",
+           level="INFO")
 
-    # Console Handler
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(formatter)
+# Standard File Logger (rotating)
+logger.add("logs/complyai.log", 
+           rotation="5 MB", 
+           retention="10 days", 
+           level="INFO", 
+           encoding="utf-8",
+           enqueue=True)  
 
-    # Rotating File Handler (auto-rotates when logs reach 5MB)
-    file_handler = RotatingFileHandler("logs/complyai.log", maxBytes=5*1024*1024, backupCount=5)
-    file_handler.setFormatter(formatter)
-
-    # Add handlers to logger
-    logger.addHandler(console_handler)
-    logger.addHandler(file_handler)
-
-    return logger
+# JSON Logger for Cloud Logging (GCP, ELK, etc.)
+logger.add("logs/complyai.json", 
+           rotation="5 MB", 
+           retention="10 days", 
+           level="INFO", 
+           serialize=True,   # This makes it JSON
+           enqueue=True)

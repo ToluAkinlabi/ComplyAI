@@ -3,15 +3,18 @@
 
 import logging
 import sys
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from scripts import docparser, semantic_engine
 from models import frameworks
 from contextlib import asynccontextmanager
 import shutil
 import os
-from scripts.logger_config import get_logger
+from loguru import logger
 
-logger = get_logger("ComplyAI")
+import scripts.logger_config 
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
@@ -19,48 +22,68 @@ logging.basicConfig(
         logging.StreamHandler()
     ]
 )
-logger = logging.getLogger(__name__)
-
 
 app = FastAPI()
 
+@asynccontextmanager
 async def lifespan(app: FastAPI):
+    logger.info("Loading framework...")
     global index, framework_sentences
-    logger.info("Loading framework from data/frameworks/nist_csf_2.0.pdf ...")
     framework_sentences = frameworks.load_framework('data/frameworks/nist_csf_2.0.pdf')
     index, _ = semantic_engine.build_index(framework_sentences)
-    logger.info(f"Framework loaded successfully with {len(framework_sentences)} sentences.")
+    logger.success(f"Framework loaded successfully with {len(framework_sentences)} sentences.")
     yield
-    logger.info("API shutdown completed.")
+    logger.info("Application shutdown completed.")
 
 app = FastAPI(lifespan=lifespan)
 
 @app.post("/upload-policy/")
-async def upload_policy(file: UploadFile = File(...)):
-    logger.info(f"Received file: {file.filename}")
+async def upload_policy(request: Request, file: UploadFile = File(...)):
+    client_ip = request.client.host
+    logger.info(f"Request received from {client_ip} | File: {file.filename}")
 
     file_path = f"data/uploads/{file.filename}"
     with open(file_path, "wb+") as buffer:
         shutil.copyfileobj(file.file, buffer)
-    logger.info(f"Saved file to {file_path}")
+    logger.info(f"File saved: {file_path}")
 
-    if file.filename.endswith(".pdf"):
-        policy_text = docparser.extract_pdf_text(file_path)
-        logger.info("Extracted text from PDF.")
-    elif file.filename.endswith(".docx"):
-        policy_text = docparser.extract_docx_text(file_path)
-        logger.info("Extracted text from DOCX.")
-    else:
-        logger.warning("Unsupported file type.")
-        return {"error": "Unsupported file type"}
+    if not file.filename.endswith((".pdf", ".docx")):
+        logger.warning(f"Rejected file {file.filename}: unsupported file type.")
+        raise HTTPException(status_code=400, detail="Unsupported file type. Only PDF and DOCX are allowed.")
 
+    policy_text = docparser.extract_pdf_text(file_path) if file.filename.endswith(".pdf") else docparser.extract_docx_text(file_path)
     policy_sentences = [line.strip() for line in policy_text.split('\n') if line.strip()]
-    logger.info(f"Extracted {len(policy_sentences)} sentences from the policy document.")
+    logger.info(f"Extracted {len(policy_sentences)} sentences from document.")
 
     D, I = semantic_engine.search(index, policy_sentences)
-    logger.info("Semantic search completed successfully.")
+    logger.success("Semantic search completed.")
 
     os.remove(file_path)
-    logger.info(f"Temporary file {file_path} removed.")
+    logger.info(f"Temporary file {file_path} deleted.")
 
     return {"matches": [{"policy_sentence": policy_sentences[i], "top_matches": [framework_sentences[j] for j in I[i]]} for i in range(len(policy_sentences))]}
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    logger.warning(f"HTTP Error {exc.status_code} | {exc.detail} | From {request.client.host}")
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"error": exc.detail}
+    )
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    logger.warning(f"Validation Error | {exc} | From {request.client.host}")
+    return JSONResponse(
+        status_code=422,
+        content={"error": "Invalid input", "details": exc.errors()}
+    )
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Unhandled Exception | {exc} | Path: {request.url.path} | Client: {request.client.host}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={"error": "An unexpected error occurred."}
+    )
