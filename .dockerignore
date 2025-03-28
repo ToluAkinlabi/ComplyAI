@@ -1,0 +1,12 @@
+venv/
+.git/
+data/
+__pycache__/
+*.pdf
+*.zip
+*.tar.gz
+*.csv
+*.xlsx
+*.docx
+*.log
+*.tmp

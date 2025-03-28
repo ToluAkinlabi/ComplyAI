@@ -1,0 +1,7 @@
+./requirements.txt
+./.gitignore
+./Dockerfile
+./api/__pycache__
+venv/
+./venv/
+
