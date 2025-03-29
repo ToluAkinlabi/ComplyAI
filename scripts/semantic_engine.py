@@ -4,17 +4,19 @@
 from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
-from scripts.docparser import extract_pdf_text, extract_docx_text
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
-def build_index(sentences):
-    embeddings = model.encode(sentences)
+def build_multi_framework_index(frameworks_data):
+    all_sentences = []
+    framework_labels = []
+
+    for fw in frameworks_data:
+        all_sentences.extend(fw['sentences'])
+        framework_labels.extend([fw['name']] * len(fw['sentences']))
+
+    embeddings = model.encode(all_sentences)
     index = faiss.IndexFlatL2(embeddings.shape[1])
     index.add(embeddings)
-    return index, embeddings
 
-def search(index, query_sentences, k=3):
-    query_embeddings = model.encode(query_sentences)
-    D, I = index.search(query_embeddings, k)
-    return D, I
+    return index, all_sentences, framework_labels

@@ -14,3 +14,74 @@
 2025-03-28 19:58:43.617 | INFO     | api.main:lifespan:36 - Application shutdown completed.
 2025-03-28 19:58:53.298 | INFO     | api.main:lifespan:30 - Loading framework...
 2025-03-28 19:58:58.669 | SUCCESS  | api.main:lifespan:34 - Framework loaded successfully with 1151 sentences.
+2025-03-28 20:08:18.480 | INFO     | api.main:lifespan:36 - Application shutdown completed.
+2025-03-28 20:08:28.355 | INFO     | api.main:lifespan:30 - Loading framework...
+2025-03-28 20:08:33.320 | SUCCESS  | api.main:lifespan:34 - Framework loaded successfully with 1151 sentences.
+2025-03-28 20:13:19.375 | INFO     | api.main:lifespan:36 - Application shutdown completed.
+2025-03-28 20:27:56.224 | INFO     | api.main:lifespan:30 - Loading framework...
+2025-03-28 20:28:04.500 | SUCCESS  | api.main:lifespan:34 - Framework loaded successfully with 1151 sentences.
+2025-03-28 20:28:47.343 | INFO     | api.main:lifespan:36 - Application shutdown completed.
+2025-03-28 20:28:58.466 | INFO     | api.main:lifespan:30 - Loading framework...
+2025-03-28 20:29:05.235 | SUCCESS  | api.main:lifespan:34 - Framework loaded successfully with 1151 sentences.
+2025-03-28 20:30:05.499 | INFO     | api.main:upload_policy:48 - Request received from 127.0.0.1 | File: bsu_policy_sample.pdf
+2025-03-28 20:30:05.500 | INFO     | api.main:upload_policy:53 - File saved: data/uploads/bsu_policy_sample.pdf
+2025-03-28 20:30:06.940 | INFO     | api.main:upload_policy:61 - Extracted 774 sentences from document.
+2025-03-28 20:30:06.940 | ERROR    | api.main:global_exception_handler:104 - Unhandled Exception | module 'scripts.semantic_engine' has no attribute 'index' | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-28 20:33:48.243 | INFO     | api.main:lifespan:36 - Application shutdown completed.
+2025-03-28 20:33:59.615 | INFO     | api.main:lifespan:30 - Loading framework...
+2025-03-28 20:34:07.828 | SUCCESS  | api.main:lifespan:34 - Framework loaded successfully with 1151 sentences.
+2025-03-28 20:37:56.333 | INFO     | api.main:upload_policy:48 - Request received from 127.0.0.1 | File: bsu_policy_sample.pdf
+2025-03-28 20:37:56.335 | INFO     | api.main:upload_policy:53 - File saved: data/uploads/bsu_policy_sample.pdf
+2025-03-28 20:37:58.142 | INFO     | api.main:upload_policy:61 - Extracted 774 sentences from document.
+2025-03-28 20:38:02.621 | SUCCESS  | api.main:upload_policy:64 - Semantic search completed.
+2025-03-28 20:38:02.622 | ERROR    | api.main:global_exception_handler:104 - Unhandled Exception | name 'framework_labels' is not defined | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-28 20:43:19.806 | INFO     | api.main:lifespan:36 - Application shutdown completed.
+2025-03-28 20:43:30.728 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-28 20:45:01.809 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-28 20:47:07.943 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-28 20:47:33.358 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-28 20:47:33.365 | INFO     | api.main:upload_policy:50 - Request received from 127.0.0.1 | File: bsu_policy_sample.pdf
+2025-03-28 20:47:33.367 | INFO     | api.main:upload_policy:55 - File saved: data/uploads/bsu_policy_sample.pdf
+2025-03-28 20:47:35.038 | INFO     | api.main:upload_policy:63 - Extracted 774 sentences from document.
+2025-03-28 20:47:39.026 | SUCCESS  | api.main:upload_policy:66 - Semantic search completed.
+2025-03-28 20:47:39.034 | ERROR    | api.main:global_exception_handler:106 - Unhandled Exception | 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+ | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-28 20:51:24.467 | INFO     | api.main:lifespan:38 - API shutdown completed.
+2025-03-28 20:59:47.869 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-28 21:00:14.265 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-28 21:00:59.495 | INFO     | api.main:upload_policy:50 - Request received from 127.0.0.1 | File: bsu_policy_sample.pdf
+2025-03-28 21:00:59.497 | INFO     | api.main:upload_policy:55 - File saved: data/uploads/bsu_policy_sample.pdf
+2025-03-28 21:01:01.189 | INFO     | api.main:upload_policy:63 - Extracted 774 sentences from document.
+2025-03-28 21:01:05.953 | SUCCESS  | api.main:upload_policy:66 - Semantic search completed.
+2025-03-28 21:37:56.509 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-28 21:38:22.964 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-28 21:38:43.293 | INFO     | api.main:upload_policy:50 - Request received from 127.0.0.1 | File: bsu_policy_sample.pdf
+2025-03-28 21:38:43.295 | INFO     | api.main:upload_policy:55 - File saved: data/uploads/bsu_policy_sample.pdf
+2025-03-28 21:38:45.053 | INFO     | api.main:upload_policy:63 - Extracted 774 sentences from document.
+2025-03-28 21:38:49.419 | SUCCESS  | api.main:upload_policy:66 - Semantic search completed.
+2025-03-28 21:46:06.627 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-28 21:46:30.569 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-28 21:46:53.801 | INFO     | api.main:upload_policy:50 - Request received from 127.0.0.1 | File: bsu_policy_sample.pdf
+2025-03-28 21:46:53.803 | INFO     | api.main:upload_policy:55 - File saved: data/uploads/bsu_policy_sample.pdf
+2025-03-28 21:46:55.695 | INFO     | api.main:upload_policy:63 - Extracted 774 sentences from document.
+2025-03-28 21:47:00.172 | SUCCESS  | api.main:upload_policy:66 - Semantic search completed.
+2025-03-28 21:52:47.320 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-28 21:53:12.444 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-28 21:54:38.135 | INFO     | api.main:upload_policy:50 - Request received from 127.0.0.1 | File: bsu_policy_sample.pdf
+2025-03-28 21:54:38.136 | INFO     | api.main:upload_policy:55 - File saved: data/uploads/bsu_policy_sample.pdf
+2025-03-28 21:54:40.070 | INFO     | api.main:upload_policy:63 - Extracted 774 sentences from document.
+2025-03-28 21:54:44.918 | SUCCESS  | api.main:upload_policy:66 - Semantic search completed.
+2025-03-28 22:00:09.553 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-28 22:00:38.625 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-28 22:02:36.449 | INFO     | api.main:upload_policy:50 - Request received from 127.0.0.1 | File: bsu_policy_sample.pdf
+2025-03-28 22:02:36.451 | INFO     | api.main:upload_policy:55 - File saved: data/uploads/bsu_policy_sample.pdf
+2025-03-28 22:02:38.241 | INFO     | api.main:upload_policy:63 - Extracted 774 sentences from document.
+2025-03-28 22:02:42.660 | SUCCESS  | api.main:upload_policy:66 - Semantic search completed.

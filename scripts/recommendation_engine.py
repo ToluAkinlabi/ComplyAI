@@ -1,9 +1,11 @@
 # scripts/recommendation_engine.py
 # This script will generate recommendations based on the semantic matching results between policy documents and cybersecurity frameworks. It will classify the distance between matched sentences and provide a report of recommendations.
 
-import openai
 import os
-openai.api_key = os.getenv("complyai_key")
+from dotenv import load_dotenv
+import openai
+
+load_dotenv()
 
 def classify_distance(distance):
     if distance > 0.6:
@@ -33,17 +35,21 @@ def generate_recommendations(policy_sentences, D, I, framework_sentences, framew
             "framework": framework,
             "score": closest_distance
         }
-
-        if classification in ["Missing", "Weak"]:
-            recommendation["suggested_statement"] = suggest_improvement(sentence, matched_sentence)
-
         report.append(recommendation)
+
+    # Limit GPT-4 calls to top 5 weak/missing
+    recommendation_candidates = [r for r in report if r["status"] in ["Missing", "Weak"]][:5]
+
+    for rec in recommendation_candidates:
+        rec["suggested_statement"] = suggest_improvement(rec["policy_sentence"], rec["closest_control"])
 
     return report
 
 
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
 def suggest_improvement(policy_sentence, matched_control):
-    prompt = f"""
+    prompt = f""" 
     The following policy sentence seems weak or missing compared to the recommended control.
 
     Policy: "{policy_sentence}"
@@ -52,12 +58,11 @@ def suggest_improvement(policy_sentence, matched_control):
     Suggest a professionally worded policy statement that would align better with industry best practices.
     """
 
-    response = openai.ChatCompletion.create(
+    completion = openai.ChatCompletion.create(
         model="gpt-4",
         messages=[{"role": "user", "content": prompt}],
-        temperature=0.2
+        temperature=0.5
     )
 
-    suggestion = response.choices[0].message.content.strip()
+    suggestion = completion['choices'][0]['message']['content'].strip()
     return suggestion
-

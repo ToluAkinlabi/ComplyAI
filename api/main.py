@@ -3,10 +3,10 @@
 
 import logging
 import sys
-from fastapi import FastAPI, UploadFile, File, HTTPException, Request
+from fastapi import FastAPI, UploadFile, File, HTTPException, Request, Form
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from scripts import docparser, semantic_engine, recommendation_engine
+from scripts import docparser, semantic_engine, recommendation_engine, report_generator, pdf_exporter
 from models import frameworks
 from contextlib import asynccontextmanager
 import shutil
@@ -27,18 +27,25 @@ app = FastAPI()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("Loading framework...")
-    global index, framework_sentences
-    framework_sentences = frameworks.load_framework('data/frameworks/nist_csf_2.0.pdf')
-    index, _ = semantic_engine.build_index(framework_sentences)
-    logger.success(f"Framework loaded successfully with {len(framework_sentences)} sentences.")
+    global index, framework_sentences, framework_labels
+    logger.info("Loading all frameworks...")
+
+    fw_data = frameworks.load_all_frameworks()
+    index, framework_sentences, framework_labels = semantic_engine.build_multi_framework_index(fw_data)
+
+    logger.success(f"Loaded and indexed {len(framework_sentences)} total framework sentences across {len(fw_data)} frameworks.")
     yield
-    logger.info("Application shutdown completed.")
+    logger.info("API shutdown completed.")
 
 app = FastAPI(lifespan=lifespan)
 
 @app.post("/upload-policy/")
-async def upload_policy(request: Request, file: UploadFile = File(...)):
+async def upload_policy(
+    request: Request, 
+    file: UploadFile = File(...), 
+    client_name: str = Form(...)
+    ):
+
     client_ip = request.client.host
     logger.info(f"Request received from {client_ip} | File: {file.filename}")
 
@@ -55,7 +62,7 @@ async def upload_policy(request: Request, file: UploadFile = File(...)):
     policy_sentences = [line.strip() for line in policy_text.split('\n') if line.strip()]
     logger.info(f"Extracted {len(policy_sentences)} sentences from document.")
 
-    D, I = semantic_engine.index.search(semantic_engine.model.encode(policy_sentences), k=3)
+    D, I = index.search(semantic_engine.model.encode(policy_sentences), k=3)
     logger.success("Semantic search completed.")
 
     # Generate Recommendations
@@ -63,10 +70,19 @@ async def upload_policy(request: Request, file: UploadFile = File(...)):
         policy_sentences, D, I, framework_sentences, framework_labels
     )
 
-    os.remove(file_path)
-    logger.info(f"Temporary file {file_path} removed.")
+    # Generate Compliance Report
+    final_report = report_generator.generate_compliance_report(report)
+    pdf_path = pdf_exporter.export_compliance_report_to_pdf(final_report, client_name=client_name)
+    logger.success(f"PDF report generated at {pdf_path}")
 
-    return {"recommendations": report}
+
+    os.remove(file_path)
+    logger.info("Temporary file removed.")
+
+    return {
+        "report": final_report,
+        "pdf_report_path": pdf_path
+    }
 
 
 @app.exception_handler(HTTPException)
