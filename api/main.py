@@ -6,7 +6,7 @@ import sys
 from fastapi import FastAPI, UploadFile, File, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from scripts import docparser, semantic_engine
+from scripts import docparser, semantic_engine, recommendation_engine
 from models import frameworks
 from contextlib import asynccontextmanager
 import shutil
@@ -55,13 +55,18 @@ async def upload_policy(request: Request, file: UploadFile = File(...)):
     policy_sentences = [line.strip() for line in policy_text.split('\n') if line.strip()]
     logger.info(f"Extracted {len(policy_sentences)} sentences from document.")
 
-    D, I = semantic_engine.search(index, policy_sentences)
+    D, I = semantic_engine.index.search(semantic_engine.model.encode(policy_sentences), k=3)
     logger.success("Semantic search completed.")
 
-    os.remove(file_path)
-    logger.info(f"Temporary file {file_path} deleted.")
+    # Generate Recommendations
+    report = recommendation_engine.generate_recommendations(
+        policy_sentences, D, I, framework_sentences, framework_labels
+    )
 
-    return {"matches": [{"policy_sentence": policy_sentences[i], "top_matches": [framework_sentences[j] for j in I[i]]} for i in range(len(policy_sentences))]}
+    os.remove(file_path)
+    logger.info(f"Temporary file {file_path} removed.")
+
+    return {"recommendations": report}
 
 
 @app.exception_handler(HTTPException)
