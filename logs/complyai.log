@@ -85,3 +85,20 @@ A detailed migration guide is available here: https://github.com/openai/openai-p
 2025-03-28 22:02:36.451 | INFO     | api.main:upload_policy:55 - File saved: data/uploads/bsu_policy_sample.pdf
 2025-03-28 22:02:38.241 | INFO     | api.main:upload_policy:63 - Extracted 774 sentences from document.
 2025-03-28 22:02:42.660 | SUCCESS  | api.main:upload_policy:66 - Semantic search completed.
+2025-03-29 22:20:45.954 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-29 22:21:14.223 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-29 22:21:50.855 | INFO     | api.main:upload_policy:50 - Request received from 127.0.0.1 | File: bsu_policy_sample.pdf
+2025-03-29 22:21:50.857 | INFO     | api.main:upload_policy:55 - File saved: data/uploads/bsu_policy_sample.pdf
+2025-03-29 22:21:52.326 | INFO     | api.main:upload_policy:63 - Extracted 774 sentences from document.
+2025-03-29 22:21:56.548 | SUCCESS  | api.main:upload_policy:66 - Semantic search completed.
+2025-03-29 22:22:07.639 | SUCCESS  | api.main:upload_policy:76 - PDF report generated at C:\Users\tolul\Documents\ComplyAI\reports\phillip_Compliance_Report.pdf
+2025-03-29 22:22:07.640 | INFO     | api.main:upload_policy:80 - Temporary file removed.
+2025-03-29 22:32:32.897 | INFO     | api.main:lifespan:38 - API shutdown completed.
+2025-03-29 22:32:47.640 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-29 22:33:14.763 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-29 22:33:31.260 | INFO     | api.main:upload_policy:50 - Request received from 127.0.0.1 | File: bsu_policy_sample.pdf
+2025-03-29 22:33:31.262 | INFO     | api.main:upload_policy:55 - File saved: data/uploads/bsu_policy_sample.pdf
+2025-03-29 22:33:33.642 | INFO     | api.main:upload_policy:63 - Extracted 774 sentences from document.
+2025-03-29 22:33:38.412 | SUCCESS  | api.main:upload_policy:66 - Semantic search completed.
+2025-03-29 22:33:46.036 | SUCCESS  | api.main:upload_policy:76 - PDF report generated at C:\Users\tolul\Documents\ComplyAI\reports\Phillip_Compliance_Report.pdf
+2025-03-29 22:33:46.036 | INFO     | api.main:upload_policy:80 - Temporary file removed.
