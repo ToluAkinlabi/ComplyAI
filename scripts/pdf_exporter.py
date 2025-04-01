@@ -7,7 +7,7 @@ from reportlab.platypus import Table, TableStyle
 from reportlab.lib.units import inch
 import os
 
-def export_compliance_report_to_pdf(report_data, client_name="Client"):
+def export_pdf(report_data, client_name="Client"):
     # Output Path
     if not os.path.exists("reports"):
         os.makedirs("reports")

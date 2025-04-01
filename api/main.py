@@ -1,29 +1,26 @@
 # api/main.py is the FastAPI application that will serve as the API for uploading and parsing compliance documents and matching them with a cybersecurity framework. It uses the docparser module to extract text from PDF and Word documents, and the semantic_engine module to perform semantic matching using embeddings.
 
+#import corsmiddleware
+from scripts.cors import setup_cors
+from fastapi import FastAPI, UploadFile, File, HTTPException, Request, Form
 
+#other imports
 import logging
 import sys
 from fastapi import FastAPI, UploadFile, File, HTTPException, Request, Form
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from scripts import docparser, semantic_engine, recommendation_engine, report_generator, pdf_exporter
-from models import frameworks
-from contextlib import asynccontextmanager
 import shutil
 import os
 from loguru import logger
+from datetime import datetime
 
-import scripts.logger_config 
+# local imports
+from scripts import docparser, semantic_engine, recommendation_engine, report_generator, pdf_exporter
+from models import frameworks
+import scripts.logger_config
+from contextlib import asynccontextmanager
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s",
-    handlers=[
-        logging.StreamHandler()
-    ]
-)
-
-app = FastAPI()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -39,49 +36,64 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+setup_cors(app)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    handlers=[
+        logging.StreamHandler()
+    ]
+)
+
+# Define your POST endpoint
 @app.post("/upload-policy/")
-async def upload_policy(
-    request: Request, 
-    file: UploadFile = File(...), 
-    client_name: str = Form(...)
-    ):
-
-    client_ip = request.client.host
-    logger.info(f"Request received from {client_ip} | File: {file.filename}")
-
+async def upload_policy(file: UploadFile = File(...), client_name: str = Form(...)):
+    # Save file temporarily
     file_path = f"data/uploads/{file.filename}"
-    with open(file_path, "wb+") as buffer:
+    with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
-    logger.info(f"File saved: {file_path}")
 
-    if not file.filename.endswith((".pdf", ".docx")):
-        logger.warning(f"Rejected file {file.filename}: unsupported file type.")
-        raise HTTPException(status_code=400, detail="Unsupported file type. Only PDF and DOCX are allowed.")
+    # Extract text
+    if file.filename.endswith(".pdf"):
+        policy_sentences = docparser.extract_pdf_text(file_path)
+    elif file.filename.endswith(".docx"):
+        policy_sentences = docparser.extract_docx_text(file_path)
+    else:
+        return {"error": "Unsupported file format"}
 
-    policy_text = docparser.extract_pdf_text(file_path) if file.filename.endswith(".pdf") else docparser.extract_docx_text(file_path)
-    policy_sentences = [line.strip() for line in policy_text.split('\n') if line.strip()]
-    logger.info(f"Extracted {len(policy_sentences)} sentences from document.")
+    # Perform semantic search
+    embeddings = semantic_engine.model.encode(policy_sentences)
+    if len(embeddings.shape) == 1:
+        embeddings = embeddings.reshape(1, -1)
+    
+    k = min(3, index.ntotal)
+    D, I = index.search(embeddings, k=k)
 
-    D, I = index.search(semantic_engine.model.encode(policy_sentences), k=3)
-    logger.success("Semantic search completed.")
-
-    # Generate Recommendations
-    report = recommendation_engine.generate_recommendations(
+    # Generate executive summary & detailed report
+    executive_summary, detailed_report = recommendation_engine.generate_recommendations(
         policy_sentences, D, I, framework_sentences, framework_labels
     )
 
-    # Generate Compliance Report
-    final_report = report_generator.generate_compliance_report(report)
-    pdf_path = pdf_exporter.export_compliance_report_to_pdf(final_report, client_name=client_name)
-    logger.success(f"PDF report generated at {pdf_path}")
-
-
+    # Clean up uploaded file
     os.remove(file_path)
-    logger.info("Temporary file removed.")
 
+    # Add timestamp
+    executive_summary["report_generated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Prepare report data
+    report_data = {
+        "executive_summary": executive_summary,
+        "detailed_report": detailed_report
+    }
+
+    # Export PDF
+    output_path = pdf_exporter.export_pdf(report_data, client_name)
+
+    # Return result to frontend
     return {
-        "report": final_report,
-        "pdf_report_path": pdf_path
+        "executive_summary": executive_summary,
+        "detailed_report": detailed_report
     }
 
 

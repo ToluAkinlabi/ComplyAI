@@ -1,17 +1,20 @@
 import { useState } from "react";
 import axios from "axios";
+import Results from "./Results";
 
 const UploadForm = () => {
   const [clientName, setClientName] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<string | null>(null);
+  const [executiveSummary, setExecutiveSummary] = useState<null | object>(null);
+  const [recommendations, setRecommendations] = useState<null | any[]>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault();  
+
     if (!file || !clientName) {
-      alert("Please provide both client name and a policy file.");
-      return;
+        alert("Please provide both client name and a policy file.");
+        return;
     }
 
     const formData = new FormData();
@@ -19,18 +22,20 @@ const UploadForm = () => {
     formData.append("client_name", clientName);
 
     try {
-      setLoading(true);
-      const res = await axios.post("http://127.0.0.1:8000/upload-policy/", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setResponse("Report generated successfully!");
+        setLoading(true);
+        const res = await axios.post("http://localhost:8000/upload-policy/", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        setExecutiveSummary(res.data.executive_summary);
+        setRecommendations(res.data.detailed_report);
     } catch (error) {
-      console.error(error);
-      setResponse("Error generating report. Check console.");
+        console.error(error);
+        alert("Error generating report. Check console.");
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+}
 
   return (
     <div className="max-w-md mx-auto bg-white p-6 rounded shadow-md space-y-4">
@@ -62,7 +67,11 @@ const UploadForm = () => {
           {loading ? "Processing..." : "Generate Report"}
         </button>
       </form>
-      {response && <p className="text-center mt-2">{response}</p>}
+
+      {/* Only renders when data is available */}
+      {executiveSummary && recommendations && (
+        <Results executiveSummary={executiveSummary} recommendations={recommendations} />
+      )}
     </div>
   );
 };

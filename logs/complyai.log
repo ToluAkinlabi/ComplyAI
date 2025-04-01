@@ -102,3 +102,210 @@ A detailed migration guide is available here: https://github.com/openai/openai-p
 2025-03-29 22:33:38.412 | SUCCESS  | api.main:upload_policy:66 - Semantic search completed.
 2025-03-29 22:33:46.036 | SUCCESS  | api.main:upload_policy:76 - PDF report generated at C:\Users\tolul\Documents\ComplyAI\reports\Phillip_Compliance_Report.pdf
 2025-03-29 22:33:46.036 | INFO     | api.main:upload_policy:80 - Temporary file removed.
+2025-03-30 00:31:50.687 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-30 00:32:19.229 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 00:32:34.504 | INFO     | api.main:upload_policy:50 - Request received from 127.0.0.1 | File: bsu_policy_sample.pdf
+2025-03-30 00:32:34.507 | INFO     | api.main:upload_policy:55 - File saved: data/uploads/bsu_policy_sample.pdf
+2025-03-30 00:32:36.329 | INFO     | api.main:upload_policy:63 - Extracted 774 sentences from document.
+2025-03-30 00:32:40.603 | SUCCESS  | api.main:upload_policy:66 - Semantic search completed.
+2025-03-30 00:32:48.919 | SUCCESS  | api.main:upload_policy:76 - PDF report generated at C:\Users\tolul\Documents\ComplyAI\reports\Phillip_Compliance_Report.pdf
+2025-03-30 00:32:48.920 | INFO     | api.main:upload_policy:80 - Temporary file removed.
+2025-03-30 00:33:13.531 | INFO     | api.main:upload_policy:50 - Request received from 127.0.0.1 | File: bsu_policy_sample.pdf
+2025-03-30 00:33:13.532 | INFO     | api.main:upload_policy:55 - File saved: data/uploads/bsu_policy_sample.pdf
+2025-03-30 00:33:15.261 | INFO     | api.main:upload_policy:63 - Extracted 774 sentences from document.
+2025-03-30 00:33:19.381 | SUCCESS  | api.main:upload_policy:66 - Semantic search completed.
+2025-03-30 00:33:40.476 | SUCCESS  | api.main:upload_policy:76 - PDF report generated at C:\Users\tolul\Documents\ComplyAI\reports\Phillip_Compliance_Report.pdf
+2025-03-30 00:33:40.478 | INFO     | api.main:upload_policy:80 - Temporary file removed.
+2025-03-30 00:36:15.777 | INFO     | api.main:lifespan:38 - API shutdown completed.
+2025-03-30 00:37:04.627 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-30 00:37:32.392 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 00:38:12.288 | INFO     | api.main:upload_policy:50 - Request received from 127.0.0.1 | File: bsu_policy_sample.pdf
+2025-03-30 00:38:12.290 | INFO     | api.main:upload_policy:55 - File saved: data/uploads/bsu_policy_sample.pdf
+2025-03-30 00:38:14.255 | INFO     | api.main:upload_policy:63 - Extracted 774 sentences from document.
+2025-03-30 00:38:18.555 | SUCCESS  | api.main:upload_policy:66 - Semantic search completed.
+2025-03-30 00:38:26.046 | SUCCESS  | api.main:upload_policy:76 - PDF report generated at C:\Users\tolul\Documents\ComplyAI\reports\Phillip_Compliance_Report.pdf
+2025-03-30 00:38:26.047 | INFO     | api.main:upload_policy:80 - Temporary file removed.
+2025-03-30 00:43:27.481 | INFO     | api.main:upload_policy:50 - Request received from 127.0.0.1 | File: bsu_policy_sample.pdf
+2025-03-30 00:43:27.482 | INFO     | api.main:upload_policy:55 - File saved: data/uploads/bsu_policy_sample.pdf
+2025-03-30 00:43:29.585 | INFO     | api.main:upload_policy:63 - Extracted 774 sentences from document.
+2025-03-30 00:43:34.126 | SUCCESS  | api.main:upload_policy:66 - Semantic search completed.
+2025-03-30 00:43:40.967 | SUCCESS  | api.main:upload_policy:76 - PDF report generated at C:\Users\tolul\Documents\ComplyAI\reports\Phillip_Compliance_Report.pdf
+2025-03-30 00:43:40.969 | INFO     | api.main:upload_policy:80 - Temporary file removed.
+2025-03-30 00:50:01.202 | INFO     | api.main:lifespan:38 - API shutdown completed.
+2025-03-30 00:50:12.180 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-30 00:50:36.601 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 00:53:48.434 | ERROR    | api.main:global_exception_handler:99 - Unhandled Exception | name 'extract_pdf_text' is not defined | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-30 00:56:17.392 | INFO     | api.main:lifespan:38 - API shutdown completed.
+2025-03-30 00:56:31.368 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-30 00:56:55.922 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 00:57:49.125 | ERROR    | api.main:global_exception_handler:99 - Unhandled Exception | name 'model' is not defined | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-30 00:59:26.659 | INFO     | api.main:lifespan:38 - API shutdown completed.
+2025-03-30 00:59:37.696 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-30 01:00:02.258 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 01:01:39.273 | ERROR    | api.main:global_exception_handler:99 - Unhandled Exception | not enough values to unpack (expected 2, got 1) | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-30 01:04:27.513 | INFO     | api.main:lifespan:38 - API shutdown completed.
+2025-03-30 01:04:36.598 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-30 01:04:56.227 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 01:05:01.351 | ERROR    | api.main:global_exception_handler:99 - Unhandled Exception | not enough values to unpack (expected 2, got 1) | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-30 01:07:15.790 | INFO     | api.main:lifespan:38 - API shutdown completed.
+2025-03-30 01:07:24.991 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-30 01:07:48.454 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 01:08:01.318 | ERROR    | api.main:global_exception_handler:103 - Unhandled Exception | module 'scripts.recommendation_engine' has no attribute 'generate_report' | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-30 01:12:16.684 | INFO     | api.main:lifespan:38 - API shutdown completed.
+2025-03-30 01:12:25.288 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-30 01:12:47.907 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 01:13:20.377 | ERROR    | api.main:global_exception_handler:103 - Unhandled Exception | index 1 is out of bounds for axis 0 with size 1 | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-30 01:17:17.580 | INFO     | api.main:lifespan:38 - API shutdown completed.
+2025-03-30 01:17:27.271 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-30 01:17:49.899 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 01:18:01.021 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-30 01:18:34.759 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 01:23:38.988 | INFO     | api.main:lifespan:38 - API shutdown completed.
+2025-03-30 01:23:48.190 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-30 01:24:11.563 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 01:24:28.712 | ERROR    | api.main:global_exception_handler:104 - Unhandled Exception | index 1 is out of bounds for axis 0 with size 1 | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-30 01:26:43.993 | INFO     | api.main:lifespan:38 - API shutdown completed.
+2025-03-30 01:26:54.947 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-30 01:27:20.666 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 01:27:28.281 | ERROR    | api.main:global_exception_handler:104 - Unhandled Exception | module 'scripts.pdf_exporter' has no attribute 'export_pdf' | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-30 01:29:05.331 | INFO     | api.main:lifespan:38 - API shutdown completed.
+2025-03-30 01:29:15.054 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-30 01:29:41.645 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 01:29:49.332 | ERROR    | api.main:global_exception_handler:104 - Unhandled Exception | export_pdf() takes from 1 to 2 positional arguments but 3 were given | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-30 19:33:46.078 | INFO     | api.main:lifespan:38 - API shutdown completed.
+2025-03-30 19:34:39.645 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-30 19:35:08.344 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 19:37:05.005 | ERROR    | api.main:global_exception_handler:105 - Unhandled Exception | export_pdf() takes from 1 to 2 positional arguments but 3 were given | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-30 19:38:51.895 | INFO     | api.main:lifespan:38 - API shutdown completed.
+2025-03-30 19:39:04.220 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-30 19:39:28.971 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 19:39:52.798 | ERROR    | api.main:global_exception_handler:103 - Unhandled Exception | cannot access local variable 'report_data' where it is not associated with a value | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-30 19:40:32.557 | INFO     | api.main:lifespan:38 - API shutdown completed.
+2025-03-30 19:40:43.924 | INFO     | api.main:lifespan:31 - Loading all frameworks...
+2025-03-30 19:41:10.683 | SUCCESS  | api.main:lifespan:36 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 19:41:27.500 | ERROR    | api.main:global_exception_handler:103 - Unhandled Exception | 'report_generated_at' | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-30 19:44:59.098 | INFO     | api.main:lifespan:38 - API shutdown completed.
+2025-03-30 19:45:08.154 | INFO     | api.main:lifespan:32 - Loading all frameworks...
+2025-03-30 19:45:33.111 | SUCCESS  | api.main:lifespan:37 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 19:46:35.868 | ERROR    | api.main:global_exception_handler:105 - Unhandled Exception | 'Policy Sentence' | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-30 19:54:29.433 | INFO     | api.main:lifespan:39 - API shutdown completed.
+2025-03-30 19:54:41.033 | INFO     | api.main:lifespan:32 - Loading all frameworks...
+2025-03-30 19:55:07.286 | SUCCESS  | api.main:lifespan:37 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 19:55:32.696 | ERROR    | api.main:global_exception_handler:105 - Unhandled Exception | 'status' | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-30 20:04:08.076 | ERROR    | api.main:global_exception_handler:105 - Unhandled Exception | 'status' | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-30 20:04:08.203 | INFO     | api.main:lifespan:39 - API shutdown completed.
+2025-03-30 20:04:17.200 | INFO     | api.main:lifespan:32 - Loading all frameworks...
+2025-03-30 20:04:40.708 | SUCCESS  | api.main:lifespan:37 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 20:12:52.163 | INFO     | api.main:lifespan:39 - API shutdown completed.
+2025-03-30 20:13:12.764 | INFO     | api.main:lifespan:32 - Loading all frameworks...
+2025-03-30 20:13:39.714 | SUCCESS  | api.main:lifespan:37 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 20:22:05.612 | INFO     | api.main:lifespan:39 - API shutdown completed.
+2025-03-30 20:22:24.966 | INFO     | api.main:lifespan:41 - Loading all frameworks...
+2025-03-30 20:22:52.628 | SUCCESS  | api.main:lifespan:46 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 20:29:47.161 | INFO     | api.main:lifespan:48 - API shutdown completed.
+2025-03-30 20:30:11.504 | INFO     | api.main:lifespan:41 - Loading all frameworks...
+2025-03-30 20:30:40.118 | SUCCESS  | api.main:lifespan:46 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 20:36:13.738 | INFO     | api.main:lifespan:48 - API shutdown completed.
+2025-03-30 20:36:29.717 | INFO     | api.main:lifespan:41 - Loading all frameworks...
+2025-03-30 20:36:54.193 | SUCCESS  | api.main:lifespan:46 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 20:48:16.010 | INFO     | api.main:lifespan:48 - API shutdown completed.
+2025-03-30 20:48:27.377 | INFO     | api.main:lifespan:41 - Loading all frameworks...
+2025-03-30 20:48:52.538 | SUCCESS  | api.main:lifespan:46 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 20:53:09.562 | INFO     | api.main:lifespan:48 - API shutdown completed.
+2025-03-30 20:54:20.848 | INFO     | api.main:lifespan:41 - Loading all frameworks...
+2025-03-30 20:54:45.928 | SUCCESS  | api.main:lifespan:46 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 21:02:00.901 | INFO     | api.main:lifespan:48 - API shutdown completed.
+2025-03-30 21:02:55.648 | INFO     | api.main:lifespan:41 - Loading all frameworks...
+2025-03-30 21:03:23.678 | SUCCESS  | api.main:lifespan:46 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 21:08:49.362 | INFO     | api.main:lifespan:48 - API shutdown completed.
+2025-03-30 21:11:30.392 | INFO     | api.main:lifespan:41 - Loading all frameworks...
+2025-03-30 21:11:56.087 | SUCCESS  | api.main:lifespan:46 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 21:15:37.854 | INFO     | api.main:lifespan:48 - API shutdown completed.
+2025-03-30 21:15:47.928 | INFO     | api.main:lifespan:42 - Loading all frameworks...
+2025-03-30 21:16:18.463 | SUCCESS  | api.main:lifespan:47 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 21:20:38.679 | INFO     | api.main:lifespan:49 - API shutdown completed.
+2025-03-30 21:24:03.304 | INFO     | api.main:lifespan:45 - Loading all frameworks...
+2025-03-30 21:24:27.953 | SUCCESS  | api.main:lifespan:50 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 21:44:34.008 | INFO     | api.main:lifespan:52 - API shutdown completed.
+2025-03-30 21:46:13.182 | INFO     | api.main:lifespan:45 - Loading all frameworks...
+2025-03-30 21:46:39.498 | SUCCESS  | api.main:lifespan:50 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 21:55:08.046 | INFO     | api.main:lifespan:45 - Loading all frameworks...
+2025-03-30 21:55:42.826 | SUCCESS  | api.main:lifespan:50 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 22:24:04.951 | INFO     | api.main:lifespan:52 - API shutdown completed.
+2025-03-30 22:25:36.791 | INFO     | api.main:lifespan:45 - Loading all frameworks...
+2025-03-30 22:26:06.690 | SUCCESS  | api.main:lifespan:50 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 22:36:30.103 | INFO     | api.main:lifespan:52 - API shutdown completed.
+2025-03-30 22:37:19.673 | INFO     | api.main:lifespan:45 - Loading all frameworks...
+2025-03-30 22:37:49.879 | SUCCESS  | api.main:lifespan:50 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 22:54:47.504 | INFO     | api.main:lifespan:52 - API shutdown completed.
+2025-03-30 22:54:59.565 | INFO     | api.main:lifespan:46 - Loading all frameworks...
+2025-03-30 22:55:26.279 | SUCCESS  | api.main:lifespan:51 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 22:57:18.561 | INFO     | api.main:lifespan:53 - API shutdown completed.
+2025-03-30 22:57:28.650 | INFO     | api.main:lifespan:45 - Loading all frameworks...
+2025-03-30 22:57:58.904 | SUCCESS  | api.main:lifespan:50 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 22:59:22.507 | INFO     | api.main:lifespan:52 - API shutdown completed.
+2025-03-30 22:59:34.515 | INFO     | api.main:lifespan:46 - Loading all frameworks...
+2025-03-30 23:00:01.351 | SUCCESS  | api.main:lifespan:51 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 23:02:56.366 | INFO     | api.main:lifespan:53 - API shutdown completed.
+2025-03-30 23:03:07.340 | INFO     | api.main:lifespan:49 - Loading all frameworks...
+2025-03-30 23:03:32.023 | SUCCESS  | api.main:lifespan:54 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 23:06:01.669 | INFO     | api.main:lifespan:56 - API shutdown completed.
+2025-03-30 23:06:19.049 | INFO     | api.main:lifespan:49 - Loading all frameworks...
+2025-03-30 23:06:48.090 | SUCCESS  | api.main:lifespan:54 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 23:12:25.040 | INFO     | api.main:lifespan:56 - API shutdown completed.
+2025-03-30 23:14:51.903 | INFO     | api.main:lifespan:49 - Loading all frameworks...
+2025-03-30 23:15:22.407 | SUCCESS  | api.main:lifespan:54 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 23:16:09.486 | INFO     | api.main:lifespan:56 - API shutdown completed.
+2025-03-30 23:16:23.351 | INFO     | api.main:lifespan:49 - Loading all frameworks...
+2025-03-30 23:16:49.356 | SUCCESS  | api.main:lifespan:54 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 23:20:01.100 | INFO     | api.main:lifespan:56 - API shutdown completed.
+2025-03-30 23:20:12.622 | INFO     | api.main:lifespan:49 - Loading all frameworks...
+2025-03-30 23:20:39.225 | SUCCESS  | api.main:lifespan:54 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 23:20:49.987 | INFO     | api.main:lifespan:49 - Loading all frameworks...
+2025-03-30 23:21:14.859 | SUCCESS  | api.main:lifespan:54 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 23:21:14.862 | ERROR    | api.main:global_exception_handler:132 - Unhandled Exception | 'list' object has no attribute 'encode' | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-30 23:23:19.080 | INFO     | api.main:lifespan:56 - API shutdown completed.
+2025-03-30 23:23:28.302 | INFO     | api.main:lifespan:50 - Loading all frameworks...
+2025-03-30 23:23:52.014 | SUCCESS  | api.main:lifespan:55 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 23:24:04.083 | ERROR    | api.main:global_exception_handler:133 - Unhandled Exception | 'list' object has no attribute 'encode' | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-30 23:24:39.662 | INFO     | api.main:lifespan:57 - API shutdown completed.
+2025-03-30 23:24:49.550 | INFO     | api.main:lifespan:49 - Loading all frameworks...
+2025-03-30 23:25:13.298 | SUCCESS  | api.main:lifespan:54 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-30 23:25:22.632 | ERROR    | api.main:global_exception_handler:132 - Unhandled Exception | 'list' object has no attribute 'encode' | Path: /upload-policy/ | Client: 127.0.0.1
+2025-03-30 23:29:40.460 | INFO     | api.main:lifespan:56 - API shutdown completed.
+2025-03-30 23:29:50.374 | INFO     | api.main:lifespan:47 - Loading all frameworks...
+2025-03-30 23:30:18.089 | SUCCESS  | api.main:lifespan:52 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-31 13:11:54.178 | INFO     | api.main:lifespan:54 - API shutdown completed.
+2025-03-31 13:12:36.334 | INFO     | api.main:lifespan:50 - Loading all frameworks...
+2025-03-31 13:13:01.941 | SUCCESS  | api.main:lifespan:55 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-31 19:49:59.783 | INFO     | api.main:lifespan:57 - API shutdown completed.
+2025-03-31 19:50:39.514 | INFO     | api.main:lifespan:50 - Loading all frameworks...
+2025-03-31 19:51:04.485 | SUCCESS  | api.main:lifespan:55 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-31 20:16:01.444 | INFO     | api.main:lifespan:57 - API shutdown completed.
+2025-03-31 20:17:01.043 | INFO     | api.main:lifespan:51 - Loading all frameworks...
+2025-03-31 20:17:41.830 | SUCCESS  | api.main:lifespan:56 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-31 20:30:47.588 | INFO     | api.main:lifespan:58 - API shutdown completed.
+2025-03-31 20:31:25.543 | INFO     | api.main:lifespan:51 - Loading all frameworks...
+2025-03-31 20:31:53.847 | SUCCESS  | api.main:lifespan:56 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-31 20:36:11.138 | INFO     | api.main:lifespan:58 - API shutdown completed.
+2025-03-31 20:36:23.513 | INFO     | api.main:lifespan:51 - Loading all frameworks...
+2025-03-31 20:36:56.200 | SUCCESS  | api.main:lifespan:56 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-31 20:55:59.186 | INFO     | api.main:lifespan:58 - API shutdown completed.
+2025-03-31 20:56:25.543 | INFO     | api.main:lifespan:42 - Loading all frameworks...
+2025-03-31 20:57:05.464 | SUCCESS  | api.main:lifespan:47 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-31 21:01:02.259 | INFO     | api.main:lifespan:49 - API shutdown completed.
+2025-03-31 21:01:16.155 | INFO     | api.main:lifespan:40 - Loading all frameworks...
+2025-03-31 21:01:53.176 | SUCCESS  | api.main:lifespan:45 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-31 21:09:33.243 | INFO     | api.main:lifespan:47 - API shutdown completed.
+2025-03-31 21:09:59.988 | INFO     | api.main:lifespan:40 - Loading all frameworks...
+2025-03-31 21:10:39.578 | SUCCESS  | api.main:lifespan:45 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-31 21:22:39.793 | INFO     | api.main:lifespan:47 - API shutdown completed.
+2025-03-31 21:24:31.342 | INFO     | api.main:lifespan:29 - Loading all frameworks...
+2025-03-31 21:25:02.331 | SUCCESS  | api.main:lifespan:34 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-31 21:25:36.367 | INFO     | api.main:lifespan:36 - API shutdown completed.
+2025-03-31 21:26:42.093 | INFO     | api.main:lifespan:29 - Loading all frameworks...
+2025-03-31 21:27:18.374 | SUCCESS  | api.main:lifespan:34 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-31 23:12:14.704 | INFO     | api.main:lifespan:36 - API shutdown completed.
+2025-03-31 23:12:32.977 | INFO     | api.main:lifespan:28 - Loading all frameworks...
+2025-03-31 23:12:57.387 | SUCCESS  | api.main:lifespan:33 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-03-31 23:19:32.431 | INFO     | api.main:lifespan:35 - API shutdown completed.
