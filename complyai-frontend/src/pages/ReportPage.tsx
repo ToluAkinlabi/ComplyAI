@@ -2,68 +2,119 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { FiTrash2, FiDownload } from "react-icons/fi";
+import toast from "react-hot-toast"; 
 
 interface Report {
-  name: string;
-  modified: number;
+    name: string;
+    modified: number;
 }
 
+// ReportPage component to display and manage generated reports
 const ReportPage = () => {
-  const [reports, setReports] = useState<Report[]>([]);
-  const [loading, setLoading] = useState(true);
+    const [reports, setReports] = useState<Report[]>([]);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+    useEffect(() => {
+        fetchReports();
+    }, []);
+
+    // Fetch reports from the server
     const fetchReports = async () => {
-      try {
-        const res = await axios.get("http://localhost:8000/list-reports/");
-        setReports(res.data.reports);
-      } catch (error) {
-        console.error("Failed to fetch reports", error);
-      } finally {
-        setLoading(false);
-      }
+        try {
+            const res = await axios.get("http://localhost:8000/list-reports/");
+            setReports(res.data.reports);
+        } catch (error) {
+            console.error("Failed to fetch reports", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    fetchReports();
-  }, []);
-
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp * 1000).toLocaleString();
-  };
-
-  return (
-    <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-semibold text-gray-800">📄 Generated Compliance Reports</h1>
-
-      {loading ? (
-        <div className="text-center text-gray-500 animate-pulse">⏳ Loading reports...</div>
-      ) : reports.length === 0 ? (
-        <div className="text-center text-gray-400 italic">No reports available yet. Generate one from the upload page.</div>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {reports.map((report) => (
-            <div
-              key={report.name}
-              className="bg-white p-4 rounded-lg border shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between"
-            >
-              <div>
-                <h3 className="font-medium text-lg truncate">{report.name}</h3>
-                <p className="text-xs text-gray-500">Last Modified: {formatDate(report.modified)}</p>
+    // Function to handle deletion of a report
+    const handleDelete = (name: string) => {
+      toast.custom((t) => (
+          <div className={`bg-white border rounded-lg shadow-xl p-5 w-80 ${t.visible ? 'animate-enter' : 'animate-leave'}`}>
+              <h4 className="text-sm font-semibold text-gray-800 mb-1">Delete Report?</h4>
+              <p className="text-xs text-gray-500">Are you sure you want to delete <span className="font-medium text-red-600">{name}</span>? This action cannot be undone.</p>
+              
+              <div className="flex justify-end gap-2 mt-4">
+                  <button
+                      onClick={() => toast.dismiss(t.id)}
+                      className="px-3 py-1 text-sm rounded border border-gray-300 hover:bg-gray-50 transition"
+                  >
+                      Cancel
+                  </button>
+                  <button
+                      onClick={async () => {
+                          toast.dismiss(t.id);
+                          try {
+                              await axios.delete(`http://localhost:8000/delete-report/${name}`);
+                              setReports(reports.filter((r) => r.name !== name));
+                              toast.success("✅ Report deleted!", { duration: 3000 });
+                          } catch {
+                              toast.error("❌ Failed to delete report");
+                          }
+                      }}
+                      className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition"
+                  >
+                      Confirm Delete
+                  </button>
               </div>
-              <a
-                href={`http://localhost:8000/reports/${report.name}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 inline-block text-sm text-blue-600 hover:underline"
-              >
-                ⬇ Download PDF
-              </a>
+          </div>
+      ));
+    };
+
+    // Format date from timestamp
+    const formatDate = (timestamp: number) => {
+        return new Date(timestamp * 1000).toLocaleString();
+    };
+
+    // Render the component
+    return (
+        <div className="space-y-6">
+            <div>
+                <h1 className="text-2xl font-semibold mb-1">📄 Generated Reports</h1>
+                <p className="text-gray-500 text-sm">Download or manage your compliance reports.</p>
             </div>
-          ))}
+
+            {loading ? (
+                <div className="text-center text-gray-500 py-10">⏳ Loading reports...</div>
+            ) : reports.length === 0 ? (
+                <div className="text-center text-gray-400 italic py-10">No reports available yet. Generate one from the upload page.</div>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {reports.map((report) => (
+                        <div
+                            key={report.name}
+                            className="flex flex-col justify-between bg-white p-4 rounded-lg shadow border hover:border-blue-400 transition-all space-y-2"
+                        >
+                            <div>
+                                <h3 className="font-medium truncate" title={report.name}>{report.name}</h3>
+                                <p className="text-xs text-gray-500">Last Modified: {formatDate(report.modified)}</p>
+                            </div>
+                            <div className="flex justify-between items-center text-sm pt-2 border-t">
+                                <a
+                                    href={`http://localhost:8000/reports/${report.name}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center space-x-1 text-blue-600 hover:underline"
+                                >
+                                    <FiDownload size={14} /> <span>Download</span>
+                                </a>
+                                <button
+                                    onClick={() => handleDelete(report.name)}
+                                    className="flex items-center space-x-1 text-red-600 hover:underline"
+                                >
+                                    <FiTrash2 size={14} /> <span>Delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
-      )}
-    </div>
-  );
+    );
 };
 
 export default ReportPage;

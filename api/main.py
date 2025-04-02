@@ -91,15 +91,18 @@ async def upload_policy(file: UploadFile = File(...), client_name: str = Form(..
         "detailed_report": detailed_report
     }
 
-    # Export PDF
+    # Export PDF and the generated PDF link
     output_path = pdf_exporter.export_pdf(report_data, client_name)
+    output_filename = os.path.basename(output_path)
 
     # Return result to frontend
     return {
         "executive_summary": executive_summary,
-        "detailed_report": detailed_report
+        "detailed_report": detailed_report,
+        "report_url": f"http://localhost:8000/reports/{output_filename}"
     }
 
+# List reports
 @app.get("/list-reports/")
 async def list_reports():
     reports_dir = "reports"
@@ -118,6 +121,19 @@ async def list_reports():
     return {"reports": files}
 
 
+# Delete report
+@app.delete("/delete-report/{report_name}")
+async def delete_report(report_name: str):
+    report_path = f"reports/{report_name}"
+
+    if not os.path.exists(report_path):
+        raise HTTPException(status_code=404, detail="Report not found")
+
+    os.remove(report_path)
+    return {"detail": "Report deleted successfully"}
+
+
+# Error handling
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
     logger.warning(f"HTTP Error {exc.status_code} | {exc.detail} | From {request.client.host}")

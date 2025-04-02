@@ -1,6 +1,7 @@
 // src/App.tsx
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import UploadPage from "./pages/UploadPage";
@@ -21,6 +22,7 @@ function App() {
                       </Routes>
                     </main>
                 </div>
+                <Toaster position="top-right" />
             </div>
         </Router>
     );

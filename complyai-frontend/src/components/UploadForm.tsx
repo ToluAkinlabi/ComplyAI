@@ -1,7 +1,9 @@
 // src/components/UploadForm.tsx
 
+import axios from "axios";
 import { useState } from "react";
 import Dropzone from "./Dropzone";
+import { toast } from "react-hot-toast";
 
 interface UploadFormProps {
     file: File | null;
@@ -14,14 +16,38 @@ const UploadForm = ({ file, setFile }: UploadFormProps) => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!file || !clientName) return alert("Client name and file required");
-
-        // Simulated upload
-        setLoading(true);
-        setTimeout(() => {
-            alert("Report generated (simulated)");
+        
+        if (!file || !clientName.trim()) {
+            alert("Please provide both the client name and a valid PDF file.");
+            return;
+        }
+    
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("client_name", clientName.trim());
+    
+        try {
+            setLoading(true);
+            
+            const res = await axios.post("http://localhost:8000/upload-policy/", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+    
+            if (res.status === 200 && res.data.report_url) {
+                toast.success("Report generated successfully! Opening PDF...");
+    
+                // Automatically open the PDF report in a new tab
+                window.open(res.data.report_url, "_blank");
+            } else {
+                toast.error("Report generated, but no PDF was returned.");
+            }
+    
+        } catch (error: any) {
+            console.error("Upload failed:", error);
+            toast.error(`❌ Error generating report: ${error.message || "Unknown error"}`);
+        } finally {
             setLoading(false);
-        }, 1000);
+        }
     };
 
     return (
