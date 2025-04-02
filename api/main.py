@@ -3,6 +3,7 @@
 #import corsmiddleware
 from scripts.cors import setup_cors
 from fastapi import FastAPI, UploadFile, File, HTTPException, Request, Form
+from fastapi.staticfiles import StaticFiles
 
 #other imports
 import logging
@@ -45,6 +46,9 @@ logging.basicConfig(
         logging.StreamHandler()
     ]
 )
+
+# Serve reports folder
+app.mount("/reports", StaticFiles(directory="reports"), name="reports")
 
 # Define your POST endpoint
 @app.post("/upload-policy/")
@@ -95,6 +99,23 @@ async def upload_policy(file: UploadFile = File(...), client_name: str = Form(..
         "executive_summary": executive_summary,
         "detailed_report": detailed_report
     }
+
+@app.get("/list-reports/")
+async def list_reports():
+    reports_dir = "reports"
+    if not os.path.exists(reports_dir):
+        return {"reports": []}
+    
+    files = [
+        {"name": f, "modified": os.path.getmtime(os.path.join(reports_dir, f))}
+        for f in os.listdir(reports_dir)
+        if f.endswith(".pdf")
+    ]
+
+    # Sort by latest modified date
+    files.sort(key=lambda x: x["modified"], reverse=True)
+
+    return {"reports": files}
 
 
 @app.exception_handler(HTTPException)

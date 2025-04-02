@@ -1,32 +1,46 @@
-// src/components/Sidebar.tsx
-import { Link, useLocation } from "react-router-dom";
+// Sidebar.tsx
+
+import { NavLink } from "react-router-dom";
+import { FaFileUpload, FaFileAlt } from "react-icons/fa";
 
 const Sidebar = () => {
-  const location = useLocation();
+    return (
+        <aside className="w-64 h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white flex flex-col justify-between shadow-lg">
+            <div>
+              {/* Navigation */}
+              <nav className="flex flex-col space-y-2 p-4">
+                  <NavLink
+                      to="/dashboard/upload"
+                      className={({ isActive }) =>
+                          `flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-700 transition ${
+                              isActive ? "bg-gray-700" : ""
+                          }`
+                      }
+                  >
+                      <FaFileUpload />
+                      <span>Upload Policy</span>
+                  </NavLink>
 
-  const isActive = (path: string) =>
-    location.pathname === path ? "bg-blue-700" : "hover:bg-blue-600";
+                  <NavLink
+                      to="/dashboard/report"
+                      className={({ isActive }) =>
+                          `flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-700 transition ${
+                              isActive ? "bg-gray-700" : ""
+                          }`
+                      }
+                  >
+                      <FaFileAlt />
+                      <span>View Reports</span>
+                  </NavLink>
+              </nav>
+            </div>
 
-  return (
-    <div className="w-64 h-screen bg-gray-800 text-white flex flex-col p-4 space-y-6">
-      <h1 className="text-2xl font-bold mb-4">Comply</h1>
-
-      <nav className="flex flex-col space-y-2">
-        <Link
-          to="/dashboard/upload"
-          className={`p-2 rounded ${isActive("/dashboard/upload")}`}
-        >
-          Upload Policy
-        </Link>
-        <Link
-          to="/dashboard/report"
-          className={`p-2 rounded ${isActive("/dashboard/report")}`}
-        >
-          View Reports
-        </Link>
-      </nav>
-    </div>
-  );
+            {/* Footer */}
+            <div className="text-center text-xs text-gray-400 py-4 border-t border-gray-700">
+              <p>&copy; {new Date().getFullYear()} ComplyAI Inc.</p>
+            </div>
+        </aside>
+    );
 };
 
 export default Sidebar;
