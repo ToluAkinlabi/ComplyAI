@@ -13,6 +13,7 @@ interface UploadFormProps {
 const UploadForm = ({ file, setFile }: UploadFormProps) => {
     const [clientName, setClientName] = useState("");
     const [loading, setLoading] = useState(false);
+    const [reportUrl, setReportUrl] = useState<string | null>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -34,17 +35,15 @@ const UploadForm = ({ file, setFile }: UploadFormProps) => {
             });
     
             if (res.status === 200 && res.data.report_url) {
-                toast.success("Report generated successfully! Opening PDF...");
-    
-                // Automatically open the PDF report in a new tab
-                window.open(res.data.report_url, "_blank");
+                setReportUrl(res.data.report_url);
+                toast.success("Report generated successfully!");
             } else {
                 toast.error("Report generated, but no PDF was returned.");
             }
     
         } catch (error: any) {
             console.error("Upload failed:", error);
-            toast.error(`❌ Error generating report: ${error.message || "Unknown error"}`);
+            toast.error(`Error generating report: ${error.message || "Unknown error"}`);
         } finally {
             setLoading(false);
         }
@@ -77,6 +76,35 @@ const UploadForm = ({ file, setFile }: UploadFormProps) => {
                     {loading ? "Processing..." : "Generate Report"}
                 </button>
             </form>
+            {reportUrl && (
+                <div className="mt-4 flex justify-between items-center bg-gray-100 p-4 rounded shadow">
+                    <a
+                        href={reportUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 font-medium hover:underline"
+                    >
+                        View Report
+                    </a>
+                    <a
+                        href={reportUrl}
+                        download
+                        className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-sm"
+                    >
+                        Download
+                    </a>
+
+                    <button
+                        onClick={() => {
+                            navigator.clipboard.writeText(reportUrl);
+                            toast.success("Link copied to clipboard!");
+                        }}
+                        className="text-sm bg-gray-200 px-3 py-1 rounded hover:bg-gray-300"
+                    >
+                        Copy Link
+                    </button>
+                </div>
+            )}
         </div>
     );
 };

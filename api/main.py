@@ -99,7 +99,7 @@ async def upload_policy(file: UploadFile = File(...), client_name: str = Form(..
     return {
         "executive_summary": executive_summary,
         "detailed_report": detailed_report,
-        "report_url": f"http://localhost:8000/reports/{output_filename}"
+        "report_url": f"http://localhost:8000/reports/{os.path.basename(output_path)}"
     }
 
 # List reports

@@ -51,9 +51,9 @@ const ReportPage = () => {
                           try {
                               await axios.delete(`http://localhost:8000/delete-report/${name}`);
                               setReports(reports.filter((r) => r.name !== name));
-                              toast.success("✅ Report deleted!", { duration: 3000 });
+                              toast.success("Report deleted!", { duration: 3000 });
                           } catch {
-                              toast.error("❌ Failed to delete report");
+                              toast.error("Failed to delete report");
                           }
                       }}
                       className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition"

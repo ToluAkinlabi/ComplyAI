@@ -34,7 +34,7 @@ const Results = ({ executiveSummary, recommendations }: ResultsProps) => {
                         <td className="border px-2 py-1">{rec.suggested_statement ? rec.suggested_statement.slice(0, 50) + "..." : "N/A"}</td>
                     </tr>
                 ))}
-                </tbody>
+                </tbody> 
             </table>
         </div>
     );

@@ -326,3 +326,55 @@ A detailed migration guide is available here: https://github.com/openai/openai-p
 2025-04-02 15:53:00.724 | INFO     | api.main:lifespan:36 - API shutdown completed.
 2025-04-02 15:53:20.679 | INFO     | api.main:lifespan:29 - Loading all frameworks...
 2025-04-02 15:53:59.157 | SUCCESS  | api.main:lifespan:34 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-04-03 15:39:30.933 | INFO     | api.main:lifespan:36 - API shutdown completed.
+2025-04-03 15:41:13.178 | INFO     | api.main:lifespan:29 - Loading all frameworks...
+2025-04-03 15:42:18.172 | SUCCESS  | api.main:lifespan:34 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-04-04 14:15:03.260 | INFO     | api.main:lifespan:36 - API shutdown completed.
+2025-04-04 14:16:01.497 | INFO     | api.main:lifespan:29 - Loading all frameworks...
+2025-04-04 14:16:38.672 | SUCCESS  | api.main:lifespan:34 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-04-04 14:42:01.200 | INFO     | api.main:lifespan:36 - API shutdown completed.
+2025-04-04 14:42:21.369 | INFO     | api.main:lifespan:29 - Loading all frameworks...
+2025-04-04 14:42:50.681 | SUCCESS  | api.main:lifespan:34 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-04-04 15:01:05.020 | INFO     | api.main:lifespan:36 - API shutdown completed.
+2025-04-04 15:01:31.398 | INFO     | api.main:lifespan:29 - Loading all frameworks...
+2025-04-04 15:02:09.950 | SUCCESS  | api.main:lifespan:34 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-04-04 15:10:52.660 | INFO     | api.main:lifespan:36 - API shutdown completed.
+2025-04-04 15:11:17.334 | INFO     | api.main:lifespan:29 - Loading all frameworks...
+2025-04-04 15:11:43.046 | SUCCESS  | api.main:lifespan:34 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-04-04 15:33:29.499 | INFO     | api.main:lifespan:36 - API shutdown completed.
+2025-04-04 15:33:46.703 | INFO     | api.main:lifespan:29 - Loading all frameworks...
+2025-04-04 15:34:21.718 | SUCCESS  | api.main:lifespan:34 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-04-04 16:32:22.038 | ERROR    | api.main:global_exception_handler:155 - Unhandled Exception | 'Report_generated_at' | Path: /upload-policy/ | Client: 127.0.0.1
+2025-04-04 16:32:50.116 | ERROR    | api.main:global_exception_handler:155 - Unhandled Exception | 'Report_generated_at' | Path: /upload-policy/ | Client: 127.0.0.1
+2025-04-04 16:33:22.978 | ERROR    | api.main:global_exception_handler:155 - Unhandled Exception | 'Report_generated_at' | Path: /upload-policy/ | Client: 127.0.0.1
+2025-04-04 16:33:23.122 | INFO     | api.main:lifespan:36 - API shutdown completed.
+2025-04-04 16:33:40.522 | INFO     | api.main:lifespan:29 - Loading all frameworks...
+2025-04-04 16:34:07.797 | SUCCESS  | api.main:lifespan:34 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-04-04 16:37:04.551 | ERROR    | api.main:global_exception_handler:155 - Unhandled Exception | 'Report_generated_at' | Path: /upload-policy/ | Client: 127.0.0.1
+2025-04-04 16:38:25.057 | INFO     | api.main:lifespan:36 - API shutdown completed.
+2025-04-04 16:38:40.340 | INFO     | api.main:lifespan:29 - Loading all frameworks...
+2025-04-04 16:39:12.576 | SUCCESS  | api.main:lifespan:34 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-04-04 16:50:58.879 | INFO     | api.main:lifespan:36 - API shutdown completed.
+2025-04-04 16:51:22.225 | INFO     | api.main:lifespan:29 - Loading all frameworks...
+2025-04-04 16:51:53.362 | SUCCESS  | api.main:lifespan:34 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-04-04 16:56:57.804 | INFO     | api.main:lifespan:36 - API shutdown completed.
+2025-04-04 16:57:09.165 | INFO     | api.main:lifespan:29 - Loading all frameworks...
+2025-04-04 16:57:38.703 | SUCCESS  | api.main:lifespan:34 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-04-04 17:01:58.935 | INFO     | api.main:lifespan:36 - API shutdown completed.
+2025-04-04 17:02:10.119 | INFO     | api.main:lifespan:29 - Loading all frameworks...
+2025-04-04 17:02:36.190 | SUCCESS  | api.main:lifespan:34 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-04-04 17:19:17.331 | INFO     | api.main:lifespan:36 - API shutdown completed.
+2025-04-04 17:19:37.220 | INFO     | api.main:lifespan:29 - Loading all frameworks...
+2025-04-04 17:20:07.857 | SUCCESS  | api.main:lifespan:34 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-04-04 17:26:29.409 | INFO     | api.main:lifespan:36 - API shutdown completed.
+2025-04-04 17:26:49.464 | INFO     | api.main:lifespan:29 - Loading all frameworks...
+2025-04-04 17:27:28.277 | SUCCESS  | api.main:lifespan:34 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-04-04 17:37:22.213 | INFO     | api.main:lifespan:36 - API shutdown completed.
+2025-04-04 17:37:41.612 | INFO     | api.main:lifespan:29 - Loading all frameworks...
+2025-04-04 17:38:14.385 | SUCCESS  | api.main:lifespan:34 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-04-04 17:38:59.211 | ERROR    | api.main:global_exception_handler:155 - Unhandled Exception | mode must be in (0,1,2,3,4,5,6,7) | Path: /upload-policy/ | Client: 127.0.0.1
+2025-04-04 17:39:20.234 | ERROR    | api.main:global_exception_handler:155 - Unhandled Exception | mode must be in (0,1,2,3,4,5,6,7) | Path: /upload-policy/ | Client: 127.0.0.1
+2025-04-04 17:40:08.153 | INFO     | api.main:lifespan:36 - API shutdown completed.
+2025-04-04 17:40:36.669 | INFO     | api.main:lifespan:29 - Loading all frameworks...
+2025-04-04 17:41:10.023 | SUCCESS  | api.main:lifespan:34 - Loaded and indexed 4567 total framework sentences across 4 frameworks.
+2025-04-04 17:44:48.239 | INFO     | api.main:lifespan:36 - API shutdown completed.
