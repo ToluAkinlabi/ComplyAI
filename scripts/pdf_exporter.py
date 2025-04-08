@@ -53,10 +53,9 @@ def export_pdf(report_data, client_name="Client"):
     c.showPage()
 
     # === EXECUTIVE SUMMARY ===
-    def add_page_number(canvas_obj, page_num):
-        c.setFont("Helvetica-Bold", 16)
-        c.setFillColor(colors.HexColor("#003366"))
-        c.drawString(margin, height - margin, "Executive Summary")
+    c.setFont("Helvetica-Bold", 16)
+    c.setFillColor(colors.HexColor("#003366"))
+    c.drawString(margin, height - margin, "Executive Summary")
 
     c.setFont("Helvetica", 10)
     c.setFillColor(colors.black)
