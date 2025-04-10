@@ -1,65 +1,54 @@
 // src/dashboard/DashboardPage.tsx
 
 import { useEffect, useState } from "react";
-import axios from "axios";
 import SavedResultsViewer from "./SavedResultsViewer";
 
-interface ReportInfo {
-  name: string;
-  modified: number;
-}
-
 const DashboardPage = () => {
-  const [reports, setReports] = useState<ReportInfo[]>([]);
-  const [selectedReport, setSelectedReport] = useState<string | null>(null);
-  const [reportData, setReportData] = useState<any>(null);
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetchReportList();
+    const loadLatestReport = async () => {
+      try {
+        const listRes = await fetch("http://localhost:8000/list-json-reports/");
+        const listData = await listRes.json();
+
+        if (!listData.reports || listData.reports.length === 0) {
+          throw new Error("No reports found.");
+        }
+
+        const latestReport = listData.reports[0].name;
+        const reportRes = await fetch(`http://localhost:8000/reports/${latestReport}`);
+
+        if (!reportRes.ok) throw new Error("Failed to fetch report file");
+
+        const reportData = await reportRes.json();
+        setData(reportData.detailed_report || []);
+      } catch (err: any) {
+        setError(err.message || "Something went wrong.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadLatestReport();
   }, []);
 
-  const fetchReportList = async () => {
-    try {
-      const res = await axios.get("http://localhost:8000/list-json-reports/");
-      setReports(res.data.reports);
-    } catch (err) {
-      console.error("Error loading report list:", err);
-    }
-  };
-
-  const loadReport = async (name: string) => {
-    try {
-      const res = await axios.get(`http://localhost:8000/reports/${name}`);
-      setReportData(res.data);
-      setSelectedReport(name);
-    } catch (err) {
-      console.error("Error loading report data:", err);
-    }
-  };
-
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">📊 Compliance Dashboard</h1>
-      <p className="text-gray-600">Click a report to view its detailed controls and compliance status.</p>
+    <div className="p-6 space-y-4">
+      <h1 className="text-2xl font-semibold mb-2">📊 Compliance Dashboard</h1>
 
-      <div className="flex flex-wrap gap-4">
-        {reports.map((r) => (
-          <button
-            key={r.name}
-            onClick={() => loadReport(r.name)}
-            className={`px-4 py-2 rounded border shadow ${
-              selectedReport === r.name ? "bg-blue-600 text-white" : "bg-white text-gray-700"
-            }`}
-          >
-            {r.name.replace(".json", "")}
-          </button>
-        ))}
-      </div>
-
-      {reportData && (
-        <div className="mt-6">
-          <SavedResultsViewer executiveSummary={reportData.executive_summary} recommendations={reportData.detailed_report} />
+      {loading ? (
+        <p className="text-gray-500">Loading report...</p>
+      ) : error ? (
+        <div className="text-red-600 bg-red-50 border border-red-300 rounded p-3">
+          <strong>Error:</strong> {error}
         </div>
+      ) : data.length === 0 ? (
+        <p className="text-gray-400 italic">No recommendations available in the latest report.</p>
+      ) : (
+        <SavedResultsViewer data={data} />
       )}
     </div>
   );

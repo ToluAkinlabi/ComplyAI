@@ -1,87 +1,216 @@
-// src/dashboard/SavedResultsViewer.tsx
+import { useState } from "react";
+import { Pie } from "react-chartjs-2";
+import { saveAs } from "file-saver";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend
+} from "chart.js";
 
-import { useState, useMemo } from "react";
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 interface SavedResultsViewerProps {
-  executiveSummary: any;
-  recommendations: any[];
+  data: any[];
 }
 
-const SavedResultsViewer = ({ executiveSummary, recommendations }: SavedResultsViewerProps) => {
-  const [selectedFramework, setSelectedFramework] = useState<string>("All");
+const PAGE_SIZE = 10;
 
-  const frameworkOptions = useMemo(() => {
-    const unique = new Set(recommendations.map((r) => r.Framework || r.framework));
-    return ["All", ...Array.from(unique)];
-  }, [recommendations]);
+const SavedResultsViewer = ({ data }: SavedResultsViewerProps) => {
+  const [search, setSearch] = useState("");
+  const [priority, setPriority] = useState("All");
+  const [framework, setFramework] = useState("All");
+  const [page, setPage] = useState(1);
 
-  const filtered = useMemo(() => {
-    return selectedFramework === "All"
-      ? recommendations
-      : recommendations.filter((r) => (r.Framework || r.framework) === selectedFramework);
-  }, [selectedFramework, recommendations]);
+  const priorities = ["All", "High", "Medium", "Low"];
+  const frameworks = Array.from(new Set(data.map((r) => r.Framework || r.framework)));
+
+  const filtered = data.filter((r) => {
+    const sentence = r["Policy Sentence"]?.toLowerCase() || "";
+    const suggestion = r["Suggested Improvement"]?.toLowerCase() || "";
+    const matchesSearch =
+      sentence.includes(search.toLowerCase()) || suggestion.includes(search.toLowerCase());
+
+    const matchesPriority = priority === "All" || (r.Priority || r.priority) === priority;
+    const matchesFramework = framework === "All" || (r.Framework || r.framework) === framework;
+
+    return matchesSearch && matchesPriority && matchesFramework;
+  });
+
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+
+  // Export JSON function
+  const exportJSON = () => {
+    const blob = new Blob([JSON.stringify(filtered, null, 2)], {
+      type: "application/json",
+    });
+    saveAs(blob, "filtered_report.json");
+  };
+
+  // Export CSV function
+  const exportCSV = () => {
+    const headers = ["Status", "Framework", "Priority", "Policy Sentence", "Suggested Improvement"];
+    const rows = filtered.map((r) =>
+      [r.Status, r.Framework, r.Priority, r["Policy Sentence"], r["Suggested Improvement"]].map((v) =>
+        `${v}`.replace(/"/g, '""')
+      )
+    );
+    const csv = [headers, ...rows].map((r) => r.map((v) => `"${v}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    saveAs(blob, "filtered_report.csv");
+  };
+
+  // Priority badge rendering
+  const priorityBadge = (p: string) => {
+    const base = "text-xs font-semibold px-2 py-1 rounded-full";
+    if (p === "High") return <span className={`${base} bg-red-700 text-white`}>High</span>;
+    if (p === "Medium") return <span className={`${base} bg-yellow-500 text-black`}>Medium</span>;
+    if (p === "Low") return <span className={`${base} bg-green-700 text-white`}>Low</span>;
+    return <span className={base}>N/A</span>;
+  };
+
+  // Calculate summary counts
+  const total = filtered.length;
+  const statusCounts = {
+    Aligned: filtered.filter((r) => (r.Status || r.status) === "Aligned").length,
+    Weak: filtered.filter((r) => (r.Status || r.status) === "Weak").length,
+    Missing: filtered.filter((r) => (r.Status || r.status) === "Missing").length,
+  };
+
+  // Pie chart data config
+  const chartData = {
+    labels: ["Aligned", "Weak", "Missing"],
+    datasets: [
+      {
+        data: [statusCounts.Aligned, statusCounts.Weak, statusCounts.Missing],
+        backgroundColor: ["#16a34a", "#eab308", "#dc2626"], // green, yellow, red
+        borderWidth: 1,
+      },
+    ],
+  };
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-semibold mb-1">Executive Summary</h2>
-        <div className="bg-white p-4 rounded shadow">
-          {Object.entries(executiveSummary).map(([key, value]) => (
-            <p key={key}><strong>{key}:</strong> {value}</p>
-          ))}
+      {/* Header & Filters */}
+      <div className="bg-white p-4 rounded shadow space-y-4">
+        
+        
+        {/* Priority Legend */}
+        <div className="text-sm text-gray-600 flex gap-4">
+          <span className="flex items-center gap-1">
+            <span className="inline-block w-4 h-4 rounded-full bg-red-700"></span> High Priority
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="inline-block w-4 h-4 rounded-full bg-yellow-500"></span> Medium
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="inline-block w-4 h-4 rounded-full bg-green-700"></span> Low
+          </span>
         </div>
-      </div>
 
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Control Coverage</h2>
-        <div>
-          <label className="text-sm font-medium mr-2">Filter by Framework:</label>
-          <select
-            value={selectedFramework}
-            onChange={(e) => setSelectedFramework(e.target.value)}
-            className="border px-2 py-1 rounded text-sm"
-          >
-            {frameworkOptions.map((f) => (
-              <option key={f} value={f}>{f}</option>
+        <div className="flex flex-wrap gap-4">
+          <input
+            className="border rounded px-3 py-2 w-full sm:w-60"
+            type="text"
+            placeholder="Search policy or suggestion..."
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
+          />
+          <select className="border rounded px-3 py-2" value={priority} onChange={(e) => setPriority(e.target.value)}>
+            {priorities.map((p) => (
+              <option key={p}>{p}</option>
             ))}
           </select>
+          <select className="border rounded px-3 py-2" value={framework} onChange={(e) => setFramework(e.target.value)}>
+            <option>All</option>
+            {frameworks.map((f) => (
+              <option key={f}>{f}</option>
+            ))}
+          </select>
+
+          <div className="ml-auto space-x-2">
+            <button onClick={exportJSON} className="text-sm px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+              Export JSON
+            </button>
+            <button onClick={exportCSV} className="text-sm px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+              Export CSV
+            </button>
+          </div>
         </div>
       </div>
 
-      <table className="table-auto w-full bg-white rounded shadow">
-      <thead>
-        <tr>
-          <th className="border px-2 py-1">Status</th>
-          <th className="border px-2 py-1">Framework</th>
-          <th className="border px-2 py-1">Priority</th>
-          <th className="border px-2 py-1">Sentence</th>
-          <th className="border px-2 py-1">Suggestion</th>
-        </tr>
-      </thead>
-      <tbody>
-        {filtered.map((rec, i) => (
-          <tr key={i}>
-            <td className="border px-2 py-1">{rec.Status || rec.status}</td>
-            <td className="border px-2 py-1">{rec.Framework || rec.framework}</td>
-            <td className="border px-2 py-1">
-              <span className={`text-xs font-semibold px-2 py-1 rounded-full
-                ${
-                  (rec.Priority || rec.priority) === "High"
-                    ? "bg-red-100 text-red-700"
-                    : (rec.Priority || rec.priority) === "Medium"
-                    ? "bg-yellow-100 text-yellow-700"
-                    : "bg-green-100 text-green-700"
-                }`
-              }>
-                {rec.Priority || rec.priority}
-              </span>
-            </td>
-            <td className="border px-2 py-1">{rec["Policy Sentence"]?.slice(0, 50)}...</td>
-            <td className="border px-2 py-1">{rec["Suggested Improvement"]?.slice(0, 50) || "N/A"}...</td>
-          </tr>
-        ))}
-      </tbody>
-      </table>
+      {/* Table */}
+      <div className="overflow-x-auto bg-white rounded shadow">
+        <table className="table-auto w-full text-sm">
+          <thead className="bg-gray-100 text-left">
+            <tr>
+              <th className="px-3 py-2 border">Status</th>
+              <th className="px-3 py-2 border">Framework</th>
+              <th className="px-3 py-2 border">Priority</th>
+              <th className="px-3 py-2 border">Policy Sentence</th>
+              <th className="px-3 py-2 border">Suggested Improvement</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginated.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="text-center text-gray-400 py-10">
+                  No results found.
+                </td>
+              </tr>
+            ) : (
+              paginated.map((rec, i) => (
+                <tr key={i} className="border-t">
+                  <td className="px-3 py-2 border">{rec.Status || rec.status}</td>
+                  <td className="px-3 py-2 border">{rec.Framework || rec.framework}</td>
+                  <td className="px-3 py-2 border">{priorityBadge(rec.Priority || rec.priority)}</td>
+                  <td className="px-3 py-2 border">{(rec["Policy Sentence"] || "").slice(0, 80)}...</td>
+                  <td className="px-3 py-2 border">{(rec["Suggested Improvement"] || "N/A").slice(0, 80)}...</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+ 
+        {/* Pie Chart */}
+        <div className="bg-white p-4 rounded shadow space-y-4">
+          <h2 className="text-md font-semibold text-gray-700">Summary</h2>
+          <div className="flex flex-wrap gap-6 items-center">
+            <div className="space-y-1 text-sm">
+              <p>Total Sentences: <strong>{total}</strong></p>
+              <p>Aligned: <strong>{statusCounts.Aligned}</strong></p>
+              <p>Weak: <strong>{statusCounts.Weak}</strong></p>
+              <p>Missing: <strong>{statusCounts.Missing}</strong></p>
+            </div>
+            <div className="w-48">
+              <Pie data={chartData} />
+            </div>
+          </div>
+        </div>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-center items-center space-x-4 mt-4">
+        <button
+          className="px-3 py-1 text-sm border rounded disabled:opacity-30"
+          disabled={page === 1}
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+        >
+          Prev
+        </button>
+        <span className="text-sm">Page {page} of {totalPages}</span>
+        <button
+          className="px-3 py-1 text-sm border rounded disabled:opacity-30"
+          disabled={page === totalPages}
+          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

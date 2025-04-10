@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 import openai
+from datetime import datetime
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -94,7 +95,7 @@ def generate_recommendations(policy_sentences, D, I, framework_sentences, framew
         "Missing": sum(1 for r in report if r["Status"] == "Missing"),
         "Weak": sum(1 for r in report if r["Status"] == "Weak"),
         "Aligned": sum(1 for r in report if r["Status"] == "Aligned"),
-        "report_generated_at": os.getenv("REPORT_TIMESTAMP", "Not Specified")
+        "report_generated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
 
     return executive_summary, report

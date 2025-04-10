@@ -4,16 +4,17 @@
     "Missing": 1,
     "Weak": 0,
     "Aligned": 0,
-    "report_generated_at": "2025-04-09 21:29:22"
+    "report_generated_at": "2025-04-09 23:56:24"
   },
   "detailed_report": [
     {
       "Policy Sentence": "P",
       "Status": "Missing",
-      "Closest Control": "Requirement 12: Support Information Security with Organizational Policies and Programs ................ 17",
       "Framework": "PCI DSS",
-      "Score": 0.654,
-      "Suggested Improvement": "Policy: \"Policy 12: The organization is committed to supporting information security through the implementation and continual improvement of comprehensive organizational policies and programs.\""
+      "Closest Control": "Requirement 12: Support Information Security with Organizational Policies and Programs ................ 17",
+      "Score": 0.673,
+      "Priority": "Medium",
+      "Suggested Improvement": "Policy: \"The organization shall establish, implement, and maintain comprehensive information security policies and programs as per Requirement 12, to support the protection of information assets and related technologies, ensuring their confidentiality, integrity, and availability.\""
     }
   ]
 }
