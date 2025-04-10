@@ -7,6 +7,7 @@ from fastapi.staticfiles import StaticFiles
 
 #other imports
 import logging
+import json
 import sys
 from fastapi import FastAPI, UploadFile, File, HTTPException, Request, Form
 from fastapi.exceptions import RequestValidationError
@@ -79,23 +80,26 @@ async def upload_policy(file: UploadFile = File(...), client_name: str = Form(..
         policy_sentences, D, I, framework_sentences, framework_labels
     )
 
-    # Clean up uploaded file
-    os.remove(file_path)
-
     # Add timestamp
     executive_summary["report_generated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
-    # Prepare report data
+
+    # Now define report_data
     report_data = {
         "executive_summary": executive_summary,
         "detailed_report": detailed_report
     }
 
-    # Export PDF and the generated PDF link
+    # Save PDF
     output_path = pdf_exporter.export_pdf(report_data, client_name)
-    output_filename = os.path.basename(output_path)
 
-    # Return result to frontend
+    # Save JSON after report_data is defined
+    json_path = f"reports/{client_name.replace(' ', '_')}_Compliance_Report.json"
+    with open(json_path, "w", encoding="utf-8") as jf:
+        json.dump(report_data, jf, indent=2, ensure_ascii=False)
+
+    # Clean up uploaded file
+    os.remove(file_path)
+
     return {
         "executive_summary": executive_summary,
         "detailed_report": detailed_report,
@@ -120,6 +124,24 @@ async def list_reports():
 
     return {"reports": files}
 
+# List JSON reports
+@app.get("/list-json-reports/")
+async def list_json_reports():
+    reports_dir = "reports"
+    if not os.path.exists(reports_dir):
+        return {"reports": []}
+    
+    files = [
+        {"name": f, "modified": os.path.getmtime(os.path.join(reports_dir, f))}
+        for f in os.listdir(reports_dir)
+        if f.endswith(".json")
+    ]
+
+    # Sort by latest modified date
+    files.sort(key=lambda x: x["modified"], reverse=True)
+
+    return {"reports": files}
+
 
 # Delete report
 @app.delete("/delete-report/{report_name}")
@@ -132,6 +154,28 @@ async def delete_report(report_name: str):
     os.remove(report_path)
     return {"detail": "Report deleted successfully"}
 
+#  Rebuild index
+@app.post("/rebuild-index/")
+async def rebuild_index():
+    from models import frameworks
+    from scripts import semantic_engine
+
+    try:
+        # Optional: Clean up old cache
+        for f in [
+            "data/framework_index.faiss",
+            "data/framework_sentences.json",
+            "data/framework_labels.json"
+        ]:
+            if os.path.exists(f):
+                os.remove(f)
+
+        fw_data = frameworks.load_all_frameworks()
+        index, sentences, labels = semantic_engine.build_multi_framework_index(fw_data)
+
+        return {"status": "success", "indexed_sentences": len(sentences), "frameworks": len(fw_data)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Index rebuild failed: {str(e)}")
 
 # Error handling
 @app.exception_handler(HTTPException)

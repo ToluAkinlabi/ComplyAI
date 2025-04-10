@@ -1,7 +1,7 @@
 // Sidebar.tsx
 
 import { NavLink } from "react-router-dom";
-import { FaFileUpload, FaFileAlt } from "react-icons/fa";
+import { FaFileUpload, FaFileAlt, FaTachometerAlt } from "react-icons/fa";
 
 const Sidebar = () => {
     return (
@@ -9,25 +9,38 @@ const Sidebar = () => {
             <div>
               {/* Navigation */}
               <nav className="flex flex-col space-y-2 p-4">
-                  <NavLink
-                      to="/dashboard/upload"
-                      className={({ isActive }) =>
+                <NavLink
+                        to="/dashboard"
+                        end
+                        className={({ isActive }) =>
+                            `flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-700 transition ${
+                                isActive ? "bg-gray-700" : ""
+                            }`
+                        }
+                >
+                    <FaTachometerAlt />
+                    <span>Compliance Dashboard</span>
+                </NavLink>
+
+                <NavLink
+                        to="/dashboard/upload"
+                        className={({ isActive }) =>
                           `flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-700 transition ${
                               isActive ? "bg-gray-700" : ""
-                          }`
-                      }
+                        }`
+                        }
                   >
                       <FaFileUpload />
                       <span>Upload Policy</span>
                   </NavLink>
 
                   <NavLink
-                      to="/dashboard/report"
-                      className={({ isActive }) =>
+                        to="/dashboard/report"
+                        className={({ isActive }) =>
                           `flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-700 transition ${
                               isActive ? "bg-gray-700" : ""
                           }`
-                      }
+                        }
                   >
                       <FaFileAlt />
                       <span>View Reports</span>

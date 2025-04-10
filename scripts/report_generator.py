@@ -5,27 +5,29 @@ import datetime
 
 def generate_compliance_report(recommendations):
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    classifications = [r['status'] for r in recommendations]
+
+    # Normalize keys in case of inconsistent casing from earlier modules
+    classifications = [r.get("Status") or r.get("status", "Unknown") for r in recommendations]
     classification_counts = Counter(classifications)
 
-    # Executive Summary
     executive_summary = {
         "report_generated_at": timestamp,
         "total_sentences_analyzed": len(recommendations),
-        "status_counts": dict(classification_counts),
+        "Missing": classification_counts.get("Missing", 0),
+        "Weak": classification_counts.get("Weak", 0),
+        "Aligned": classification_counts.get("Aligned", 0),
         "recommendations_needed": classification_counts.get("Missing", 0) + classification_counts.get("Weak", 0)
     }
 
-    # Control Coverage Report
     detailed_report = []
     for rec in recommendations:
         detailed_report.append({
-            "Policy Sentence": rec['policy_sentence'],
-            "Status": rec['status'],
-            "Framework": rec['framework'],
-            "Closest Control": rec['closest_control'],
-            "Score": rec['score'],
-            "Suggested Improvement": rec.get("suggested_statement", "N/A")
+            "Policy Sentence": rec.get("Policy Sentence", "N/A"),
+            "Status": rec.get("Status", "Unknown"),
+            "Framework": rec.get("Framework", "Unknown"),
+            "Closest Control": rec.get("Closest Control", "N/A"),
+            "Score": rec.get("Score", 0),
+            "Suggested Improvement": rec.get("Suggested Improvement") or rec.get("suggested_statement", "N/A")
         })
 
     return {

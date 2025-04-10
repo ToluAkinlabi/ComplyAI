@@ -6,6 +6,7 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import UploadPage from "./pages/UploadPage";
 import ReportPage from "./pages/ReportPage";
+import DashboardPage from "./dashboard/DashboardPage";
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
                     <main className="p-6 bg-gray-50 flex-1 overflow-y-auto">
                       <Routes>
                         <Route path="/" element={<Navigate to="/dashboard/upload" replace />} />
+                        <Route path="/dashboard" element={<DashboardPage />} />
                         <Route path="/dashboard/upload" element={<UploadPage />} />
                         <Route path="/dashboard/report" element={<ReportPage />} />
                       </Routes>
