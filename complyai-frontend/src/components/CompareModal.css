@@ -1,0 +1,28 @@
+/* Fade in modal overlay and content */
+.compare-modal-overlay {
+    @apply fixed inset-0 z-50 bg-black bg-opacity-30 flex items-center justify-center;
+    animation: fadeIn 0.25s ease-in-out;
+  }
+  
+  .compare-modal {
+    @apply bg-white rounded shadow-lg p-6 w-full max-w-4xl relative;
+    animation: slideUp 0.25s ease-out;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideUp {
+    from {
+      transform: translateY(30px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  

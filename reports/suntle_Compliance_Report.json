@@ -1,0 +1,20 @@
+{
+  "executive_summary": {
+    "Total Sentences": 60531,
+    "Missing": 1,
+    "Weak": 0,
+    "Aligned": 0,
+    "report_generated_at": "2025-04-11 00:24:48"
+  },
+  "detailed_report": [
+    {
+      "Policy Sentence": "P",
+      "Status": "Missing",
+      "Framework": "PCI DSS",
+      "Closest Control": "Requirement 12: Support Information Security with Organizational Policies and Programs ................ 17",
+      "Score": 0.673,
+      "Priority": "Medium",
+      "Suggested Improvement": "Policy: \"Policy P: The organization shall establish, implement, and maintain comprehensive information security policies and programs in accordance with Requirement 12, to support the protection of information assets and related infrastructure against potential security threats.\""
+    }
+  ]
+}

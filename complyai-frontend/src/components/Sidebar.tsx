@@ -10,19 +10,6 @@ const Sidebar = () => {
               {/* Navigation */}
               <nav className="flex flex-col space-y-2 p-4">
                 <NavLink
-                        to="/dashboard"
-                        end
-                        className={({ isActive }) =>
-                            `flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-700 transition ${
-                                isActive ? "bg-gray-700" : ""
-                            }`
-                        }
-                >
-                    <FaTachometerAlt />
-                    <span>Compliance Dashboard</span>
-                </NavLink>
-
-                <NavLink
                         to="/dashboard/upload"
                         className={({ isActive }) =>
                           `flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-700 transition ${
@@ -45,6 +32,19 @@ const Sidebar = () => {
                       <FaFileAlt />
                       <span>View Reports</span>
                   </NavLink>
+
+                  <NavLink
+                        to="/dashboard"
+                        end
+                        className={({ isActive }) =>
+                            `flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-700 transition ${
+                                isActive ? "bg-gray-700" : ""
+                            }`
+                        }
+                >
+                    <FaTachometerAlt />
+                    <span>Compliance Dashboard</span>
+                </NavLink>
               </nav>
             </div>
 

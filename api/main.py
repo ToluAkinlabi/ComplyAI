@@ -2,6 +2,7 @@
 
 #import corsmiddleware
 from scripts.cors import setup_cors
+from scripts.security_hardening import apply_owasp_hardening
 from fastapi import FastAPI, UploadFile, File, HTTPException, Request, Form
 from fastapi.staticfiles import StaticFiles
 
@@ -20,9 +21,12 @@ from datetime import datetime
 # local imports
 from scripts import docparser, semantic_engine, recommendation_engine, report_generator, pdf_exporter
 from models import frameworks
+from scripts import framework_loader
 import scripts.logger_config
 from contextlib import asynccontextmanager
 
+if os.getenv("ENV") == "production":
+    raise HTTPException(status_code=403, detail="Forbidden in production")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -39,6 +43,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 setup_cors(app)
+apply_owasp_hardening(app)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -176,6 +181,22 @@ async def rebuild_index():
         return {"status": "success", "indexed_sentences": len(sentences), "frameworks": len(fw_data)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Index rebuild failed: {str(e)}")
+
+@app.post("/rebuild-index/")
+async def rebuild_index(request: Request):
+    try:
+        logger.info(f"🔁 Rebuilding semantic index triggered from UI by {request.client.host}")
+        framework_loader.build_all_frameworks_json()  # reprocess frameworks to JSON
+        faiss_index, framework_sentences, framework_labels = semantic_engine.build_multi_framework_index_json()
+        # update global in-memory index
+        globals()["index"] = faiss_index
+        globals()["framework_sentences"] = framework_sentences
+        globals()["framework_labels"] = framework_labels
+
+        return {"detail": "Semantic index rebuilt successfully."}
+    except Exception as e:
+        logger.error(f"❌ Failed to rebuild index: {e}")
+        raise HTTPException(status_code=500, detail="Failed to rebuild semantic index.")
 
 # Error handling
 @app.exception_handler(HTTPException)

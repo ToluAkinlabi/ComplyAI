@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState , useRef } from "react";
 import { Pie } from "react-chartjs-2";
 import { saveAs } from "file-saver";
 import {
@@ -90,6 +90,19 @@ const SavedResultsViewer = ({ data }: SavedResultsViewerProps) => {
     ],
   };
 
+  // Chart download functionality
+  const chartRef = useRef<any>(null);
+  const handleDownloadChart = () => {
+    if (!chartRef.current) return;
+    const chart = chartRef.current;
+  
+    const canvas = chart.canvas;
+    canvas.toBlob((blob: any) => {
+      if (blob) saveAs(blob, "complyai_summary_chart.png");
+    });
+  };
+
+
   return (
     <div className="space-y-6">
       {/* Header & Filters */}
@@ -143,6 +156,28 @@ const SavedResultsViewer = ({ data }: SavedResultsViewerProps) => {
         </div>
       </div>
 
+      {/* Pie Chart */}
+      <div className="bg-white p-4 rounded shadow space-y-4">
+        <h2 className="text-md font-semibold text-gray-700">Summary</h2>
+        <button
+            onClick={handleDownloadChart}
+            className="text-sm text-blue-600 hover:underline"
+          >
+            Download Chart
+        </button>
+        <div className="flex flex-wrap gap-6 items-center">
+          <div className="space-y-1 text-sm">
+            <p>Total: <strong>{total}</strong></p>
+            <p>Aligned: <strong>{statusCounts.Aligned}</strong></p>
+            <p>Weak: <strong>{statusCounts.Weak}</strong></p>
+            <p>Missing: <strong>{statusCounts.Missing}</strong></p>
+          </div>
+          <div className="w-48">
+            <Pie ref={chartRef} data={chartData} />
+          </div>
+        </div>
+      </div>
+
       {/* Table */}
       <div className="overflow-x-auto bg-white rounded shadow">
         <table className="table-auto w-full text-sm">
@@ -176,22 +211,6 @@ const SavedResultsViewer = ({ data }: SavedResultsViewerProps) => {
           </tbody>
         </table>
       </div>
- 
-        {/* Pie Chart */}
-        <div className="bg-white p-4 rounded shadow space-y-4">
-          <h2 className="text-md font-semibold text-gray-700">Summary</h2>
-          <div className="flex flex-wrap gap-6 items-center">
-            <div className="space-y-1 text-sm">
-              <p>Total Sentences: <strong>{total}</strong></p>
-              <p>Aligned: <strong>{statusCounts.Aligned}</strong></p>
-              <p>Weak: <strong>{statusCounts.Weak}</strong></p>
-              <p>Missing: <strong>{statusCounts.Missing}</strong></p>
-            </div>
-            <div className="w-48">
-              <Pie data={chartData} />
-            </div>
-          </div>
-        </div>
 
       {/* Pagination Controls */}
       <div className="flex justify-center items-center space-x-4 mt-4">

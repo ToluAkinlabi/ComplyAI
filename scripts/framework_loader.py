@@ -1,8 +1,11 @@
 # scripts/framework_loader.py
 
-import docparser 
-from docparser import parse_framework
+import sys
 import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from scripts import docparser
+from docparser import parse_framework
+
 
 # Input file paths
 framework_files = {
