@@ -4,7 +4,7 @@
     "Missing": 1,
     "Weak": 0,
     "Aligned": 0,
-    "report_generated_at": "2025-04-09 23:56:24"
+    "report_generated_at": "2025-04-12 00:45:45"
   },
   "detailed_report": [
     {
@@ -14,7 +14,7 @@
       "Closest Control": "Requirement 12: Support Information Security with Organizational Policies and Programs ................ 17",
       "Score": 0.673,
       "Priority": "Medium",
-      "Suggested Improvement": "Policy: \"The organization shall establish, implement, and maintain comprehensive information security policies and programs as per Requirement 12, to support the protection of information assets and related technologies, ensuring their confidentiality, integrity, and availability.\""
+      "Suggested Improvement": "Policy: \"The organization shall establish, implement, and maintain an information security policy and accompanying programs that support and align with Requirement 12: Support Information Security with Organizational Policies and Programs, ensuring the protection of all organizational data and systems from unauthorized access, use, disclosure, disruption, modification, or destruction.\""
     }
   ]
 }

@@ -6,15 +6,23 @@ import PDFPreview from "../components/PDFPreviews";
 
 const UploadPage = () => {
     const [file, setFile] = useState<File | null>(null);
-
+  
     return (
-        <div className="flex justify-center items-center h-full bg-gray-100 py-8 px-4">
-            <div className="w-full max-w-3xl space-y-4">
-                <UploadForm setFile={setFile} file={file} />
-                <PDFPreview file={file} onRemoveFile={() => setFile(null)} />
-            </div>
+      <div className="h-screen bg-gray-100 py-10 px-4 ">
+        <div className="max-w-4xl mx-auto space-y-6">
+          {/* Page Heading */}
+          <div className="text-center space-y-1">
+            <h1 className="text-3xl font-semibold text-gray-800">📤 Generate Compliance Report</h1>
+          </div>
+  
+          {/* Upload Form */}
+          <UploadForm setFile={setFile} file={file} />
+  
+          {/* PDF Preview */}
+          <PDFPreview file={file} onRemoveFile={() => setFile(null)} />
         </div>
+      </div>
     );
-};
-
-export default UploadPage;
+  };
+  
+  export default UploadPage;

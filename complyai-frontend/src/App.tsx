@@ -11,7 +11,7 @@ import DashboardPage from "./dashboard/DashboardPage";
 function App() {
     return (
         <Router>
-            <div className="flex h-screen">
+            <div className="flex h-screen dark:bg-gray-900 text-gray-900 dark:text-gray-100">
                 <Sidebar />
                 <div className="flex-1 flex flex-col">
                     <Header />

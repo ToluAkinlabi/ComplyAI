@@ -2,6 +2,7 @@
 
 import { NavLink } from "react-router-dom";
 import { FaFileUpload, FaFileAlt, FaTachometerAlt } from "react-icons/fa";
+import ThemeToggle from "./ThemeToggle"; 
 
 const Sidebar = () => {
     return (
@@ -49,8 +50,9 @@ const Sidebar = () => {
             </div>
 
             {/* Footer */}
-            <div className="text-center text-xs text-gray-400 py-4 border-t border-gray-700">
-              <p>&copy; {new Date().getFullYear()} ComplyAI Inc.</p>
+            <div className="flex justify-between items-center text-xs text-gray-400 py-4 border-t border-gray-700 px-4">
+                <ThemeToggle />
+                <p className="text-xs">&copy; {new Date().getFullYear()} ComplyAI Inc.</p>
             </div>
         </aside>
     );
