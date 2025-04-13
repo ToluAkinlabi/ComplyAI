@@ -62,7 +62,7 @@ const ReportComparison = ({ reports }: Props) => {
         };
 
         return (
-          <div key={report.name} className="bg-white p-4 rounded shadow space-y-2">
+          <div key={report.name} className="bg-white dark:bg-gray-800 text-gray-800 dark:text-white p-4 rounded shadow space-y-2">
             <h3 className="font-semibold text-sm truncate" title={report.name}>
               {report.name}
             </h3>

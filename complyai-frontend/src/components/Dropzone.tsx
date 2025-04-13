@@ -31,7 +31,7 @@ const Dropzone = ({ onFileAccepted, file, onRemoveFile }: DropzoneProps) => {
                     } hover:border-blue-400`}
                 >
                     <input {...getInputProps()} />
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm">
                         {isDragActive ? "Drop the PDF file here..." : "Drag & drop a PDF here, or click to select"}
                     </p>
                 </div>
@@ -40,7 +40,7 @@ const Dropzone = ({ onFileAccepted, file, onRemoveFile }: DropzoneProps) => {
                     <div className="flex items-center space-x-2">
                         <span className="text-2xl">📄</span>
                         <div>
-                            <p className="text-sm font-medium">{file.name}</p>
+                            <p className="text-sm font-medium text-gray-900">{file.name}</p>
                             <p className="text-xs text-gray-500">{(file.size / 1024).toFixed(2)} KB</p>
                         </div>
                     </div>

@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 import SavedResultsViewer from "./SavedResultsViewer";
 import CompareModal from "../components/CompareModal";
-import toast from "react-hot-toast";
+import useIsMobile from "../hooks/useIsMobile"; 
 
 const DashboardPage = () => {
+  const isMobile = useIsMobile(); 
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -14,7 +16,6 @@ const DashboardPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rebuilding, setRebuilding] = useState(false);
 
-  // Load initial data
   useEffect(() => {
     const loadInitial = async () => {
       try {
@@ -41,7 +42,6 @@ const DashboardPage = () => {
     loadInitial();
   }, []);
 
-  // Rebuild index function
   const handleRebuild = async () => {
     try {
       setRebuilding(true);
@@ -57,33 +57,36 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
+    <div className="dark:bg-gray-800 text-gray-800 dark:text-white bg-gray-50 py-10 px-4 text-[10px] sm:text-xs">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-800">📊 Compliance Dashboard</h1>
-            <p className="text-gray-600 text-sm">Explore and compare insights from your reports.</p>
+            <h1 className="text-2xl text-[20px] font-semibold">📊 Compliance Dashboard</h1>
+            <p className="text-sm">Explore and compare insights from your reports.</p>
           </div>
 
-          <div className="flex gap-2">
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition text-sm"
-            >
-              Compare Reports
-            </button>
-
-            {import.meta.env.VITE_IS_ADMIN_UI === "true" && (
+          {/* Hide buttons on mobile */}
+          {!isMobile && (
+            <div className="flex gap-2">
               <button
-                onClick={handleRebuild}
-                disabled={rebuilding}
-                className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700 transition text-sm disabled:opacity-50"
+                onClick={() => setIsModalOpen(true)}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition text-sm"
               >
-                {rebuilding ? "Rebuilding..." : "Rebuild Index"}
+                Compare Reports
               </button>
-            )}
-          </div>
+
+              {import.meta.env.VITE_IS_ADMIN_UI === "true" && (
+                <button
+                  onClick={handleRebuild}
+                  disabled={rebuilding}
+                  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700 transition text-sm disabled:opacity-50"
+                >
+                  {rebuilding ? "Rebuilding..." : "Rebuild Index"}
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Body */}

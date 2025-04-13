@@ -34,9 +34,9 @@ const ReportPage = () => {
     // Function to handle deletion of a report
     const handleDelete = (name: string) => {
       toast.custom((t) => (
-          <div className={`bg-white border rounded-lg shadow-xl p-5 w-80 ${t.visible ? 'animate-enter' : 'animate-leave'}`}>
+          <div className={`bg-white dark:bg-gray-900 text-gray-800 dark:text-white border rounded-lg shadow-xl p-5 w-80 ${t.visible ? 'animate-enter' : 'animate-leave'}`}>
               <h4 className="text-sm font-semibold text-gray-800 mb-1">Delete Report?</h4>
-              <p className="text-xs text-gray-500">Are you sure you want to delete <span className="font-medium text-red-600">{name}</span>? This action cannot be undone.</p>
+              <p className="text-xs">Are you sure you want to delete <span className="font-medium text-red-600">{name}</span>? This action cannot be undone.</p>
               
               <div className="flex justify-end gap-2 mt-4">
                   <button
@@ -72,16 +72,16 @@ const ReportPage = () => {
 
     // Render the component
     return (
-        <div className="space-y-6">
+        <div className="dark:bg-gray-800 text-gray-900 dark:text-white space-y-6">
             <div>
-                <h1 className="text-2xl font-semibold mb-1">📄 Generated Reports</h1>
-                <p className="text-gray-500 text-sm">Download or manage your compliance reports.</p>
+                <h1 className="text-2xl text-[20px] font-semibold mb-1">📄 Generated Reports</h1>
+                <p className="text-sm text-[12px]">Download or manage your compliance reports.</p>
             </div>
 
             {loading ? (
-                <div className="text-center text-gray-500 py-10">⏳ Loading reports...</div>
+                <div className="text-center text-[12px] text-gray-500 py-10">⏳ Loading reports...</div>
             ) : reports.length === 0 ? (
-                <div className="text-center text-gray-400 italic py-10">No reports available yet. Generate one from the upload page.</div>
+                <div className="text-center text-[12px] text-gray-400 italic py-10">No reports available yet. Generate one from the upload page.</div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {reports.map((report) => (
@@ -90,8 +90,8 @@ const ReportPage = () => {
                             className="flex flex-col justify-between bg-white p-4 rounded-lg shadow border hover:border-blue-400 transition-all space-y-2"
                         >
                             <div>
-                                <h3 className="font-medium truncate" title={report.name}>{report.name}</h3>
-                                <p className="text-xs text-gray-500">Last Modified: {formatDate(report.modified)}</p>
+                                <h3 className="font-medium text-[14px] truncate text-gray-800" title={report.name}>{report.name}</h3>
+                                <p className="text-xs text-[10px] text-gray-500">Last Modified: {formatDate(report.modified)}</p>
                             </div>
                             <div className="flex justify-between items-center text-sm pt-2 border-t">
                                 <a
@@ -100,13 +100,13 @@ const ReportPage = () => {
                                     rel="noopener noreferrer"
                                     className="flex items-center space-x-1 text-blue-600 hover:underline"
                                 >
-                                    <FiDownload size={14} /> <span>Download</span>
+                                    <FiDownload size={14} /> <span className="text-[12px]">Download</span>
                                 </a>
                                 <button
                                     onClick={() => handleDelete(report.name)}
                                     className="flex items-center space-x-1 text-red-600 hover:underline"
                                 >
-                                    <FiTrash2 size={14} /> <span>Delete</span>
+                                    <FiTrash2 size={14} /> <span className="text-[12px]">Delete</span>
                                 </button>
                             </div>
                         </div>

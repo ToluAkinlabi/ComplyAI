@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Dropzone from "./Dropzone";
 import { toast } from "react-hot-toast";
 
@@ -12,6 +12,16 @@ const UploadForm = ({ file, setFile }: UploadFormProps) => {
   const [clientName, setClientName] = useState("");
   const [loading, setLoading] = useState(false);
   const [reportUrl, setReportUrl] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreen = () => {
+      setIsMobile(window.innerWidth < 640); // Tailwind's "sm" breakpoint
+    };
+    checkScreen();
+    window.addEventListener("resize", checkScreen);
+    return () => window.removeEventListener("resize", checkScreen);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +37,6 @@ const UploadForm = ({ file, setFile }: UploadFormProps) => {
 
     try {
       setLoading(true);
-
       const res = await axios.post("http://localhost:8000/upload-policy/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -47,20 +56,33 @@ const UploadForm = ({ file, setFile }: UploadFormProps) => {
   };
 
   return (
-    <div className="bg-white p-6 md:p-8 rounded-lg shadow space-y-6 border border-gray-200">
+    <div className="bg-white dark:bg-gray-800 dark:text-white p-6 md:p-8 rounded-lg shadow space-y-6 border border-gray-200 text-[10px] sm:text-xs">
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="space-y-1">
-          <label className="block font-medium text-gray-700">Client Name</label>
+          <label className="block font-medium">Client Name</label>
           <input
             type="text"
-            className="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-800"
             placeholder="e.g., Phillips Inc."
             value={clientName}
             onChange={(e) => setClientName(e.target.value)}
           />
         </div>
 
-        <Dropzone file={file} onFileAccepted={setFile} onRemoveFile={() => setFile(null)} />
+        {/* Dropzone on desktop, basic input on mobile */}
+        {isMobile ? (
+          <div>
+            <label className="block font-medium mb-1">Upload PDF</label>
+            <input
+              type="file"
+              accept=".pdf"
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
+              className="block w-full border rounded py-2 px-3 text-[14] file:bg-blue-600 file:text-white file:rounded file:border-none dark:text-gray-800"
+            />
+          </div>
+        ) : (
+          <Dropzone file={file} onFileAccepted={setFile} onRemoveFile={() => setFile(null)} />
+        )}
 
         <button
           type="submit"

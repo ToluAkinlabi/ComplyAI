@@ -28,8 +28,8 @@ const CompareModal = ({ isOpen, onClose, reportNames }: CompareModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="compare-modal-overlay">
-      <div className="compare-modal">
+    <div className="compare-modal-overlay ">
+      <div className="compare-modal dark:bg-gray-800 text-gray-800 dark:text-white">
         <button
           onClick={onClose}
           className="absolute top-3 right-4 text-gray-500 hover:text-black text-lg"
