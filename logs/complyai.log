@@ -504,3 +504,40 @@ A detailed migration guide is available here: https://github.com/openai/openai-p
 2025-04-11 18:24:21.955 | SUCCESS  | api.main:lifespan:39 - Loaded and indexed 9665 total framework sentences across 5 frameworks.
 2025-04-12 19:52:30.269 | INFO     | api.main:lifespan:34 - Loading all frameworks...
 2025-04-12 19:52:30.547 | SUCCESS  | api.main:lifespan:39 - Loaded and indexed 9665 total framework sentences across 5 frameworks.
+2025-04-13 02:53:34.261 | INFO     | api.main:lifespan:41 - API shutdown completed.
+2025-04-13 02:55:24.733 | INFO     | api.main:lifespan:34 - Loading all frameworks...
+2025-04-13 02:55:24.992 | SUCCESS  | api.main:lifespan:39 - Loaded and indexed 9665 total framework sentences across 5 frameworks.
+2025-04-13 03:08:41.425 | INFO     | api.main:lifespan:41 - API shutdown completed.
+2025-04-13 03:09:32.573 | INFO     | api.main:lifespan:34 - Loading all frameworks...
+2025-04-13 03:09:32.869 | SUCCESS  | api.main:lifespan:39 - Loaded and indexed 9665 total framework sentences across 5 frameworks.
+2025-04-17 15:36:51.915 | INFO     | api.main:lifespan:41 - API shutdown completed.
+2025-04-17 15:37:53.529 | INFO     | api.main:lifespan:34 - Loading all frameworks...
+2025-04-17 15:37:53.798 | SUCCESS  | api.main:lifespan:39 - Loaded and indexed 9665 total framework sentences across 5 frameworks.
+2025-04-17 15:38:34.827 | INFO     | api.main:lifespan:34 - Loading all frameworks...
+2025-04-17 15:38:35.084 | SUCCESS  | api.main:lifespan:39 - Loaded and indexed 9665 total framework sentences across 5 frameworks.
+2025-04-17 15:57:31.513 | INFO     | api.main:lifespan:41 - API shutdown completed.
+2025-04-17 17:57:18.277 | INFO     | api.main:lifespan:46 - Loading all frameworks...
+2025-04-17 17:57:18.506 | SUCCESS  | api.main:lifespan:51 - Loaded and indexed 9665 total framework sentences across 5 frameworks.
+2025-04-17 18:04:26.286 | WARNING  | api.main:http_exception_handler:204 - HTTP Error 401 | Invalid credentials | From 127.0.0.1
+2025-04-17 18:04:48.131 | INFO     | api.main:lifespan:53 - API shutdown completed.
+2025-04-17 18:05:57.185 | INFO     | api.main:lifespan:46 - Loading all frameworks...
+2025-04-17 18:05:57.415 | SUCCESS  | api.main:lifespan:51 - Loaded and indexed 9665 total framework sentences across 5 frameworks.
+2025-04-17 18:05:57.868 | WARNING  | api.main:http_exception_handler:204 - HTTP Error 401 | Invalid credentials | From 127.0.0.1
+2025-04-17 18:06:12.548 | WARNING  | api.main:http_exception_handler:204 - HTTP Error 401 | Invalid credentials | From 127.0.0.1
+2025-04-17 18:07:56.954 | WARNING  | api.main:http_exception_handler:204 - HTTP Error 401 | Invalid credentials | From 127.0.0.1
+2025-04-17 18:10:13.019 | INFO     | api.main:lifespan:53 - API shutdown completed.
+2025-04-17 18:10:39.319 | INFO     | api.main:lifespan:46 - Loading all frameworks...
+2025-04-17 18:10:39.568 | SUCCESS  | api.main:lifespan:51 - Loaded and indexed 9665 total framework sentences across 5 frameworks.
+2025-04-17 18:10:53.587 | WARNING  | api.main:http_exception_handler:204 - HTTP Error 401 | Invalid credentials | From 127.0.0.1
+2025-04-17 18:15:13.934 | INFO     | api.main:lifespan:53 - API shutdown completed.
+2025-04-17 18:15:43.037 | INFO     | api.main:lifespan:46 - Loading all frameworks...
+2025-04-17 18:15:43.264 | SUCCESS  | api.main:lifespan:51 - Loaded and indexed 9665 total framework sentences across 5 frameworks.
+2025-04-17 18:19:16.878 | INFO     | api.main:lifespan:53 - API shutdown completed.
+2025-04-17 18:20:43.240 | INFO     | api.main:lifespan:46 - Loading all frameworks...
+2025-04-17 18:20:43.467 | SUCCESS  | api.main:lifespan:51 - Loaded and indexed 9665 total framework sentences across 5 frameworks.
+2025-04-17 18:21:12.448 | WARNING  | api.main:http_exception_handler:214 - HTTP Error 401 | Invalid credentials | From 127.0.0.1
+2025-04-17 18:21:32.986 | WARNING  | api.main:http_exception_handler:214 - HTTP Error 401 | Invalid credentials | From 127.0.0.1
+2025-04-17 18:22:05.052 | WARNING  | api.main:http_exception_handler:214 - HTTP Error 401 | Invalid credentials | From 127.0.0.1
+2025-04-17 18:22:50.023 | INFO     | api.main:lifespan:53 - API shutdown completed.
+2025-04-17 18:24:14.376 | INFO     | api.main:lifespan:46 - Loading all frameworks...
+2025-04-17 18:24:14.556 | SUCCESS  | api.main:lifespan:51 - Loaded and indexed 9665 total framework sentences across 5 frameworks.

@@ -9,7 +9,6 @@ from fastapi.staticfiles import StaticFiles
 #other imports
 import logging
 import json
-import sys
 from fastapi import FastAPI, UploadFile, File, HTTPException, Request, Form
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
@@ -18,15 +17,28 @@ import os
 from loguru import logger
 from datetime import datetime
 
+# Auth-related imports
+from fastapi import Depends
+from jose import jwt, JWTError
+from fastapi.security import OAuth2PasswordRequestForm
+from scripts.auth import (
+    users_db,
+    verify_password,
+    create_access_token,
+    admin_required,
+)
+
 # local imports
 from scripts import docparser, semantic_engine, recommendation_engine, report_generator, pdf_exporter
 from models import frameworks
 from scripts import framework_loader
+from scripts.prod_settings import settings
 import scripts.logger_config
 from contextlib import asynccontextmanager
 
 if os.getenv("ENV") == "production":
     raise HTTPException(status_code=403, detail="Forbidden in production")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -55,6 +67,26 @@ logging.basicConfig(
 
 # Serve reports folder
 app.mount("/reports", StaticFiles(directory="reports"), name="reports")
+
+# Login
+@app.post("/login")
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    print("👉 Username submitted:", form_data.username)
+    print("👉 Password submitted:", form_data.password)
+
+    user = users_db.get(form_data.username)
+    print("🔍 Retrieved user:", user)
+
+    if not user:
+        print("❌ User not found.")
+    elif not verify_password(form_data.password, user["hashed_password"]):
+        print("❌ Password mismatch.")
+
+    if not user or not verify_password(form_data.password, user["hashed_password"]):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    access_token = create_access_token(data={"sub": user["email"], "role": user["role"]})
+    return {"access_token": access_token, "token_type": "bearer"}
 
 # Define your POST endpoint
 @app.post("/upload-policy/")
@@ -161,29 +193,7 @@ async def delete_report(report_name: str):
 
 #  Rebuild index
 @app.post("/rebuild-index/")
-async def rebuild_index():
-    from models import frameworks
-    from scripts import semantic_engine
-
-    try:
-        # Optional: Clean up old cache
-        for f in [
-            "data/framework_index.faiss",
-            "data/framework_sentences.json",
-            "data/framework_labels.json"
-        ]:
-            if os.path.exists(f):
-                os.remove(f)
-
-        fw_data = frameworks.load_all_frameworks()
-        index, sentences, labels = semantic_engine.build_multi_framework_index(fw_data)
-
-        return {"status": "success", "indexed_sentences": len(sentences), "frameworks": len(fw_data)}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Index rebuild failed: {str(e)}")
-
-@app.post("/rebuild-index/")
-async def rebuild_index(request: Request):
+async def rebuild_index(request: Request, user=Depends(admin_required)):
     try:
         logger.info(f"🔁 Rebuilding semantic index triggered from UI by {request.client.host}")
         framework_loader.build_all_frameworks_json()  # reprocess frameworks to JSON

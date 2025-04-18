@@ -75,7 +75,7 @@ const ReportPage = () => {
         <div className="dark:bg-gray-800 text-gray-900 dark:text-white space-y-6">
             <div>
                 <h1 className="text-2xl text-[20px] font-semibold mb-1">📄 Generated Reports</h1>
-                <p className="text-sm text-[12px]">Download or manage your compliance reports.</p>
+                <p className="text-sm text-[11px]">Download or manage your compliance reports.</p>
             </div>
 
             {loading ? (
