@@ -5,4 +5,3 @@
 venv/
 ./venv/
 .env
-./complyai-frontend/.env
