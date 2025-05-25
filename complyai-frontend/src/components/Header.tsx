@@ -12,7 +12,7 @@ const Header = ({ setSidebarOpen }: HeaderProps) => {
 
         {/* Hamburger only shows on mobile */}
         <MobileSidebarToggle onToggle={() => setSidebarOpen(true)} />
-        <img src="/C.png" alt="ComplyAI Logo" className="h-10 w-auto" />
+        <img src="/comply.png" alt="ComplyAI Logo" className="h-10 w-auto" />
         <h1 className="text-[13px] font-semibold">Dashboard</h1>
       </div>
 
