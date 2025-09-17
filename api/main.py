@@ -30,6 +30,7 @@ from scripts.auth import (
 
 # local imports
 from scripts import docparser, semantic_engine, recommendation_engine, report_generator, pdf_exporter
+from scripts.semantic_engine import group_semantic_sentences
 from models import frameworks
 from scripts import framework_loader
 from scripts.prod_settings import settings
@@ -98,14 +99,17 @@ async def upload_policy(file: UploadFile = File(...), client_name: str = Form(..
 
     # Extract text
     if file.filename.endswith(".pdf"):
-        policy_sentences = docparser.extract_pdf_text(file_path)
+        policy_sentences = docparser.extract_policy_sentences(file_path)
     elif file.filename.endswith(".docx"):
-        policy_sentences = docparser.extract_docx_text(file_path)
+        policy_sentences = docparser.extract_policy_sentences(file_path)
     else:
         return {"error": "Unsupported file format"}
 
+    # Apply semantic grouping
+    grouped_sentences = group_semantic_sentences(policy_sentences, threshold=0.7)
+
     # Perform semantic search
-    embeddings = semantic_engine.model.encode(policy_sentences)
+    embeddings = semantic_engine.model.encode(grouped_sentences)
     if len(embeddings.shape) == 1:
         embeddings = embeddings.reshape(1, -1)
     
@@ -114,7 +118,7 @@ async def upload_policy(file: UploadFile = File(...), client_name: str = Form(..
 
     # Generate executive summary & detailed report
     executive_summary, detailed_report = recommendation_engine.generate_recommendations(
-        policy_sentences, D, I, framework_sentences, framework_labels
+        grouped_sentences, D, I, framework_sentences, framework_labels
     )
 
     # Add timestamp

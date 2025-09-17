@@ -1,10 +1,11 @@
-# Description: This script builds a FAISS index for semantic search using Sentence Transformers. It normalizes the vectors, saves the index and sentences to disk, and provides functions to load the cache. It also checks if the cache exists before building a new indeX. It uses the Sentence Transformers library to encode sentences into embeddings and FAISS for efficient similarity search and the framework it matched with.
+# Description: This script builds a FAISS index for semantic search using Sentence Transformers. It normalizes the vectors, saves the index and sentences to disk, and provides functions to load the cache. 
+# It also checks if the cache exists before building a new index. It uses the Sentence Transformers library to encode sentences into embeddings and FAISS for efficient similarity search and the framework it matched with.
 
 import os
 import faiss
 import json
 import numpy as np
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer, util
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
@@ -34,6 +35,26 @@ def load_cache():
 
 def cache_exists():
     return os.path.exists(INDEX_FILE) and os.path.exists(SENTENCES_FILE) and os.path.exists(LABELS_FILE)
+
+def group_semantic_sentences(sentences, threshold=0.6):
+    embeddings = model.encode(sentences, convert_to_tensor=True)
+    grouped = []
+    used = set()
+
+    for i, emb in enumerate(embeddings):
+        if i in used:
+            continue
+        group = [sentences[i]]
+        used.add(i)
+        for j in range(i + 1, len(sentences)):
+            if j in used:
+                continue
+            sim = util.cos_sim(emb, embeddings[j]).item()
+            if sim >= threshold:
+                group.append(sentences[j])
+                used.add(j)
+        grouped.append(" ".join(group))
+    return grouped
 
 def build_multi_framework_index(frameworks_data):
     if cache_exists():

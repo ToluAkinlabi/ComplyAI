@@ -2,6 +2,8 @@ import os
 from dotenv import load_dotenv
 import openai
 from datetime import datetime
+from more_itertools import chunked
+from scripts.semantic_engine import group_semantic_sentences
 
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -31,28 +33,28 @@ def determine_priority(status: str, score: float) -> str:
     return "Low"
 
 
-def suggest_improvement(policy_sentence: str, matched_sentence: str) -> str:
-    prompt = f""" 
-The following policy sentence seems weak or missing compared to the recommended control.
+def suggest_improvement(policy_sentence: str, matched_control: str, framework_label: str) -> str:
+        prompt = f"""
+    You are a cybersecurity policy expert. Given this CONTROL from the "{framework_label}" framework:
 
-Policy: "{policy_sentence}"
-Recommended Control: "{matched_sentence}"
+    \"\"\"{matched_control}\"\"\"
 
-Suggest a professionally worded policy statement that would align better with industry best practices.
-"""
-
-    try:
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.5
-        )
-        suggestion = response.choices[0].message.content.strip()
-        return suggestion
-    except Exception as e:
-        if VERBOSE:
-            print(f"❌ GPT error: {e}")
-        return "Unable to generate suggestion. Please review manually."
+    Please draft a NEW policy statement that a company can adopt to comply with the control above. 
+    Do not rephrase the input policy, and ignore any policy fragments provided. 
+    Use only the control as your source of truth.
+    """
+        try:
+            response = openai.ChatCompletion.create(
+                model="gpt-4",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.3
+            )
+            suggestion = response.choices[0].message.content.strip()
+            return suggestion
+        except Exception as e:
+            if VERBOSE:
+                print(f"❌ GPT error: {e}")
+            return "Unable to generate suggestion. Please review manually."
 
 
 def generate_recommendations(policy_sentences, D, I, framework_sentences, framework_labels):
@@ -61,7 +63,8 @@ def generate_recommendations(policy_sentences, D, I, framework_sentences, framew
     if VERBOSE:
         print("🔍 Classifying semantic matches...")
 
-    for idx, sentence in enumerate(policy_sentences):
+    grouped_sentences = group_semantic_sentences(policy_sentences, threshold=0.65)
+    for idx, sentence in enumerate(grouped_sentences):
         if idx >= len(D) or idx >= len(I) or len(D[idx]) == 0 or len(I[idx]) == 0:
             continue
 
@@ -87,7 +90,7 @@ def generate_recommendations(policy_sentences, D, I, framework_sentences, framew
 
     for rec in suggestion_candidates:
         rec["Suggested Improvement"] = suggest_improvement(
-            rec["Policy Sentence"], rec["Closest Control"]
+            rec["Policy Sentence"], rec["Closest Control"], rec["Framework"]
         )
 
     executive_summary = {

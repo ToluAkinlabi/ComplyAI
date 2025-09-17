@@ -177,8 +177,8 @@ const SavedResultsViewer = ({ data }: SavedResultsViewerProps) => {
                   <td className="px-3 py-2 border dark:border-gray-700">{rec.Status || rec.status}</td>
                   <td className="px-3 py-2 border dark:border-gray-700">{rec.Framework || rec.framework}</td>
                   <td className="px-3 py-2 border dark:border-gray-700">{priorityBadge(rec.Priority || rec.priority)}</td>
-                  <td className="px-3 py-2 border dark:border-gray-700">{(rec["Policy Sentence"] || "").slice(0, 80)}...</td>
-                  <td className="px-3 py-2 border dark:border-gray-700">{(rec["Suggested Improvement"] || "N/A").slice(0, 80)}...</td>
+                  <td className="px-3 py-2 border dark:border-gray-700">{(rec["Policy Sentence"] || "")}</td>
+                  <td className="px-3 py-2 border dark:border-gray-700">{(rec["Suggested Improvement"] || "N/A")}</td>
                 </tr>
               ))
             )}
