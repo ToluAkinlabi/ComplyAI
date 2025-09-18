@@ -79,7 +79,7 @@ def export_pdf(report_data, client_name="Client"):
     ]
 
     # Helper to split long text into chunks (by words)
-    def split_text(text, max_words=30):
+    def split_text(text, max_words=60):
         words = text.split()
         if len(words) <= max_words:
             return [text]
