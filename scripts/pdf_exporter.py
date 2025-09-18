@@ -79,9 +79,18 @@ def export_pdf(report_data, client_name="Client"):
     ]
 
     # Helper to split long text into chunks (by words)
-    def split_text(text, max_words=60):
+    def split_text(text, max_words=30):
         words = text.split()
-        return [" ".join(words[i:i+max_words]) for i in range(0, len(words), max_words)] if len(words) > max_words else [text]
+        if len(words) <= max_words:
+            return [text]
+        chunks = []
+        for i in range(0, len(words), max_words):
+            chunk = " ".join(words[i:i+max_words])
+            # Add '...continued' to all but the last chunk
+            if i + max_words < len(words):
+                chunk += " ...continued"
+            chunks.append(chunk)
+        return chunks
 
     for item in report_data["detailed_report"]:
         # Split each long field into chunks
@@ -120,7 +129,7 @@ def export_pdf(report_data, client_name="Client"):
     table = Table(table_data, colWidths=col_widths, repeatRows=1)
     table.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#003366")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),  # header row white font
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.HexColor("#ffffff")),  # header row white font
         ("ALIGN", (0, 0), (-1, -1), "LEFT"),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
         ("FONTSIZE", (0, 0), (-1, 0), 9),
