@@ -15,6 +15,7 @@ INDEX_FILE = os.path.join(CACHE_DIR, "framework_index.faiss")
 SENTENCES_FILE = os.path.join(CACHE_DIR, "framework_sentences.json")
 LABELS_FILE = os.path.join(CACHE_DIR, "framework_labels.json")
 
+
 def is_valid_sentence(sentence: str) -> bool:
     """Filter out unwanted sentences like dates, urls, emails, numeric junk, etc."""
     if not sentence or len(sentence.strip()) < 15:
@@ -26,6 +27,21 @@ def is_valid_sentence(sentence: str) -> bool:
     if re.fullmatch(r"[A-Za-z]{1,3}(\s?[0-9.]+)+", sentence):  
         return False
     return True
+
+def chunk_sentences(sentences, window_size=3, stride=1):
+    #Create overlapping chunks of sentences for better context.
+    
+    chunks = []
+    n = len(sentences)
+    for i in range(0, n - window_size + 1, stride):
+        chunk = " ".join(sentences[i:i+window_size])
+        chunks.append(chunk)
+    # Optionally add last chunk if not covered
+    if n > 0 and (n - window_size) % stride != 0:
+        chunk = " ".join(sentences[-window_size:])
+        if chunk not in chunks:
+            chunks.append(chunk)
+    return chunks
 
 def normalize_vectors(vectors):
     norms = np.linalg.norm(vectors, axis=1, keepdims=True)
@@ -74,21 +90,23 @@ def build_multi_framework_index(frameworks_data):
         print("✅ Using cached FAISS index.")
         return load_cache()
 
-    print("🔄 Building FAISS index from frameworks...")
-    all_sentences = []
+    print("🔄 Building FAISS index from frameworks with contextual chunking...")
+    all_chunks = []
     framework_labels = []
 
     for fw in frameworks_data:
-        all_sentences.extend(fw['sentences'])
-        framework_labels.extend([fw['name']] * len(fw['sentences']))
+        # Use contextual chunking for each framework's sentences
+        chunks = chunk_sentences(fw['sentences'], window_size=3, stride=1)
+        all_chunks.extend(chunks)
+        framework_labels.extend([fw['name']] * len(chunks))
 
-    embeddings = model.encode(all_sentences)
+    embeddings = model.encode(all_chunks)
     embeddings = normalize_vectors(np.array(embeddings))
 
     index = faiss.IndexFlatIP(embeddings.shape[1])  # Cosine similarity
     index.add(embeddings)
 
-    save_cache(index, all_sentences, framework_labels)
+    save_cache(index, all_chunks, framework_labels)
 
-    print(f"✅ Indexed {len(all_sentences)} sentences across {len(frameworks_data)} frameworks.")
-    return index, all_sentences, framework_labels
+    print(f"✅ Indexed {len(all_chunks)} contextual chunks across {len(frameworks_data)} frameworks.")
+    return index, all_chunks, framework_labels

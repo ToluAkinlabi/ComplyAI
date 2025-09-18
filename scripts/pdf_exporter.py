@@ -16,13 +16,14 @@ def export_pdf(report_data, client_name="Client"):
     safe_client_name = client_name.replace(" ", "_")
     output_path = f"reports/{safe_client_name}_Compliance_Report.pdf"
 
+    # Reduce margins to maximize usable width
     doc = SimpleDocTemplate(
         output_path,
         pagesize=LETTER,
-        leftMargin=72,  # 1 inch
-        rightMargin=72,  # 1 inch
-        topMargin=72,  # 1 inch
-        bottomMargin=72  # 1 inch
+        leftMargin=36,  # 0.5 inch
+        rightMargin=36,  # 0.5 inch
+        topMargin=54,  # 0.75 inch
+        bottomMargin=54  # 0.75 inch
     )
 
     styles = getSampleStyleSheet()
@@ -64,8 +65,8 @@ def export_pdf(report_data, client_name="Client"):
     custom_style = ParagraphStyle(
         name="Wrapped",
         parent=styles["Normal"],
-        fontSize=8,
-        leading=10,
+        fontSize=9,
+        leading=11,
         wordWrap="CJK"
     )
 
@@ -77,25 +78,49 @@ def export_pdf(report_data, client_name="Client"):
         for row in table_data
     ]
 
+    # Helper to split long text into chunks (by words)
+    def split_text(text, max_words=60):
+        words = text.split()
+        return [" ".join(words[i:i+max_words]) for i in range(0, len(words), max_words)] if len(words) > max_words else [text]
+
     for item in report_data["detailed_report"]:
-        row = [
-            Paragraph(item.get("Policy Sentence", "N/A"), custom_style),
-            Paragraph(item.get("Status", "N/A"), custom_style),
-            Paragraph(item.get("Framework", "N/A"), custom_style),
-            Paragraph(item.get("Closest Control", "N/A"), custom_style),
-            Paragraph(item.get("Suggested Improvement", "N/A"), custom_style),
-        ]
-        table_data.append(row)
+        # Split each long field into chunks
+        sentence_chunks = split_text(item.get("Policy Sentence", "N/A"))
+        control_chunks = split_text(item.get("Closest Control", "N/A"))
+        improvement_chunks = split_text(item.get("Suggested Improvement", "N/A"))
+        max_chunks = max(len(sentence_chunks), len(control_chunks), len(improvement_chunks))
+
+        # Pad all lists to same length
+        def pad(lst):
+            return lst + [""] * (max_chunks - len(lst))
+        sentence_chunks = pad(sentence_chunks)
+        control_chunks = pad(control_chunks)
+        improvement_chunks = pad(improvement_chunks)
+
+        # Only Status and Framework are repeated (not split)
+        status = item.get("Status", "N/A")
+        framework = item.get("Framework", "N/A")
+
+        for i in range(max_chunks):
+            row = [
+                Paragraph(sentence_chunks[i], custom_style),
+                Paragraph(status if i == 0 else "", custom_style),
+                Paragraph(framework if i == 0 else "", custom_style),
+                Paragraph(control_chunks[i], custom_style),
+                Paragraph(improvement_chunks[i], custom_style),
+            ]
+            table_data.append(row)
 
     # Use relative column widths (proportional to available width)
     available_width = doc.width
-    col_widths = [0.15, 0.13, 0.12, 0.30, 0.30]  # sum to 1.0
+    # Make 'Sentence' and 'Closest Control' wider for readability
+    col_widths = [0.22, 0.10, 0.12, 0.28, 0.28]  # sum to 1.0
     col_widths = [w * available_width for w in col_widths]
 
     table = Table(table_data, colWidths=col_widths, repeatRows=1)
     table.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#003366")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),  # header row white font
         ("ALIGN", (0, 0), (-1, -1), "LEFT"),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
         ("FONTSIZE", (0, 0), (-1, 0), 9),
