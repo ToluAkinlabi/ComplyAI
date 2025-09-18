@@ -16,8 +16,14 @@ def export_pdf(report_data, client_name="Client"):
     safe_client_name = client_name.replace(" ", "_")
     output_path = f"reports/{safe_client_name}_Compliance_Report.pdf"
 
-    doc = SimpleDocTemplate(output_path, pagesize=LETTER,
-                            leftMargin=50, rightMargin=50, topMargin=50, bottomMargin=50)
+    doc = SimpleDocTemplate(
+        output_path,
+        pagesize=LETTER,
+        leftMargin=72,  # 1 inch
+        rightMargin=72,  # 1 inch
+        topMargin=72,  # 1 inch
+        bottomMargin=72  # 1 inch
+    )
 
     styles = getSampleStyleSheet()
     elements = []
@@ -63,6 +69,14 @@ def export_pdf(report_data, client_name="Client"):
         wordWrap="CJK"
     )
 
+    styleN = styles["BodyText"]
+    styleN.wordWrap = "CJK"  
+
+    table_data = [
+        [Paragraph(cell_value, styleN) for cell_value in row]
+        for row in table_data
+    ]
+
     for item in report_data["detailed_report"]:
         row = [
             Paragraph(item.get("Policy Sentence", "N/A"), custom_style),
@@ -73,7 +87,12 @@ def export_pdf(report_data, client_name="Client"):
         ]
         table_data.append(row)
 
-    table = Table(table_data, colWidths=[2.8 * inch, 0.8 * inch, 1.0 * inch, 1.5 * inch, 2.0 * inch], repeatRows=1)
+    # Use relative column widths (proportional to available width)
+    available_width = doc.width
+    col_widths = [0.15, 0.13, 0.12, 0.30, 0.30]  # sum to 1.0
+    col_widths = [w * available_width for w in col_widths]
+
+    table = Table(table_data, colWidths=col_widths, repeatRows=1)
     table.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#003366")),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
@@ -88,10 +107,12 @@ def export_pdf(report_data, client_name="Client"):
         ("RIGHTPADDING", (0, 0), (-1, -1), 6),
         ("TOPPADDING", (0, 0), (-1, -1), 4),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+        ("WORDWRAP", (0, 0), (-1, -1), True),
     ]))
 
     elements.append(table)
 
+    # Build with onFirstPage/onLaterPages if you want custom footers/headers
     doc.build(elements)
 
     return os.path.abspath(output_path)

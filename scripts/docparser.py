@@ -53,9 +53,13 @@ def extract_policy_sentences(filepath):
         raw = extract_docx_text(filepath)
     else:
         raise ValueError("Unsupported file format.")
-    
-    paragraphs = [p.strip() for p in raw.split("\n\n") if len(p.strip()) > 50 and len(p.strip()) < 1000]
-    return paragraphs
+
+    # Clean up raw text
+    raw = re.sub(r"\s+", " ", raw) 
+    sentences = sent_tokenize(raw)
+    filtered = [s.strip() for s in sentences if is_valid_policy_sentence(s) and len(s.strip()) > 15 and len(s.strip()) < 1000]
+    filtered = list(dict.fromkeys(filtered))
+    return filtered
 
 
 def parse_framework(input_path: str, framework_name: str, output_path: str):

@@ -33,28 +33,34 @@ def determine_priority(status: str, score: float) -> str:
     return "Low"
 
 
-def suggest_improvement(policy_sentence: str, matched_control: str, framework_label: str) -> str:
-        prompt = f"""
-    You are a cybersecurity policy expert. Given this CONTROL from the "{framework_label}" framework:
-
-    \"\"\"{matched_control}\"\"\"
-
-    Please draft a NEW policy statement that a company can adopt to comply with the control above. 
-    Do not rephrase the input policy, and ignore any policy fragments provided. 
-    Use only the control as your source of truth.
-    """
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-4",
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.3
-            )
-            suggestion = response.choices[0].message.content.strip()
-            return suggestion
-        except Exception as e:
-            if VERBOSE:
-                print(f"❌ GPT error: {e}")
-            return "Unable to generate suggestion. Please review manually."
+def suggest_improvement(policy_sentence: str, matched_control: str, framework_label: str, top_controls: list = None) -> str:
+    # RAG-style: use top-N controls for richer context
+    if top_controls is None:
+        top_controls = [(matched_control, framework_label)]
+    controls_text = "\n\n".join([
+        f"[{i+1}] ({label}) {ctrl}" for i, (ctrl, label) in enumerate(top_controls)
+    ])
+    prompt = (
+        f"You are a cybersecurity policy expert. Given the following CONTROLS from the \"{framework_label}\" framework:\n\n"
+        f"{controls_text}\n\n"
+        f"The original policy statement is:\n\n"
+        f"{policy_sentence}\n\n"
+        "Please draft a NEW policy statement that a company can adopt to comply with the above controls. "
+        "Use only the controls as your source of truth. If you use a specific control, cite it by its number in your answer. "
+        "If you cannot confidently suggest a compliant policy, say so."
+    )
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3
+        )
+        suggestion = response.choices[0].message.content.strip()
+        return suggestion
+    except Exception as e:
+        if VERBOSE:
+            print(f"❌ GPT error: {e}")
+        return "Unable to generate suggestion. Please review manually."
 
 
 def generate_recommendations(policy_sentences, D, I, framework_sentences, framework_labels):
@@ -68,6 +74,11 @@ def generate_recommendations(policy_sentences, D, I, framework_sentences, framew
         if idx >= len(D) or idx >= len(I) or len(D[idx]) == 0 or len(I[idx]) == 0:
             continue
 
+        # Get top-3 controls for RAG context
+        top_n = 3
+        top_indices = list(I[idx][:top_n])
+        top_controls = [(framework_sentences[i], framework_labels[i]) for i in top_indices]
+
         closest_distance = float(D[idx][0])
         matched_idx = int(I[idx][0])
 
@@ -80,7 +91,8 @@ def generate_recommendations(policy_sentences, D, I, framework_sentences, framew
             "Framework": framework_labels[matched_idx],
             "Closest Control": framework_sentences[matched_idx],
             "Score": round(closest_distance, 3),
-            "Priority": priority
+            "Priority": priority,
+            "Top Controls": top_controls
         }
 
         report.append(recommendation)
@@ -90,7 +102,7 @@ def generate_recommendations(policy_sentences, D, I, framework_sentences, framew
 
     for rec in suggestion_candidates:
         rec["Suggested Improvement"] = suggest_improvement(
-            rec["Policy Sentence"], rec["Closest Control"], rec["Framework"]
+            rec["Policy Sentence"], rec["Closest Control"], rec["Framework"], rec.get("Top Controls")
         )
 
     executive_summary = {

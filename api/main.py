@@ -31,6 +31,7 @@ from scripts.auth import (
 # local imports
 from scripts import docparser, semantic_engine, recommendation_engine, report_generator, pdf_exporter
 from scripts.semantic_engine import group_semantic_sentences
+from scripts.semantic_engine import is_valid_sentence
 from models import frameworks
 from scripts import framework_loader
 from scripts.prod_settings import settings
@@ -106,7 +107,8 @@ async def upload_policy(file: UploadFile = File(...), client_name: str = Form(..
         return {"error": "Unsupported file format"}
 
     # Apply semantic grouping
-    grouped_sentences = group_semantic_sentences(policy_sentences, threshold=0.7)
+    cleaned_sentences = [s for s in policy_sentences if is_valid_sentence(s)]
+    grouped_sentences = group_semantic_sentences(cleaned_sentences, threshold=0.7)
 
     # Perform semantic search
     embeddings = semantic_engine.model.encode(grouped_sentences)

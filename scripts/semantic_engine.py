@@ -4,6 +4,7 @@
 import os
 import faiss
 import json
+import re
 import numpy as np
 from sentence_transformers import SentenceTransformer, util
 
@@ -13,6 +14,18 @@ CACHE_DIR = "data"
 INDEX_FILE = os.path.join(CACHE_DIR, "framework_index.faiss")
 SENTENCES_FILE = os.path.join(CACHE_DIR, "framework_sentences.json")
 LABELS_FILE = os.path.join(CACHE_DIR, "framework_labels.json")
+
+def is_valid_sentence(sentence: str) -> bool:
+    """Filter out unwanted sentences like dates, urls, emails, numeric junk, etc."""
+    if not sentence or len(sentence.strip()) < 15:
+        return False
+    if re.search(r"\b\d{2,4}[-/]\d{2,4}\b", sentence): 
+        return False
+    if re.search(r"\bwww\.|\.edu|\.com|\@|\d{5,}", sentence): 
+        return False
+    if re.fullmatch(r"[A-Za-z]{1,3}(\s?[0-9.]+)+", sentence):  
+        return False
+    return True
 
 def normalize_vectors(vectors):
     norms = np.linalg.norm(vectors, axis=1, keepdims=True)
