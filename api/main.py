@@ -190,12 +190,18 @@ async def list_json_reports():
 @app.delete("/delete-report/{report_name}")
 async def delete_report(report_name: str):
     report_path = f"reports/{report_name}"
+    # Also try to delete the associated JSON file
+    json_name = report_name.rsplit('.', 1)[0] + ".json"
+    json_path = f"reports/{json_name}"
 
     if not os.path.exists(report_path):
         raise HTTPException(status_code=404, detail="Report not found")
 
     os.remove(report_path)
-    return {"detail": "Report deleted successfully"}
+    # Delete JSON if it exists
+    if os.path.exists(json_path):
+        os.remove(json_path)
+    return {"detail": "Report and associated JSON deleted successfully"}
 
 #  Rebuild index
 @app.post("/rebuild-index/")
