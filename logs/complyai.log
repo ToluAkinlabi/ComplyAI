@@ -658,3 +658,6 @@ A detailed migration guide is available here: https://github.com/openai/openai-p
 2025-09-17 22:26:38.067 | INFO     | api.main:lifespan:48 - Loading all frameworks...
 2025-09-17 22:26:38.253 | SUCCESS  | api.main:lifespan:53 - Loaded and indexed 9665 total framework sentences across 5 frameworks.
 2025-09-17 22:50:01.139 | INFO     | api.main:lifespan:55 - API shutdown completed.
+2025-09-17 22:50:36.035 | INFO     | api.main:lifespan:48 - Loading all frameworks...
+2025-09-17 22:50:36.341 | SUCCESS  | api.main:lifespan:53 - Loaded and indexed 9665 total framework sentences across 5 frameworks.
+2025-09-17 22:59:21.934 | INFO     | api.main:lifespan:55 - API shutdown completed.
