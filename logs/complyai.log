@@ -667,3 +667,35 @@ A detailed migration guide is available here: https://github.com/openai/openai-p
 2025-09-30 18:49:00.149 | SUCCESS  | api.main:lifespan:53 - Loaded and indexed 9665 total framework sentences across 5 frameworks.
 2025-09-30 19:04:01.432 | INFO     | api.main:lifespan:55 - API shutdown completed.
 2025-09-30 19:05:52.344 | INFO     | api.main:lifespan:48 - Loading all frameworks...
+2025-10-01 12:54:15.700 | INFO     | api.main:lifespan:48 - Loading all frameworks...
+2025-10-01 13:36:21.067 | INFO     | api.main:lifespan:48 - Loading all frameworks...
+2025-10-01 13:51:27.683 | INFO     | api.main:upload_policy:129 - Processing file: IRS.pdf for client: IRS
+2025-10-01 13:52:32.540 | INFO     | api.main:upload_policy:141 - Extracted 104 sentences, 88 after grouping
+2025-10-01 13:52:46.989 | ERROR    | api.main:upload_policy:193 - Error processing policy upload: string indices must be integers, not 'str'
+2025-10-01 13:52:46.998 | WARNING  | api.main:http_exception_handler:318 - HTTP Error 500 | An error occurred while processing the document. | From 127.0.0.1
+2025-10-01 14:11:39.141 | INFO     | api.main:upload_policy:129 - Processing file: IRS.pdf for client: IRS
+2025-10-01 14:12:18.604 | INFO     | api.main:upload_policy:141 - Extracted 104 sentences, 88 after grouping
+2025-10-01 14:12:29.278 | ERROR    | api.main:upload_policy:193 - Error processing policy upload: string indices must be integers, not 'str'
+2025-10-01 14:12:29.281 | WARNING  | api.main:http_exception_handler:318 - HTTP Error 500 | An error occurred while processing the document. | From 127.0.0.1
+2025-10-01 14:17:43.339 | INFO     | api.main:upload_policy:129 - Processing file: IRS.pdf for client: IRS
+2025-10-01 14:18:38.723 | INFO     | api.main:upload_policy:141 - Extracted 104 sentences, 88 after grouping
+2025-10-01 14:19:08.158 | ERROR    | api.main:upload_policy:193 - Error processing policy upload: string indices must be integers, not 'str'
+2025-10-01 14:19:08.161 | WARNING  | api.main:http_exception_handler:318 - HTTP Error 500 | An error occurred while processing the document. | From 127.0.0.1
+2025-10-01 14:25:23.512 | INFO     | api.main:upload_policy:129 - Processing file: IRS.pdf for client: IRS
+2025-10-01 14:26:11.986 | INFO     | api.main:upload_policy:141 - Extracted 104 sentences, 88 after grouping
+2025-10-01 14:26:36.264 | ERROR    | api.main:upload_policy:193 - Error processing policy upload: string indices must be integers, not 'str'
+2025-10-01 14:26:36.266 | WARNING  | api.main:http_exception_handler:318 - HTTP Error 500 | An error occurred while processing the document. | From 127.0.0.1
+2025-10-01 14:31:20.329 | INFO     | api.main:upload_policy:129 - Processing file: IRS.pdf for client: IRS
+2025-10-01 14:32:19.079 | INFO     | api.main:upload_policy:141 - Extracted 104 sentences, 88 after grouping
+2025-10-01 14:32:46.906 | ERROR    | api.main:upload_policy:193 - Error processing policy upload: string indices must be integers, not 'str'
+2025-10-01 14:32:46.910 | WARNING  | api.main:http_exception_handler:318 - HTTP Error 500 | An error occurred while processing the document. | From 127.0.0.1
+2025-10-01 15:01:15.033 | INFO     | api.main:upload_policy:129 - Processing file: IRS.pdf for client: IRS
+2025-10-01 15:02:10.737 | INFO     | api.main:upload_policy:141 - Extracted 104 sentences, 88 after grouping
+2025-10-01 17:34:24.808 | INFO     | api.main:upload_policy:129 - Processing file: IRS.pdf for client: IRS
+2025-10-01 17:35:28.765 | INFO     | api.main:upload_policy:141 - Extracted 104 sentences, 88 after grouping
+2025-10-01 17:36:06.669 | INFO     | api.main:upload_policy:178 - Successfully generated report for IRS: reports/IRS_Compliance_Report_20251001_173606.pdf
+2025-10-01 17:52:44.365 | INFO     | api.main:delete_report:266 - Deleted PDF report: IRS_Compliance_Report_20251001_173606.pdf
+2025-10-01 17:52:47.069 | INFO     | api.main:delete_report:266 - Deleted PDF report: BSU_Compliance_Report.pdf
+2025-10-01 17:52:47.071 | INFO     | api.main:delete_report:271 - Deleted JSON report: BSU_Compliance_Report.json
+2025-10-01 17:53:10.446 | INFO     | api.main:upload_policy:129 - Processing file: IRS.pdf for client: IRS
+2025-10-01 17:54:06.916 | INFO     | api.main:upload_policy:141 - Extracted 104 sentences, 88 after grouping

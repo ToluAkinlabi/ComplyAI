@@ -1,152 +1,145 @@
+import os
+import re
+from datetime import datetime
+from typing import Any, Dict, List
+
 from reportlab.lib.pagesizes import LETTER
-from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Table, TableStyle, Spacer, PageBreak, Image
-)
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib import colors
-import os
-from datetime import datetime
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Spacer, PageBreak
+from reportlab.pdfgen import canvas
 
+def _safe(text: Any) -> str:
+    if text is None:
+        return ""
+    s = str(text)
+    return s.replace("<", "&lt;").replace(">", "&gt;")
 
-def export_pdf(report_data, client_name="Client"):
-    if not os.path.exists("reports"):
-        os.makedirs("reports")
+def _page_number(c: canvas.Canvas, doc):
+    c.setFont("Helvetica", 8)
+    c.drawRightString(7.95 * inch, 0.4 * inch, f"Page {doc.page}")
 
-    safe_client_name = client_name.replace(" ", "_")
-    output_path = f"reports/{safe_client_name}_Compliance_Report.pdf"
+def export_pdf(report_data: Dict[str, Any], client_name: str = "Client") -> str:
+    os.makedirs("reports", exist_ok=True)
+    safe_client_name = re.sub(r"[^A-Za-z0-9_\-]+", "_", client_name.strip()) or "Client"
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_path = f"reports/{safe_client_name}_Compliance_Report_{timestamp}.pdf"
 
-    # Reduce margins to maximize usable width
     doc = SimpleDocTemplate(
         output_path,
         pagesize=LETTER,
-        leftMargin=36,  # 0.5 inch
-        rightMargin=36,  # 0.5 inch
-        topMargin=54,  # 0.75 inch
-        bottomMargin=54  # 0.75 inch
+        leftMargin=0.5 * inch,
+        rightMargin=0.5 * inch,
+        topMargin=0.6 * inch,
+        bottomMargin=0.6 * inch,
+        title=f"{client_name} Compliance Report",
+        author="ComplyAI",
     )
 
     styles = getSampleStyleSheet()
-    elements = []
+    h1 = ParagraphStyle("H1", parent=styles["Heading1"], fontName="Helvetica-Bold", fontSize=18, spaceAfter=12)
+    h2 = ParagraphStyle("H2", parent=styles["Heading2"], fontName="Helvetica-Bold", fontSize=14, spaceBefore=6, spaceAfter=6)
+    body = ParagraphStyle("Body", parent=styles["BodyText"], fontName="Helvetica", fontSize=10, leading=13, spaceAfter=6)
+    small = ParagraphStyle("Small", parent=styles["BodyText"], fontName="Helvetica", fontSize=9, leading=12)
 
-    # === COVER PAGE ===
-    title_style = styles["Title"]
-    title_style.textColor = colors.HexColor("#003366")
-    elements.append(Paragraph("Compliance Assessment Report", title_style))
-    elements.append(Spacer(1, 12))
+    elements: List[Any] = []
 
-    subtitle_style = styles["Normal"]
-    elements.append(Paragraph(f"Client: {client_name}", subtitle_style))
-    elements.append(Paragraph(f"Generated On: {report_data['executive_summary']['report_generated_at']}", subtitle_style))
-    elements.append(Spacer(1, 20))
-    elements.append(PageBreak())
+    # Title + timestamp (from metadata when available)
+    elements.append(Paragraph(f"{_safe(client_name)} - Compliance Analysis Report", h1))
+    generated_at = _safe(report_data.get("metadata", {}).get("report_generated_at", datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+    elements.append(Paragraph(generated_at, small))
+    elements.append(Spacer(1, 8))
 
-    # === EXECUTIVE SUMMARY ===
-    heading_style = styles["Heading2"]
-    heading_style.textColor = colors.HexColor("#003366")
-    elements.append(Paragraph("Executive Summary", heading_style))
+    # Executive Summary (string or dict)
+    elements.append(Paragraph("Executive Summary", h2))
+    summary = report_data.get("executive_summary", "")
+    if isinstance(summary, dict):
+        for k, v in summary.items():
+            if k == "report_generated_at":
+                continue
+            elements.append(Paragraph(f"<b>{_safe(k)}</b>: {_safe(v)}", body))
+    else:
+        for line in str(summary).splitlines():
+            if line.strip():
+                elements.append(Paragraph(_safe(line), body))
     elements.append(Spacer(1, 10))
 
-    for key, value in report_data["executive_summary"].items():
-        if key == "report_generated_at":
-            continue
-        elements.append(Paragraph(f"<b>{key}</b>: {value}", styles["Normal"]))
-        elements.append(Spacer(1, 6))
+    # Metadata
+    meta = report_data.get("metadata", {}) or {}
+    meta_lines = [
+        f"Client: {_safe(meta.get('client_name', client_name))}",
+        f"Document: {_safe(meta.get('document_name', 'Unknown'))}",
+        f"Total Sentences: {_safe(meta.get('total_sentences', 0))}",
+        f"Processed Sentences: {_safe(meta.get('processed_sentences', 0))}",
+        f"Total Recommendations: {_safe(meta.get('total_recommendations', 0))}",
+    ]
+    for l in meta_lines:
+        elements.append(Paragraph(l, small))
+    elements.append(Spacer(1, 10))
 
+    # Detailed Findings
+    elements.append(Paragraph("Detailed Findings", h2))
+    findings = report_data.get("detailed_report", []) or []
+    if not isinstance(findings, list) or not findings:
+        elements.append(Paragraph("No findings available.", body))
+    else:
+        # Helper to read either style of keys
+        def get_field(item: Dict[str, Any], *candidates: str, default: str = "") -> str:
+            for k in candidates:
+                if k in item and item[k]:
+                    return str(item[k])
+            return default
+
+        table_data = [[
+            Paragraph("Status", small),
+            Paragraph("Priority", small),
+            Paragraph("Similarity", small),
+            Paragraph("Framework / Control", small),
+            Paragraph("Policy Sentence", small),
+            Paragraph("Suggested Improvement", small),
+        ]]
+
+        for rec in findings:
+            if not isinstance(rec, dict):
+                continue
+
+            status     = get_field(rec, "Status", "status")
+            priority   = get_field(rec, "Priority", "priority")
+            sim        = get_field(rec, "similarity_score", "similarity", default="0.00")
+            framework  = get_field(rec, "Framework", "framework", default="")
+            control_id = get_field(rec, "control_id", "Control Id", "Control", default="")
+            fw_label   = f"{framework} / {control_id}" if framework or control_id else ""
+
+            sentence   = Paragraph(_safe(get_field(rec, "Policy Sentence", "sentence")), body)
+            suggestion = Paragraph(_safe(get_field(rec, "Suggested Improvement", "suggested_improvement")), body)
+
+            table_data.append([
+                Paragraph(_safe(status), body),
+                Paragraph(_safe(priority), body),
+                Paragraph(_safe(sim), body),
+                Paragraph(_safe(fw_label), body),
+                sentence,
+                suggestion,
+            ])
+
+        col_widths = [0.9 * inch, 0.9 * inch, 0.8 * inch, 1.4 * inch, 2.3 * inch, 1.2 * inch]
+        table = Table(table_data, colWidths=col_widths, repeatRows=1)
+        table.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#F2F2F2")),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.HexColor("#333333")),
+            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("FONTSIZE", (0, 0), (-1, -1), 9),
+            ("ALIGN", (2, 1), (2, -1), "RIGHT"),
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ("LINEBELOW", (0, 0), (-1, 0), 0.5, colors.HexColor("#CCCCCC")),
+            ("GRID", (0, 0), (-1, -1), 0.25, colors.HexColor("#DDDDDD")),
+            ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#FBFBFB")]),
+        ]))
+        elements.append(table)
+
+    # Optional page break to end cleanly
     elements.append(PageBreak())
 
-    # === CONTROL COVERAGE REPORT ===
-    elements.append(Paragraph("Control Coverage Report", heading_style))
-    elements.append(Spacer(1, 12))
-
-    # Table headers and body
-    table_data = [["Sentence", "Status", "Framework", "Closest Control", "Suggested Improvement"]]
-
-    custom_style = ParagraphStyle(
-        name="Wrapped",
-        parent=styles["Normal"],
-        fontSize=9,
-        leading=11,
-        wordWrap="CJK"
-    )
-
-    styleN = styles["BodyText"]
-    styleN.wordWrap = "CJK"  
-
-    table_data = [
-        [Paragraph(cell_value, styleN) for cell_value in row]
-        for row in table_data
-    ]
-
-    # Helper to split long text into chunks (by words)
-    def split_text(text, max_words=60):
-        words = text.split()
-        if len(words) <= max_words:
-            return [text]
-        chunks = []
-        for i in range(0, len(words), max_words):
-            chunk = " ".join(words[i:i+max_words])
-            # Add '...continued' to all but the last chunk
-            if i + max_words < len(words):
-                chunk += " ...continued"
-            chunks.append(chunk)
-        return chunks
-
-    for item in report_data["detailed_report"]:
-        # Split each long field into chunks
-        sentence_chunks = split_text(item.get("Policy Sentence", "N/A"))
-        control_chunks = split_text(item.get("Closest Control", "N/A"))
-        improvement_chunks = split_text(item.get("Suggested Improvement", "N/A"))
-        max_chunks = max(len(sentence_chunks), len(control_chunks), len(improvement_chunks))
-
-        # Pad all lists to same length
-        def pad(lst):
-            return lst + [""] * (max_chunks - len(lst))
-        sentence_chunks = pad(sentence_chunks)
-        control_chunks = pad(control_chunks)
-        improvement_chunks = pad(improvement_chunks)
-
-        # Only Status and Framework are repeated (not split)
-        status = item.get("Status", "N/A")
-        framework = item.get("Framework", "N/A")
-
-        for i in range(max_chunks):
-            row = [
-                Paragraph(sentence_chunks[i], custom_style),
-                Paragraph(status if i == 0 else "", custom_style),
-                Paragraph(framework if i == 0 else "", custom_style),
-                Paragraph(control_chunks[i], custom_style),
-                Paragraph(improvement_chunks[i], custom_style),
-            ]
-            table_data.append(row)
-
-    # Use relative column widths (proportional to available width)
-    available_width = doc.width
-    # Make 'Sentence' and 'Closest Control' wider for readability
-    col_widths = [0.22, 0.10, 0.12, 0.28, 0.28]  # sum to 1.0
-    col_widths = [w * available_width for w in col_widths]
-
-    table = Table(table_data, colWidths=col_widths, repeatRows=1)
-    table.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#003366")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.HexColor("#ffffff")),  # header row white font
-        ("ALIGN", (0, 0), (-1, -1), "LEFT"),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("FONTSIZE", (0, 0), (-1, 0), 9),
-        ("FONTSIZE", (0, 1), (-1, -1), 8),
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
-        ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
-        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.whitesmoke, colors.lightgrey]),
-        ("LEFTPADDING", (0, 0), (-1, -1), 6),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 6),
-        ("TOPPADDING", (0, 0), (-1, -1), 4),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
-        ("WORDWRAP", (0, 0), (-1, -1), True),
-    ]))
-
-    elements.append(table)
-
-    # Build with onFirstPage/onLaterPages if you want custom footers/headers
-    doc.build(elements)
-
-    return os.path.abspath(output_path)
+    doc.build(elements, onFirstPage=_page_number, onLaterPages=_page_number)
+    return output_path

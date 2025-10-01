@@ -1,194 +1,326 @@
-import openai
 import os
 import logging
 from typing import List, Dict, Any
+
 from scripts.semantic_engine import semantic_engine
+from scripts.framework_loader import load_frameworks  # NEW: bootstrap if index missing
 
-# Setup logging
-logging.basicConfig(level=logging.INFO)
+# Load environment variables (optional)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception:
+    pass
+
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
-# Configuration for classification thresholds
-CLASSIFICATION_THRESHOLDS = {
-    "aligned_threshold": float(os.getenv("ALIGNED_THRESHOLD", "0.7")),  # similarity >= 0.7
-    "weak_threshold": float(os.getenv("WEAK_THRESHOLD", "0.4"))         # similarity >= 0.4
+CONFIG = {
+    "openai_model": os.getenv("OPENAI_MODEL", "gpt-4"),
+    "max_completion_tokens": int(os.getenv("MAX_COMPLETION_TOKENS", "300")),
+    "temperature_env": os.getenv("OPENAI_TEMPERATURE", "1"),
+    "aligned_threshold": float(os.getenv("ALIGNED_THRESHOLD", "0.7")),
+    "weak_threshold": float(os.getenv("WEAK_THRESHOLD", "0.4")),
+    "max_suggestions": int(os.getenv("MAX_SUGGESTIONS", "5")),
 }
 
-def suggest_improvement(sentence, closest_controls_with_metadata):
-    """Enhanced RAG-based improvement suggestions with rich context"""
+# Parse temperature once
+try:
+    CONFIG["temperature"] = float(CONFIG["temperature_env"])
+except Exception:
+    CONFIG["temperature"] = None
+
+# OpenAI client (new vs legacy)
+OPENAI_NEW_API = False
+client = None
+OPENAI_API_READY = False
+
+try:
+    import openai
+
+    if hasattr(openai, "OpenAI"):
+        # New SDK style: client = openai.OpenAI(...)
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError("OPENAI_API_KEY not set")
+        client = openai.OpenAI(api_key=api_key)
+        OPENAI_NEW_API = True
+        OPENAI_API_READY = True
+        logger.info(f"OpenAI new API initialized. Model={CONFIG['openai_model']}")
+    else:
+        # Legacy style: openai.ChatCompletion.create(...)
+        openai.api_key = os.getenv("OPENAI_API_KEY")
+        if not openai.api_key:
+            raise ValueError("OPENAI_API_KEY not set")
+        OPENAI_NEW_API = False
+        OPENAI_API_READY = True
+        logger.info(f"OpenAI legacy API initialized. Model={CONFIG['openai_model']}")
+except Exception as e:
+    logger.error(f"Failed to initialize OpenAI client: {e}")
+    OPENAI_API_READY = False
+
+
+def _call_llm_with_retry(prompt: str) -> str:
+    """
+    Calls OpenAI chat API with robust fallbacks.
+    - Some models reject custom temperature (e.g., allow only default=1)
+    - Some models reject max_tokens (or prefer max_completion_tokens)
+    We try combinations and fall back to minimal params.
+    """
+    if not OPENAI_API_READY:
+        logger.warning("OpenAI API not configured; returning stub suggestion.")
+        return "LLM unavailable. Please review this control manually."
+
+    messages = [{"role": "user", "content": prompt}]
+    temp = CONFIG["temperature"]
+    max_tok = CONFIG["max_completion_tokens"]
+
+    def do_call_new(include_temp: bool, tok_param: str | None):
+        # tok_param in { "max_tokens", "max_completion_tokens", None }
+        params = {
+            "model": CONFIG["openai_model"],
+            "messages": messages,
+        }
+        if tok_param == "max_tokens":
+            params["max_tokens"] = max_tok
+        elif tok_param == "max_completion_tokens":
+            params["max_completion_tokens"] = max_tok
+
+        # Only pass temperature if explicitly 1.0 (default) or model allows it
+        if include_temp and temp is not None and float(temp) == 1.0:
+            params["temperature"] = 1.0
+
+        return client.chat.completions.create(**params)
+
+    def do_call_legacy(include_temp: bool):
+        params = {
+            "model": CONFIG["openai_model"],
+            "messages": messages,
+            "max_tokens": max_tok,
+        }
+        if include_temp and temp is not None and float(temp) == 1.0:
+            params["temperature"] = 1.0
+        return openai.ChatCompletion.create(**params)
+
     try:
-        # Prepare enriched context
-        context_parts = []
-        citations = []
-        
+        if OPENAI_NEW_API:
+            # 1) Try with max_completion_tokens and default temp only
+            return (do_call_new(include_temp=True, tok_param="max_completion_tokens")
+                    .choices[0].message.content.strip())
+        else:
+            # Legacy: try once with max_tokens and default temp only
+            return (do_call_legacy(include_temp=True)
+                    .choices[0].message.content.strip())
+    except Exception as e1:
+        msg1 = str(e1).lower()
+        logger.info(f"Retry path 1 triggered: {msg1}")
+
+        try:
+            if OPENAI_NEW_API:
+                # 2) Remove temperature, keep max_completion_tokens
+                return (do_call_new(include_temp=False, tok_param="max_completion_tokens")
+                        .choices[0].message.content.strip())
+            else:
+                # Legacy: remove temperature (we didn't add unless 1.0), so just re-try w/ same params
+                return (do_call_legacy(include_temp=False)
+                        .choices[0].message.content.strip())
+        except Exception as e2:
+            msg2 = str(e2).lower()
+            logger.info(f"Retry path 2 triggered: {msg2}")
+
+            try:
+                if OPENAI_NEW_API:
+                    # 3) Switch to max_tokens (some chat endpoints want this)
+                    return (do_call_new(include_temp=False, tok_param="max_tokens")
+                            .choices[0].message.content.strip())
+                else:
+                    # Legacy: already using max_tokens; try minimal
+                    return openai.ChatCompletion.create(
+                        model=CONFIG["openai_model"],
+                        messages=messages
+                    ).choices[0].message.content.strip()
+            except Exception as e3:
+                msg3 = str(e3).lower()
+                logger.info(f"Retry path 3 triggered: {msg3}")
+
+                try:
+                    if OPENAI_NEW_API:
+                        # 4) Minimal: no temp, no token limits
+                        return client.chat.completions.create(
+                            model=CONFIG["openai_model"],
+                            messages=messages
+                        ).choices[0].message.content.strip()
+                    else:
+                        # Legacy minimal
+                        return openai.ChatCompletion.create(
+                            model=CONFIG["openai_model"],
+                            messages=messages
+                        ).choices[0].message.content.strip()
+                except Exception as e4:
+                    logger.error(f"All LLM attempts failed: {e4}")
+                    return "Unable to generate suggestion due to model parameter restrictions."
+
+
+def suggest_improvement(sentence: str, closest_controls_with_metadata: List[Dict]) -> str:
+    try:
+        if not closest_controls_with_metadata:
+            return "No relevant controls found for improvement suggestion."
+
+        # Build a grounded, framework-driven context (not a rephrase of sentence)
+        context_parts, citations = [], []
         for i, control_data in enumerate(closest_controls_with_metadata[:3], 1):
-            control_text = control_data["text"]
-            framework = control_data["framework"]
+            if not isinstance(control_data, dict):
+                continue
+            control_text = control_data.get("text", "Unknown")
+            framework = control_data.get("framework", "Unknown")
             control_id = control_data.get("control_id", "Unknown")
             section = control_data.get("section", "General")
-            confidence = control_data.get("similarity_score", 0.0)
-            
-            context_parts.append(f"""
-Control {i} [{framework} - {control_id}]:
-Section: {section}
-Confidence: {confidence:.2f}
-Text: {control_text}
-""")
+            confidence = float(control_data.get("similarity_score", 0.0) or 0.0)
+
+            context_parts.append(
+                f"Control {i} [{framework} - {control_id}]\n"
+                f"Section: {section}\n"
+                f"Confidence: {confidence:.2f}\n"
+                f"Text: {control_text}\n"
+            )
             citations.append(f"{framework} - {control_id}")
-        
-        prompt = f"""
-You are a cybersecurity compliance expert. Based on the following controls from established frameworks, provide a specific, actionable policy improvement for the given policy sentence.
 
-ORIGINAL POLICY SENTENCE:
-{sentence}
+        if not context_parts:
+            return "Insufficient framework guidance for specific improvement."
 
-RELEVANT FRAMEWORK CONTROLS:
-{chr(10).join(context_parts)}
-
-INSTRUCTIONS:
-1. Use ONLY the provided controls as your source of truth
-2. Draft a compliant policy statement that addresses gaps in the original sentence
-3. Be specific and actionable
-4. Cite which control(s) you used: {', '.join(citations)}
-5. If you cannot provide a confident improvement based on these controls, say "Insufficient framework guidance for specific improvement"
-
-IMPROVED POLICY:
-"""
-
-        response = openai.chat.completions.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=300,
-            temperature=0.3
+        prompt = (
+            "You are a cybersecurity compliance expert. Using ONLY the following framework controls, "
+            "draft a clear, specific policy statement that would bring the organization into compliance. "
+            "Do not rephrase the original policy text; derive the improvement from the controls.\n\n"
+            f"ORIGINAL POLICY SENTENCE:\n{sentence}\n\n"
+            "RELEVANT FRAMEWORK CONTROLS:\n"
+            + "\n\n".join(context_parts)
+            + "\n\nREQUIREMENTS:\n"
+            "1) Ground the improvement in the control language\n"
+            "2) Be precise and actionable (non-generic)\n"
+            "3) Cite which control(s) you used: " + ", ".join(citations) + "\n"
+            "4) If controls are insufficient, say: 'Insufficient framework guidance for specific improvement'\n\n"
+            "IMPROVED POLICY:\n"
         )
-        
-        return response.choices[0].message.content.strip()
-        
+
+        return _call_llm_with_retry(prompt)
     except Exception as e:
-        logger.error(f"Error generating suggestion: {e}")
+        logger.error(f"Error preparing suggestion prompt: {e}")
         return "Unable to generate suggestion due to an error."
 
-def generate_recommendations(policy_sentences):
-    """Simplified recommendation generation using enhanced semantic engine"""
-    
-    if not hasattr(semantic_engine, 'index') or semantic_engine.index is None:
-        logger.error("Semantic engine not properly initialized")
+
+def _bootstrap_index_if_needed() -> None:
+    """Ensure the FAISS index is available so we don't return empty output."""
+    if getattr(semantic_engine, "index", None) is not None:
+        return
+    try:
+        fw_data = load_frameworks()
+        if not fw_data:
+            logger.error("No frameworks loaded; cannot build index.")
+            return
+        semantic_engine.build_enhanced_index(fw_data)
+        logger.info("Semantic index bootstrapped inside recommendation_engine.")
+    except Exception as e:
+        logger.error(f"Failed to bootstrap index: {e}")
+
+
+def generate_recommendations(policy_sentences: List[str]) -> List[Dict[str, Any]]:
+    _bootstrap_index_if_needed()
+    if getattr(semantic_engine, "index", None) is None:
+        logger.error("Semantic engine not initialized; returning no recommendations.")
         return []
-    
-    recommendations = []
-    
+
+    recommendations: List[Dict[str, Any]] = []
+
     for sentence in policy_sentences:
-        # Use enhanced retrieval with metadata
         try:
-            results_with_metadata = semantic_engine.retrieve_with_metadata(sentence, top_k=5)
-            
-            if not results_with_metadata:
+            results_with_metadata = semantic_engine.retrieve_with_metadata(
+                sentence, top_k=CONFIG["max_suggestions"]
+            )
+            if not isinstance(results_with_metadata, list) or not results_with_metadata:
                 continue
-                
-            # Get the best match
-            best_match = results_with_metadata[0]
-            similarity_score = best_match["similarity_score"]
-            
-            # Classify based on similarity (using configurable thresholds)
-            if similarity_score >= CLASSIFICATION_THRESHOLDS["aligned_threshold"]:
-                status = "Aligned"
-                priority = "Low"
-            elif similarity_score >= CLASSIFICATION_THRESHOLDS["weak_threshold"]:
-                status = "Weak"
-                priority = "Medium"
+
+            best = results_with_metadata[0]
+            if not isinstance(best, dict):
+                continue
+
+            sim = float(best.get("similarity_score", 0.0) or 0.0)
+            if sim >= CONFIG["aligned_threshold"]:
+                status, priority = "Aligned", "Low"
+            elif sim >= CONFIG["weak_threshold"]:
+                status, priority = "Weak", "Medium"
             else:
-                status = "Missing"
-                priority = "High"
-            
-            # Generate suggestion for Missing or Weak matches
+                status, priority = "Missing", "High"
+
             suggestion = ""
-            if status in ["Missing", "Weak"]:
+            if status in ("Missing", "Weak"):
                 suggestion = suggest_improvement(sentence, results_with_metadata)
-            
-            recommendation = {
+
+            rec = {
                 "sentence": sentence,
-                "closest_control": best_match["text"],
-                "framework": best_match["framework"],
-                "control_id": best_match.get("control_id", "Unknown"),
-                "section": best_match.get("section", "General"),
-                "distance": round(1 - similarity_score, 3),  # Convert to distance
-                "similarity_score": round(similarity_score, 3),
+                "closest_control": best.get("text", ""),
+                "framework": best.get("framework", "Unknown"),
+                "control_id": best.get("control_id", "Unknown"),
+                "section": best.get("section", "General"),
+                "distance": round(1 - sim, 3),
+                "similarity_score": round(sim, 3),
                 "status": status,
                 "priority": priority,
-                "suggested_improvement": suggestion
+                "suggested_improvement": suggestion,
+                "metadata": {
+                    "model_used": CONFIG["openai_model"],
+                    "chunk_index": (best.get("metadata", {}) or {}).get("chunk_index"),
+                    "embedding_hash": (best.get("metadata", {}) or {}).get("embedding_hash"),
+                },
             }
-            
-            recommendations.append(recommendation)
-            
+            recommendations.append(rec)
         except Exception as e:
-            logger.error(f"Error processing sentence '{sentence[:50]}...': {e}")
-            continue
-    
+            logger.error(f"Error processing sentence '{sentence[:90]}': {e}")
+
+    logger.info(f"✅ Generated {len(recommendations)} recommendations using {CONFIG['openai_model']}")
     return recommendations
 
-def generate_executive_summary(recommendations):
-    """Generate executive summary with enhanced insights"""
-    
-    total_findings = len(recommendations)
-    if total_findings == 0:
+
+def generate_executive_summary(recommendations: List[Dict[str, Any]]) -> str:
+    if not isinstance(recommendations, list):
         return "No policy findings to report."
-    
-    # Count by status
+    recs = [r for r in recommendations if isinstance(r, dict)]
+    total = len(recs)
+    if total == 0:
+        return "No policy findings to report."
+
     status_counts = {"Aligned": 0, "Weak": 0, "Missing": 0}
     priority_counts = {"High": 0, "Medium": 0, "Low": 0}
-    framework_counts = {}
-    
-    # Calculate average similarity by status
-    status_similarities = {"Aligned": [], "Weak": [], "Missing": []}
-    
-    for rec in recommendations:
-        status_counts[rec["status"]] += 1
-        priority_counts[rec["priority"]] += 1
-        status_similarities[rec["status"]].append(rec["similarity_score"])
-        
-        framework = rec["framework"]
-        framework_counts[framework] = framework_counts.get(framework, 0) + 1
-    
-    # Calculate percentages
-    aligned_pct = round((status_counts["Aligned"] / total_findings) * 100, 1)
-    weak_pct = round((status_counts["Weak"] / total_findings) * 100, 1)
-    missing_pct = round((status_counts["Missing"] / total_findings) * 100, 1)
-    
-    # Calculate average confidences
-    avg_confidences = {}
-    for status, similarities in status_similarities.items():
-        if similarities:
-            avg_confidences[status] = round(sum(similarities) / len(similarities), 2)
-        else:
-            avg_confidences[status] = 0.0
-    
-    # Top frameworks
+    framework_counts: Dict[str, int] = {}
+    status_sims: Dict[str, List[float]] = {"Aligned": [], "Weak": [], "Missing": []}
+
+    for r in recs:
+        s = r.get("status", "Missing")
+        p = r.get("priority", "High")
+        status_counts[s] = status_counts.get(s, 0) + 1
+        priority_counts[p] = priority_counts.get(p, 0) + 1
+        framework_counts[r.get("framework", "Unknown")] = framework_counts.get(r.get("framework", "Unknown"), 0) + 1
+        status_sims.setdefault(s, []).append(float(r.get("similarity_score", 0.0) or 0.0))
+
+    def avg(xs: List[float]) -> float:
+        return round(sum(xs) / len(xs), 2) if xs else 0.0
+
+    aligned_pct = round((status_counts["Aligned"] / total) * 100, 1)
+    weak_pct = round((status_counts["Weak"] / total) * 100, 1)
+    missing_pct = round((status_counts["Missing"] / total) * 100, 1)
+
     top_frameworks = sorted(framework_counts.items(), key=lambda x: x[1], reverse=True)[:3]
-    
-    summary = f"""
-EXECUTIVE SUMMARY
 
-Policy Compliance Analysis Results:
-• Total Policy Statements Analyzed: {total_findings}
-• Aligned with Framework Controls: {status_counts['Aligned']} ({aligned_pct}%) - Avg Confidence: {avg_confidences['Aligned']}
-• Weakly Aligned (Needs Improvement): {status_counts['Weak']} ({weak_pct}%) - Avg Confidence: {avg_confidences['Weak']}
-• Missing/Non-compliant: {status_counts['Missing']} ({missing_pct}%) - Avg Confidence: {avg_confidences['Missing']}
-
-Priority Distribution:
-• High Priority Items: {priority_counts['High']}
-• Medium Priority Items: {priority_counts['Medium']}
-• Low Priority Items: {priority_counts['Low']}
-
-Top Referenced Frameworks:
-{chr(10).join([f"• {fw}: {count} matches" for fw, count in top_frameworks])}
-
-RECOMMENDATIONS:
-1. Address {priority_counts['High']} high-priority gaps immediately
-2. Review and strengthen {status_counts['Weak']} weakly aligned policies
-3. Focus on frameworks with highest gap counts for systematic improvement
-4. Consider regular policy reviews to maintain compliance alignment
-
-Note: Classification thresholds - Aligned: ≥{CLASSIFICATION_THRESHOLDS['aligned_threshold']}, Weak: ≥{CLASSIFICATION_THRESHOLDS['weak_threshold']}, Missing: <{CLASSIFICATION_THRESHOLDS['weak_threshold']}
-"""
-    
-    return summary.strip()
+    return (
+        "EXECUTIVE SUMMARY - Enhanced ComplyAI Analysis\n\n"
+        f"Policy Compliance Analysis Results:\n"
+        f"• Total Policy Statements Analyzed: {total}\n"
+        f"• Aligned with Framework Controls: {status_counts['Aligned']} ({aligned_pct}%) - Avg Confidence: {avg(status_sims['Aligned'])}\n"
+        f"• Weakly Aligned (Needs Improvement): {status_counts['Weak']} ({weak_pct}%) - Avg Confidence: {avg(status_sims['Weak'])}\n"
+        f"• Missing/Non-compliant: {status_counts['Missing']} ({missing_pct}%) - Avg Confidence: {avg(status_sims['Missing'])}\n\n"
+        f"Priority Distribution:\n"
+        f"• High Priority Items: {priority_counts['High']}\n"
+        f"• Medium Priority Items: {priority_counts['Medium']}\n"
+        f"• Low Priority Items: {priority_counts['Low']}\n\n"
+        f"Top Referenced Frameworks:\n" + "\n".join([f"• {fw}: {count} matches" for fw, count in top_frameworks]) + "\n"
+    )
