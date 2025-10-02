@@ -1,0 +1,1517 @@
+{
+  "executive_summary": "EXECUTIVE SUMMARY - ComplyAI Analysis\n\nPolicy Statements Analyzed: 88\n• Aligned: 8 (9.1%)\n• Needs Improvement: 75 (85.2%)\n• Non-compliant: 5 (5.7%)\n\nPriority Items:\n• High: 5\n• Medium: 75\n• Low: 8\n\nTop Frameworks:\n• ISO 27001: 39 matches\n• CIS Controls v8: 32 matches\n• NIST CSF: 9 matches\n\nNEXT STEPS:\n1. Address 5 high-priority gaps\n2. Review 75 weak policies\n3. Regular compliance monitoring recommended\n\nGenerated using gpt-4o-mini.",
+  "detailed_report": [
+    {
+      "sentence": "Security, Privacy, Assurance and Artificial Intelligence Chapter 8.",
+      "closest_control": "learning that privacy is about the appropriate use and management of data, not just encryption. Data must be appropriately managed through its entire life cycle. These privacy rules can be complicated for multi-national enterprises of any size; however, there are fundamentals that can apply to all. ",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "OVERVIEW",
+      "distance": 0.386,
+      "similarity_score": 0.614,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All data must be managed throughout its entire lifecycle in accordance with privacy regulations, ensuring that information security is embedded in all information systems and services (CIS Controls v8-None, ISO 27001-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 683,
+        "embedding_hash": "b9775adf"
+      }
+    },
+    {
+      "sentence": "Information Technology (IT) Security 10.8.11.",
+      "closest_control": "ISOIEC 27002:2013, Information technology  Security techniques  Information security management system implementation guidance ISOIEC 27003:2010, Information technology  Security techniques  Information security",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.307,
+      "similarity_score": 0.693,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All employees must undergo regular security awareness and skills training to ensure compliance with ISO 27002:2013 and CIS Controls v8, thereby fostering a culture of information security throughout the organization.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 837,
+        "embedding_hash": "08323e1e"
+      }
+    },
+    {
+      "sentence": "Application Security Policy Part 10.",
+      "closest_control": "16 OVERVIEW Application Software Security SAFEGUARDS TOTAL 14",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "OVERVIEW",
+      "distance": 0.236,
+      "similarity_score": 0.764,
+      "status": "Aligned",
+      "priority": "Low",
+      "suggested_improvement": "",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 1742,
+        "embedding_hash": "2bfaf6e2"
+      }
+    },
+    {
+      "sentence": "Information Technology (IT) Security Section 11.",
+      "closest_control": "40 Control 14: Security Awareness and Skills Training CIS Controls v8 NUMBER TITLEDESCRIPTION 14.7",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "14.6",
+      "distance": 0.305,
+      "similarity_score": 0.695,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All employees must undergo regular security awareness and skills training to ensure compliance with established information security policies, as mandated by CIS Control 14.7 and ISO 27001 A.5.1.1.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 1630,
+        "embedding_hash": "063b3506"
+      }
+    },
+    {
+      "sentence": "Application Security Policy 10.8.11 Application Security Policy Manual Transmittal September 19, 2024 Purpose (1) This transmits revised Internal Revenue Manual (IRM) 10.8.11, Information Technology (IT) Security, Application Security Policy.",
+      "closest_control": "includes a commitment to continual improvement of the information security management system. The information security policy shall: e) be available as documented information; 2  ISOIEC 2013  All rights reserved",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "5.2  Policy",
+      "distance": 0.343,
+      "similarity_score": 0.657,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "The Application Security Policy shall be documented, approved, and regularly reviewed to ensure alignment with ISO 27001 standards and the commitment to continual improvement of the information security management system.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 129,
+        "embedding_hash": "42ed14f5"
+      }
+    },
+    {
+      "sentence": "The purpose of this IRM is to provide guidance and establish requirements necessary to implement and manage IT security for applications within the IRS.",
+      "closest_control": "a) conforms to 1) the organizations own requirements for its information security management system; and 2) the requirements of this International Standard;",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "9.2",
+      "distance": 0.372,
+      "similarity_score": 0.628,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "This policy establishes requirements for implementing and managing IT security for IRS applications, ensuring alignment with organizational information security management system standards and achieving intended security outcomes (ISO 27001-None, ISO 27001-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 290,
+        "embedding_hash": "ef989331"
+      }
+    },
+    {
+      "sentence": "Material Changes (1) Updated the Chief Information Officer.",
+      "closest_control": "a) the status of actions from previous management reviews; b) changes in external and internal issues that are relevant to the information security management system; c)",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "9.3  Management review",
+      "distance": 0.496,
+      "similarity_score": 0.504,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "Policy Statement: The Chief Information Officer shall ensure that all material changes, including updates on action statuses from management reviews and relevant internal/external issues, are communicated promptly to stakeholders, addressing any confidentiality concerns or incidents as per ISO 27001 and SOC 2 standards.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 305,
+        "embedding_hash": "e22e9cd3"
+      }
+    },
+    {
+      "sentence": "(2) Removed Scope 10.8.11.1.1 and Objectives 10.8.11.1.1.2.",
+      "closest_control": "Observe security personnel. reset.  Forced to be changed immediately after the first use. 8.3.6",
+      "framework": "PCI DSS",
+      "control_id": null,
+      "section": "8.3.5",
+      "distance": 0.605,
+      "similarity_score": 0.395,
+      "status": "Missing",
+      "priority": "High",
+      "suggested_improvement": "All enterprise assets must have unnecessary services uninstalled or disabled, and security personnel must reset access credentials immediately after first use to ensure compliance with PCI DSS and CIS Controls.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 555,
+        "embedding_hash": "74e632c5"
+      }
+    },
+    {
+      "sentence": "(3) IRM 10.8.11.1.4, Program Management and Review - Updated to align with IRM 1.11.2 requirements.",
+      "closest_control": "o PR.IR-02: The organizations technology assets are protected from environmental threats o PR.IR-03: Mechanisms are implemented to achieve resilience requirements in normal and adverse situations o PR.IR-04: Adequate resource capacity to ensure availability is maintained",
+      "framework": "NIST CSF",
+      "control_id": "IR-03",
+      "section": "2.0 website and through the CSF 2.0 Reference Tool, which allows users to explore them and",
+      "distance": 0.46,
+      "similarity_score": 0.54,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "The organization shall implement robust mechanisms to protect technology assets from environmental threats and establish processes for assessing the authenticity and integrity of hardware and software, ensuring resilience and effective response to vulnerability disclosures. (NIST CSF-IR-03, NIST CSF-RA-09)",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 684,
+        "embedding_hash": "78f7e8f8"
+      }
+    },
+    {
+      "sentence": "(4) IRM 10.8.11.1.5, Program Control - Updated to align with IRM 1.11.2 requirements.",
+      "closest_control": "CIS Critical Security Controls Version 8 v8 CIS Critical Security Controls Version 8",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": null,
+      "distance": 0.511,
+      "similarity_score": 0.489,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All system changes must undergo a formalized control process, ensuring risk assessment, documentation, and approval in accordance with CIS Critical Security Controls v8 and ISO 27001 standards A.14.2.2 and A.14.2.3.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 0,
+        "embedding_hash": "73eba71b"
+      }
+    },
+    {
+      "sentence": "(5) IRM 10.8.11.2, IT Security Controls - Replaced the word shall with must throughout the IRM to align with IRM 1.11.2.",
+      "closest_control": "Control A.5.1.1 Policies for informa tion security A set of policies for information security shall be defined, approved",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.408,
+      "similarity_score": 0.592,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All information security policies must be defined, approved, and documented to ensure compliance with ISO 27001 controls, fostering a robust framework for information security management. (ISO 27001-None, ISO 27001-None)",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 345,
+        "embedding_hash": "c5496edb"
+      }
+    },
+    {
+      "sentence": "(8) Editorial changes made throughout the IRM for clarity and alignment with Security Policy Boilerplate 2 July 2024.",
+      "closest_control": "a) the status of actions from previous management reviews; b) changes in external and internal issues that are relevant to the information security management system; c)",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "9.3  Management review",
+      "distance": 0.425,
+      "similarity_score": 0.575,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "The IRM has been updated for clarity and compliance with Security Policy Boilerplate as of July 2024, incorporating insights from previous management reviews and aligning with the latest PCI DSS v2.0 and ISO 27001 standards.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 305,
+        "embedding_hash": "e22e9cd3"
+      }
+    },
+    {
+      "sentence": "Reviewed and updated plain language, grammar, titles, website addresses, legal references and IRM references.",
+      "closest_control": "of type, size or nature. Excluding any of the requirements specified in Clauses 4 to 10 is not acceptable when an organization claims conformity to this International Standard. 2 Normative references The following documents, in whole or in part, are normatively referenced in this document and are in",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "FINAL DRAFT INTERNATIONAL STANDARD",
+      "distance": 0.45,
+      "similarity_score": 0.55,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "The policy will be regularly reviewed and updated to ensure compliance with all relevant legislative, statutory, regulatory, and contractual requirements, as outlined in ISO 27001, while maintaining clear and accessible documentation.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 82,
+        "embedding_hash": "f1bfb66c"
+      }
+    },
+    {
+      "sentence": "Effect on Other Documents This IRM supplements IRM 10.8.1, Information Technology (IT) Security Policy and Guidance; IRM 10.8.2, Information Technology (IT) Security, IT Security Roles and Responsibilities.",
+      "closest_control": "ISOIEC 27002:2013, Information technology  Security techniques  Information security management system implementation guidance ISOIEC 27003:2010, Information technology  Security techniques  Information security",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.25,
+      "similarity_score": 0.75,
+      "status": "Aligned",
+      "priority": "Low",
+      "suggested_improvement": "",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 837,
+        "embedding_hash": "08323e1e"
+      }
+    },
+    {
+      "sentence": "IRM 10.8.11, dated November 3, 2023 is superseded.",
+      "closest_control": "Version 3.2 to 3.2.1. Added Requirement 6.2 from PCI DSS v3.2.1. Updated to align with PCI DSS v4.0. For details of PCI DSS changes, see PCI DSS  Summary of Changes from PCI DSS Version 3.2.1 to 4.0.",
+      "framework": "PCI DSS",
+      "control_id": null,
+      "section": "4.0",
+      "distance": 0.518,
+      "similarity_score": 0.482,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All information processing systems must comply with the updated PCI DSS v4.0 requirements and ISO 27001-A.18 standards to ensure the integrity and availability of sensitive data.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 27,
+        "embedding_hash": "0eaa5f1a"
+      }
+    },
+    {
+      "sentence": "Audience IRM 10.8.11 must be distributed to all personnel responsible for overseeing, managing, and implementing application security for IRS information and information systems.",
+      "closest_control": "security weaknesses Employees and contractors using the organizations information systems and services shall be required to note and report any observed or suspected information security weaknesses in sys Control",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.443,
+      "similarity_score": 0.557,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All personnel overseeing, managing, and implementing application security for IRS information and systems must receive and acknowledge Audience IRM 10.8.11, and are required to promptly report any observed or suspected information security weaknesses in accordance with ISO 27001 guidelines.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 753,
+        "embedding_hash": "9e43b518"
+      }
+    },
+    {
+      "sentence": "The Application Security Policy IRM will consist of, but will not be limited to, agency defined requirements, authoritative guidance, legislative mandates, and national standards.",
+      "closest_control": "Protecting application services transactions The information security related requirements shall be included in the requirements for new information systems or enhancements to Control",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.356,
+      "similarity_score": 0.644,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "The Application Security Policy will encompass agency-defined requirements, authoritative guidance, legislative mandates, and national standards, while ensuring that all new information systems and enhancements incorporate information security requirements and commit to the continual improvement of the information security management system (ISO 27001-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 672,
+        "embedding_hash": "d453f50e"
+      }
+    },
+    {
+      "sentence": "This policy applies to all employees, contractors, and vendors of the IRS.",
+      "closest_control": "A.7.1.2 A.7.2 During employment Terms and conditions of employment The contractual agreements with employees and contractors shall",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.513,
+      "similarity_score": 0.487,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All employees, contractors, and vendors of the IRS are required to adhere to information security policies and contractual agreements throughout their engagement, ensuring compliance with established security protocols (ISO 27001 A.7.1.2, A.7.2).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 389,
+        "embedding_hash": "99bcf3c8"
+      }
+    },
+    {
+      "sentence": "This policy is subordinate to IRM 10.8.1, Information Technology (IT) Security, Policy and Guidance, and augments the existing requirements identified within IRM 10.8.1, as they relate to IRS applications.",
+      "closest_control": "Protecting application services transactions The information security related requirements shall be included in the requirements for new information systems or enhancements to Control",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.382,
+      "similarity_score": 0.618,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "This policy enhances IRM 10.8.1 by mandating the integration of information security requirements into the development of IRS applications, including a Statement of Applicability that justifies the inclusion or exclusion of necessary controls (ISO 27001-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 672,
+        "embedding_hash": "d453f50e"
+      }
+    },
+    {
+      "sentence": "(2) Purpose of the Program: Develop and publish security policies to protect the IRS against potential IT threats and vulnerabilities and ensure compliance with federal mandates and legislation.",
+      "closest_control": "The organization shall plan, implement and control the processes needed to meet information security requirements, and to implement the actions determined in 6.1. The organization shall also implement plans to achieve information security objectives determined in 6.2. The organization shall keep doc",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "8.1  Operational planning and control",
+      "distance": 0.384,
+      "similarity_score": 0.616,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "The program aims to establish and maintain comprehensive security policies that effectively mitigate IT threats, ensure compliance with federal mandates, and achieve defined information security objectives as outlined in ISO 27001, while continuously monitoring and improving these measures.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 261,
+        "embedding_hash": "4af7ee14"
+      }
+    },
+    {
+      "sentence": "(3) Audience: The provisions within this policy apply to: a.",
+      "closest_control": "d) produce a Statement of Applicability that contains the necessary controls (see 6.1.3 b) and c)) and justification for inclusions, whether they are implemented or not, and the justification for exclusions of controls from Annex A; e) formulate an information security risk treatment plan; and",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "NOTE",
+      "distance": 0.414,
+      "similarity_score": 0.586,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "This policy applies to all personnel and stakeholders, mandating the establishment, documentation, and regular review of an access control policy that aligns with business needs and information security requirements, as outlined in ISO 27001 Control A.9.1.1 and the Statement of Applicability (6.1.3 b) and c).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 185,
+        "embedding_hash": "5468b2ad"
+      }
+    },
+    {
+      "sentence": "All offices and business, operating, and functional units within the IRS.",
+      "closest_control": "ISOIEC 27001:2013(E) Table A.1 (continued) Objective: To identify organizational assets and define appropriate protection responsibilities. Control A.8.1.1",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.546,
+      "similarity_score": 0.454,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All IRS offices and operational units must identify and document their organizational assets, assigning clear protection responsibilities to ensure compliance with ISO 27001:2013 Control A.8.1.1 and PCI DSS standards for safeguarding sensitive information across all facilities.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 413,
+        "embedding_hash": "4044c047"
+      }
+    },
+    {
+      "sentence": "b. IRS personnel and organizations having contractual arrangements with the IRS, including employees, contractors, vendors, and outsourcing providers, that use or operate systems that store, process, or transmit IRS information or connect to an IRS network or system.",
+      "closest_control": "c) interfaces and dependencies between activities performed by the organization, and those that are performed by other organizations. The scope shall be available as documented information. 4.4",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "4.3  Determining the scope of the information security management system",
+      "distance": 0.436,
+      "similarity_score": 0.564,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All IRS personnel, contractors, vendors, and outsourcing providers must adhere to documented information security protocols and objectives that govern the handling of IRS information, ensuring secure interfaces and dependencies with external systems (ISO 27001-None 4.4, ISO 27001-None 6.2).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 104,
+        "embedding_hash": "89fc4f62"
+      }
+    },
+    {
+      "sentence": "(4) Policy Owner: Chief Information Officer (5) Program Owner: Cybersecurity, Cybersecurity Threat Response and Remediation (6) Program Goals: To protect the confidentiality, integrity, and availability of IRS information and information systems.",
+      "closest_control": "requirements, and to implement the actions determined in 6.1. The organization shall also implement plans to achieve information security objectives determined in 6.2. The organization shall keep documented information to the extent necessary to have confidence that the processes have been carried o",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "8.1  Operational planning and control",
+      "distance": 0.394,
+      "similarity_score": 0.606,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "The Chief Information Officer shall ensure that documented information security objectives are established, maintained, and periodically reviewed to enhance the confidentiality, integrity, and availability of IRS information and systems, in accordance with ISO 27001 requirements.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 262,
+        "embedding_hash": "3efce269"
+      }
+    },
+    {
+      "sentence": "An application is a software program that is hosted by an information system and is designed to perform a specific function directly for the user or, in some cases, for another application.",
+      "closest_control": "users. Applications are considered a software asset in this document. Examples include web, database, cloud-based, and mobile applications. A system or mechanism used to identify a user through associating an incoming request with a set of identifying credentials. The credentials provided are compar",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": null,
+      "distance": 0.361,
+      "similarity_score": 0.639,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "An application is a software asset hosted on enterprise systems designed to perform specific functions for users or other applications, encompassing web, database, cloud-based, and mobile platforms (CIS Controls v8-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 86,
+        "embedding_hash": "4560479b"
+      }
+    },
+    {
+      "sentence": "Application programs can be executed without access to system control, monitoring, or administrative privileges.",
+      "closest_control": "Use of privileged util ity programs The use of utility programs that might be capable of overriding system and application controls shall be restricted and tightly Control",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.386,
+      "similarity_score": 0.614,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "Policy Statement: Application programs must be executed with appropriate access controls, ensuring that system control, monitoring, and administrative privileges are restricted to authorized personnel only, in compliance with ISO 27001 and CIS Controls v8.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 505,
+        "embedding_hash": "719987e9"
+      }
+    },
+    {
+      "sentence": "(2) IRM 10.8.11 is part of the Security, Privacy, and Assurance policy family, IRM Part 10 Series for IRS IT Cybersecurity.",
+      "closest_control": "a) the information security policy;  ISOIEC 2013  All rights reserved 5 ISOIEC 27001:2013(E)",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "7.3  Awareness",
+      "distance": 0.352,
+      "similarity_score": 0.648,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "The IRS IT Cybersecurity policy, as outlined in IRM 10.8.11, establishes a comprehensive framework for information security that is defined, approved, and regularly reviewed to ensure alignment with ISO 27001:2013 standards for effective risk management and compliance.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 220,
+        "embedding_hash": "fc49c24e"
+      }
+    },
+    {
+      "sentence": "This framework of security controls is provided through the issuance of security policies via the IRM 10.8 series and the development of technology specific security requirements checklists.",
+      "closest_control": "and system requirements as they relate to security, availability, and confidentiality. Controls have been implemented to prevent or detect and act upon the introduction of unauthorized or malicious software to meet the entitys commitments",
+      "framework": "SOC 2",
+      "control_id": null,
+      "section": null,
+      "distance": 0.274,
+      "similarity_score": 0.726,
+      "status": "Aligned",
+      "priority": "Low",
+      "suggested_improvement": "",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 127,
+        "embedding_hash": "4fa0ead0"
+      }
+    },
+    {
+      "sentence": "Stakeholders are notified when revisions to the security policies and security requirements checklists are made.",
+      "closest_control": "are regularly updated based on the application of risk management processes to changes in businessmission requirements, threats, and technological landscape.",
+      "framework": "NIST CSF",
+      "control_id": null,
+      "section": "2.0 website and through the CSF 2.0 Reference Tool, which allows users to explore them and",
+      "distance": 0.367,
+      "similarity_score": 0.633,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "Revisions to security policies and requirements checklists will be communicated to stakeholders promptly, ensuring alignment with ongoing risk management assessments and adherence to commitments related to security and availability (NIST CSF, SOC 2).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 812,
+        "embedding_hash": "84a58659"
+      }
+    },
+    {
+      "sentence": "(2) It is the policy of the IRS to: a.",
+      "closest_control": "is appropriate to the purpose of the organization; b) includes information security objectives (see 6.2) or provides the framework for setting information security objectives; c)",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "5.2  Policy",
+      "distance": 0.525,
+      "similarity_score": 0.475,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "The IRS is committed to establishing and maintaining an information security management system that aligns with ISO 27001 standards, ensuring the fulfillment of applicable requirements and continuous improvement of information security objectives.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 125,
+        "embedding_hash": "724247ff"
+      }
+    },
+    {
+      "sentence": "Establish and manage an information security program within its organizations.",
+      "closest_control": "state their and the organizations responsibilities for information security. Objective: To ensure that employees and contractors are aware of and fulfil their information security responsibilities. Control",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.236,
+      "similarity_score": 0.764,
+      "status": "Aligned",
+      "priority": "Low",
+      "suggested_improvement": "",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 392,
+        "embedding_hash": "090e7c28"
+      }
+    },
+    {
+      "sentence": "This policy provides uniform policies and guidance to be used by each organization.",
+      "closest_control": "Repeatable The organizations risk management practices are formally approved and expressed as policy. There is an organization-wide approach to managing",
+      "framework": "NIST CSF",
+      "control_id": null,
+      "section": "2.0 website and through the CSF 2.0 Reference Tool, which allows users to explore them and",
+      "distance": 0.42,
+      "similarity_score": 0.58,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "Revised Policy: This policy establishes a comprehensive, organization-wide framework for formal approval and communication of risk management and cybersecurity practices, ensuring consistent and effective handling of cybersecurity risks across all levels (NIST CSF-None, NIST CSF-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 801,
+        "embedding_hash": "cd49100d"
+      }
+    },
+    {
+      "sentence": "Protect all IT resources belonging to, or used by, the IRS at a level commensurate with the risk and magnitude of harm that could result from loss, misuse, or unauthorized access to that IT resource.",
+      "closest_control": "Once assets and risks are identified and prioritized, PROTECT supports the ability to secure those assets to prevent or lower the likelihood and impact of adverse cybersecurity events, as well as to increase the likelihood and impact of taking advantage of opportunities. Outcomes covered by this Fun",
+      "framework": "NIST CSF",
+      "control_id": null,
+      "section": "2. Introduction to the CSF Core",
+      "distance": 0.43,
+      "similarity_score": 0.57,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All IT resources of the IRS shall be secured based on a comprehensive risk assessment, ensuring protection against loss, misuse, or unauthorized access while enhancing the organization's resilience to cybersecurity events and enabling the pursuit of strategic opportunities (NIST CSF-None, NIST CSF-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 190,
+        "embedding_hash": "ae9a0ca5"
+      }
+    },
+    {
+      "sentence": "c. Protect its information resources and allow the use, access, disposition, and disclosure of information in accordance with applicable laws, policies, federal regulations, OMB guidance, Treasury Directives (TDs), NIST Publications, National Archives and Records Administration (NARA) guidance, other regulatory guidance, and best practice methodologies.",
+      "closest_control": "employment, contract or agreement. Objective: To ensure that information receives an appropriate level of protection in accordance with its importance to the organization. Control A.8.2.1",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.341,
+      "similarity_score": 0.659,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "The organization will safeguard its information resources by ensuring their use, access, disposition, and disclosure comply with applicable laws and regulations, while regularly assessing and updating security measures based on risk assessments and information security requirements (ISO 27001-A.8.2.1).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 430,
+        "embedding_hash": "fb87df3e"
+      }
+    },
+    {
+      "sentence": "d. Use best practices methodologies (such as Capability Maturity Model Integration (CMMI), enterprise lifecycle (ELC), Information Technology Infrastructure Library (ITIL), and Lean Six Sigma (LSS)) to document and improve IRS IT process and service efficiency and effectiveness.",
+      "closest_control": "e) how to 1) integrate and implement these actions into its information security management system processes; and 6.1.2",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "6.1.1  General",
+      "distance": 0.425,
+      "similarity_score": 0.575,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "Incorporate best practices methodologies (CMMI, ELC, ITIL, LSS) to enhance IRS IT processes and services, ensuring seamless integration with the information security management system and alignment with broader risk management frameworks (ISO 27001, NIST CSF).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 149,
+        "embedding_hash": "df60edeb"
+      }
+    },
+    {
+      "sentence": "The IRM authors continuously monitor federal guidance (e.g., OMB, CISA, NIST, DISA) for potential revisions to security policies and security requirements checklists.",
+      "closest_control": "A.6.1 Internal organization Organization of information security The policies for information security shall be reviewed at planned intervals or if significant changes occur to ensure their continuing",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.381,
+      "similarity_score": 0.619,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "The IRM authors will review and update security policies and requirements checklists annually, or upon significant organizational changes, to ensure alignment with federal guidance and compliance with ISO 27001 and CIS Controls.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 351,
+        "embedding_hash": "5955ebde"
+      }
+    },
+    {
+      "sentence": "Revisions to security policies and checklists are reviewed by the security policy team, in collaboration with applicable stakeholders, for potential impact to the IRS operational environment.",
+      "closest_control": "A.6.1 Internal organization Organization of information security The policies for information security shall be reviewed at planned intervals or if significant changes occur to ensure their continuing",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.404,
+      "similarity_score": 0.596,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "Revisions to security policies and checklists shall be systematically reviewed at planned intervals or upon significant changes, ensuring ongoing compliance and alignment with ISO 27001 standards, while actively engaging relevant stakeholders to assess impacts on the IRS operational environment.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 351,
+        "embedding_hash": "5955ebde"
+      }
+    },
+    {
+      "sentence": "(2) Security Policy provides a weekly report identifying security policies and security requirements checklists that have recently been revised or are in the process of being revised.",
+      "closest_control": "security policies and standards Managers shall regularly review the compliance of information processing and procedures within their area of responsibility with the appropriate security policies, standards and any other security",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.252,
+      "similarity_score": 0.748,
+      "status": "Aligned",
+      "priority": "Low",
+      "suggested_improvement": "",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 828,
+        "embedding_hash": "8e8e0892"
+      }
+    },
+    {
+      "sentence": "(3) This IRM applies to all IRS information and information systems, which include IRS production, development, test, and contractor systems.",
+      "closest_control": "o PR.IR-02: The organizations technology assets are protected from environmental threats o PR.IR-03: Mechanisms are implemented to achieve resilience requirements in normal and adverse situations o PR.IR-04: Adequate resource capacity to ensure availability is maintained",
+      "framework": "NIST CSF",
+      "control_id": "IR-03",
+      "section": "2.0 website and through the CSF 2.0 Reference Tool, which allows users to explore them and",
+      "distance": 0.543,
+      "similarity_score": 0.457,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "This IRM encompasses all IRS information and information systems, including production, development, test, and contractor systems, ensuring protection against environmental threats and resilience in both normal and adverse situations as per NIST CSF-IR-03 and ISO 27001 standards.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 684,
+        "embedding_hash": "78f7e8f8"
+      }
+    },
+    {
+      "sentence": "For systems that store, process, or transmit classified national security information, refer to IRM 10.9.1, Classified National Security Information (CNSI), for additional guidance for protecting classified information.",
+      "closest_control": "and system requirements. Confidential information within the boundaries of the system is protected against unauthorized access, use, and disclosure during input, processing, retention, output, and disposition",
+      "framework": "SOC 2",
+      "control_id": null,
+      "section": null,
+      "distance": 0.387,
+      "similarity_score": 0.613,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All systems that store, process, or transmit classified national security information must implement stringent access controls and data protection measures in accordance with SOC 2 and CIS Controls v8 to safeguard against unauthorized access, use, and disclosure throughout the information lifecycle.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 17,
+        "embedding_hash": "71e3c7f0"
+      }
+    },
+    {
+      "sentence": "(4) This IRM establishes the minimum baseline security policy and requirements for all IRS applications IT assets in order to: a.",
+      "closest_control": "a) conforms to 1) the organizations own requirements for its information security management system; and 2) the requirements of this International Standard;",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "9.2",
+      "distance": 0.427,
+      "similarity_score": 0.573,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "This IRM mandates that all IRS applications and IT assets adhere to the organization's information security management system and ISO 27001 standards, ensuring comprehensive identification, documentation, and regular review of security requirements integral to information systems. (ISO 27001-None)",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 290,
+        "embedding_hash": "ef989331"
+      }
+    },
+    {
+      "sentence": "Protect the critical infrastructure and assets of the IRS against attacks that exploit IRS assets.",
+      "closest_control": "Once assets and risks are identified and prioritized, PROTECT supports the ability to secure those assets to prevent or lower the likelihood and impact of adverse cybersecurity events, as well as to increase the likelihood and impact of taking advantage of opportunities. Outcomes covered by this Fun",
+      "framework": "NIST CSF",
+      "control_id": null,
+      "section": "2. Introduction to the CSF Core",
+      "distance": 0.354,
+      "similarity_score": 0.646,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "Revised Policy: Ensure the protection of IRS critical infrastructure and assets by implementing robust security measures to mitigate risks and enhance resilience against cybersecurity threats, while also leveraging opportunities for improvement (NIST CSF-None, NIST CSF-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 190,
+        "embedding_hash": "ae9a0ca5"
+      }
+    },
+    {
+      "sentence": "Prevent unauthorized access to IRS assets.",
+      "closest_control": "-Protect-    Establish and follow a process, preferably automated, for revoking access to enterprise assets, through disabling accounts immediately upon termination, rights revocation, or role change of a user. Disabling accounts, instead of deleting accounts, may be necessary to preserve audit trai",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "6.2",
+      "distance": 0.414,
+      "similarity_score": 0.586,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "To prevent unauthorized access to IRS assets, we will implement an automated process to immediately disable user accounts and revoke access rights upon termination, role changes, or rights revocation, in accordance with CIS Controls v8-None.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 1022,
+        "embedding_hash": "82594fff"
+      }
+    },
+    {
+      "sentence": "c. Enable IRS IT computing environments to meet the security requirements of this policy and support the business needs of the organization.",
+      "closest_control": "is appropriate to the purpose of the organization; b) includes information security objectives (see 6.2) or provides the framework for setting information security objectives; c)",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "5.2  Policy",
+      "distance": 0.27,
+      "similarity_score": 0.73,
+      "status": "Aligned",
+      "priority": "Low",
+      "suggested_improvement": "",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 125,
+        "embedding_hash": "724247ff"
+      }
+    },
+    {
+      "sentence": "Note: IRM 10.8.1 applies to on-premises systems, including on-premises cloud models.",
+      "closest_control": "Management Protocol (SNMP) defaults. This requirement also applies where a system component is not installed within an entitys environment, for example, software and applications that are part of the CDE and are accessed via a cloud subscription service.  Refer to the Requirement Responses section (",
+      "framework": "PCI DSS",
+      "control_id": null,
+      "section": "8.3.6.",
+      "distance": 0.565,
+      "similarity_score": 0.435,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All systems, including on-premises and cloud models, must ensure that Management Protocol (SNMP) defaults are secured and that resilience mechanisms are implemented to maintain availability and capacity in both normal and adverse situations (PCI DSS-None, NIST CSF-IR-04).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 369,
+        "embedding_hash": "2864c6c9"
+      }
+    },
+    {
+      "sentence": "For off-premises cloud models, refer to IRM 10.8.24, Information Technology (IT) Security, Cloud Computing Security Policy.",
+      "closest_control": "nistpubsSpecialPublicationsNIST.SP.800-88r1.pdf  NIST FIPS 140-2  https:nvlpubs.nist.govnistpubsFIPSNIST.FIPS.140-2.pdf  NIST FIPS 140-3  https:nvlpubs.nist.govnistpubsFIPSNIST.FIPS.140-3.pdf  For cloud-specific guidance, refer to the CIS Controls Cloud Companion Guide  https:www.cisecurity.orgcontr",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "OVERVIEW",
+      "distance": 0.299,
+      "similarity_score": 0.701,
+      "status": "Aligned",
+      "priority": "Low",
+      "suggested_improvement": "",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 723,
+        "embedding_hash": "7dfd1ed0"
+      }
+    },
+    {
+      "sentence": "(5) In the event there is a discrepancy between this policy and IRM 10.8.1, IRM 10.8.1 has precedence, unless the security controls/requirements in this policy are more restrictive.",
+      "closest_control": "Control A.5.1.1 Policies for informa tion security A set of policies for information security shall be defined, approved",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.44,
+      "similarity_score": 0.56,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "In the event of a discrepancy between this policy and IRM 10.8.1, this policy shall take precedence if it establishes more stringent security controls, in alignment with ISO 27001 A.5.1.1 and A.5.1.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 345,
+        "embedding_hash": "c5496edb"
+      }
+    },
+    {
+      "sentence": "≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ (2) ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ (3) ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ (4) ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ≡ ",
+      "closest_control": "and communicated. 25 NIST CSWP 29 February 26, 2024 Appendix C. Glossary",
+      "framework": "NIST CSF",
+      "control_id": null,
+      "section": "2.0 website and through the CSF 2.0 Reference Tool, which allows users to explore them and",
+      "distance": 0.634,
+      "similarity_score": 0.366,
+      "status": "Missing",
+      "priority": "High",
+      "suggested_improvement": "All personnel must adhere to established compliance protocols and regularly participate in training to ensure understanding and implementation of the NIST Cybersecurity Framework (CSF) standards, as outlined in NIST CSWP Appendix B and C.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 879,
+        "embedding_hash": "2aa9a68f"
+      }
+    },
+    {
+      "sentence": "AO Authorizing Official Contractors are individuals or other legal entities that are, directly or Contractor indirectly, awarded government contracts.",
+      "closest_control": "ated with suppliers access to the organizations assets shall be Control agreed with the supplier and documented. A.15.1.2 Addressing security",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.495,
+      "similarity_score": 0.505,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All contractors authorized by the AO must have documented agreements that clearly define their access to organizational assets and security responsibilities, in compliance with ISO 27001 A.15.1.2 and PCI DSS requirements.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 721,
+        "embedding_hash": "32d18c92"
+      }
+    },
+    {
+      "sentence": "Contractors conduct business, or reasonably may be expected to conduct business, with the Government as an agent or representative of another contractor.",
+      "closest_control": "of employment The contractual agreements with employees and contractors shall state their and the organizations responsibilities for information security. Objective: To ensure that employees and contractors are aware of and fulfil their information security",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.507,
+      "similarity_score": 0.493,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All contractors must adhere to established information security responsibilities outlined in their contractual agreements, including a risk assessment of their services and potential impact on the organization, as per ISO 27001 and CIS Controls v8.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 391,
+        "embedding_hash": "20e478c4"
+      }
+    },
+    {
+      "sentence": "CIS CISA CNSI Center for Internet Security Cybersecurity Infrastructure Security Agency Classified National Security Information Cybersecurity Cybersecurity is the ability to protect or defend the use of cyberspace from cyber attacks.",
+      "closest_control": "The Center for Internet Security, Inc. (CIS) makes the connected world a safer place for people, businesses, and governments through our core competencies of collaboration and innovation. We are a community-driven nonprofit, responsible for the CIS Controls and CIS Benchmarks, globally recognized be",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "18.5",
+      "distance": 0.283,
+      "similarity_score": 0.717,
+      "status": "Aligned",
+      "priority": "Low",
+      "suggested_improvement": "",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 2725,
+        "embedding_hash": "e0d8486e"
+      }
+    },
+    {
+      "sentence": "Discretionary access control is a means of restricting access to objects (e.g., files, data entities) based on the identity and need-to-know of subjects (e.g., users, processes) and/or groups to which the object belongs.",
+      "closest_control": "The allocation and use of privileged access rights shall be Control restricted and controlled. The allocation of secret authentication information shall be con Control",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.407,
+      "similarity_score": 0.593,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "Access to sensitive objects shall be restricted through discretionary access control based on user identity and need-to-know, ensuring compliance with legislative, regulatory, and contractual obligations to prevent unauthorized access and release (ISO 27001-None, ISO 27001-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 478,
+        "embedding_hash": "520063a9"
+      }
+    },
+    {
+      "sentence": "The controls are discretionary in the sense that a subject with certain access permission is capable of passing that permission (perhaps indirectly) on to any other subject (unless restrained by mandatory access control).",
+      "closest_control": "Control restricted in accordance with the access control policy. Where required by the access control policy, access to systems and applications shall be controlled by a secure log-on procedure. 13",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.391,
+      "similarity_score": 0.609,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "Access permissions must be strictly controlled and cannot be shared or transferred between subjects without explicit authorization, in compliance with the access control policy and secure log-on procedures (ISO 27001-None, ISO 27001-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 499,
+        "embedding_hash": "c27441c2"
+      }
+    },
+    {
+      "sentence": "Department of Homeland Security Defense Information Systems Agency DAC DHS DISA The prevention of authorized access to resources or the delaying of time- DoS critical operations.",
+      "closest_control": "protect the confidentiality, integrity, and availability of information o PR.DS-01: The confidentiality, integrity, and availability of data-at-rest are protected o PR.DS-02: The confidentiality, integrity, and availability of data-in-transit are protected o PR.DS-10: The confidentiality, integrity,",
+      "framework": "NIST CSF",
+      "control_id": "DS-02",
+      "section": "2.0 website and through the CSF 2.0 Reference Tool, which allows users to explore them and",
+      "distance": 0.422,
+      "similarity_score": 0.578,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "The Department of Homeland Security Defense Information Systems Agency (DHS DISA) is committed to safeguarding the confidentiality, integrity, and availability of information by implementing robust access controls and proactive measures to prevent unauthorized access and mitigate denial-of-service threats, in alignment with NIST CSF-DS-01 and NIST CSF-DS-02.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 664,
+        "embedding_hash": "d2e1cca6"
+      }
+    },
+    {
+      "sentence": "(Time-critical may be milliseconds or it may be hours, depending upon the service provided).",
+      "closest_control": "can help prioritize remediation or restoration decisions that best support the enterprise. These business decisions could be based on regulatory compliance, disclosure rules, service-level agreements with partners or customers, revenue, or mission impacts. Dwell time from when an attack happens to w",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "OVERVIEW",
+      "distance": 0.517,
+      "similarity_score": 0.483,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "Policy Statement: \"To mitigate risks from emerging threats such as ransomware, all remediation and restoration efforts must prioritize time-critical responses—ranging from milliseconds to hours—based on regulatory compliance, service-level agreements, and potential disclosure obligations, in alignment with CIS Controls v8.\"",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 1954,
+        "embedding_hash": "90bcb870"
+      }
+    },
+    {
+      "sentence": "EA Enterprise Architecture Term Definition or Description EFC EO ESP FIPS Enterprise FISMA Compliance Executive Order Enterprise Standards Profile Federal Information Processing Standards (FIPS) are publicly announced standards developed by the National Institute of Standards and Technology for use in computer systems by non-military American government agencies and government contractors.",
+      "closest_control": "main enterprise. Most data security and privacy regulations require their protection extend to third-party service providers, such as with Health Insurance Portability and Accountability Act (HIPAA) Business Associate agreements in healthcare, Federal Financial Institutions Examination Council (FFIE",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "OVERVIEW",
+      "distance": 0.475,
+      "similarity_score": 0.525,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All enterprise architecture standards and practices must ensure compliance with FIPS and FISMA while extending data protection requirements to third-party service providers and encompassing all enterprise assets, including end-user devices, IoT, and cloud environments (CIS Controls v8-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 1662,
+        "embedding_hash": "2c5989dd"
+      }
+    },
+    {
+      "sentence": "The Federal Information Security Modernization [FISMA] of 2014 requires federal agencies to identify and provide information security protections commensurate with the risk resulting from the unauthorized access, use, FISMA disclosure, disruption, modification, or destruction of information collected or maintained by or on behalf of an agency; or information systems used or operated by an agency or by a contractor of an agency or other organization on behalf of an agency.",
+      "closest_control": "Federal Financial Institutions Examination Council Federal Information Security Modernization Act Governance Risk and Compliance",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "GRC",
+      "distance": 0.397,
+      "similarity_score": 0.603,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All federal agencies must implement comprehensive information security measures that not only address risks associated with unauthorized access and data breaches but also ensure that third-party service providers comply with applicable security standards, as outlined in the CIS Controls v8.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 231,
+        "embedding_hash": "2cfb15d7"
+      }
+    },
+    {
+      "sentence": "Honeypot Honeypot is a name given to a system (e.g., a web server) or system resource (e.g., a file on a server) that is designed to be attractive to potential crackers and intruders and has no authorized users other than its administrators.",
+      "closest_control": "provided using a prescribed interface and based on the identity of the requestor per the enterprises usage policies. Refers to a broad range of malicious activities accomplished through human interactions on various platforms, such as email or phone. It relies on psychological manipulation to trick ",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": null,
+      "distance": 0.563,
+      "similarity_score": 0.437,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "**Improved Policy Statement:** Honeypots are intentionally vulnerable systems designed to attract potential intruders while ensuring that only authorized administrators can access them, in compliance with CIS Controls v8-None, and must be monitored continuously to mitigate risks associated with malicious activities.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 186,
+        "embedding_hash": "edec3739"
+      }
+    },
+    {
+      "sentence": "Intrusion detection system is a hardware or software product that gathers and analyzes information from various areas within a computer or a IDS network to identify possible security breaches, which include both intrusions (attacks from outside the organizations) and misuse (attacks from within the organizations.)",
+      "closest_control": "National Cyber Security Alliance Network Intrusion Detection System National Institute of Standards and Technology Operating System",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "OVAL",
+      "distance": 0.372,
+      "similarity_score": 0.628,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "The organization shall implement an Intrusion Detection System (IDS) to continuously monitor, detect, and analyze both external and internal threats, ensuring timely identification of anomalies and indicators of compromise to enhance overall cybersecurity resilience (CIS Controls v8-None, NIST CSF-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 254,
+        "embedding_hash": "c355442e"
+      }
+    },
+    {
+      "sentence": "Internet protocol is a standard protocol for transmission of data from source IP to destinations in packet-switched communications networks and interconnected systems of such networks.",
+      "closest_control": "Internet Protocol Intrusion Prevention System Information Sharing and Analysis Center International Organization for",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "OVAL",
+      "distance": 0.367,
+      "similarity_score": 0.633,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "Revised Policy: The organization shall implement robust Internet Protocol (IP) security measures, including an Intrusion Prevention System (IPS) and active participation in Information Sharing and Analysis Centers (ISACs), to safeguard data transmission across all network infrastructures—cloud, physical, or virtual—ensuring comprehensive protection against unauthorized access and threats (CIS Cont",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 243,
+        "embedding_hash": "d3800b30"
+      }
+    },
+    {
+      "sentence": "IPSEC IP Security (IPSec) is a suite of protocols for securing Internet Protocol (IP) communications at the network layer, layer 3 of the OSI model by Term Definition or Description authenticating and/or encrypting each IP packet in a data stream.",
+      "closest_control": "Internet Protocol Intrusion Prevention System Information Sharing and Analysis Center International Organization for",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "OVAL",
+      "distance": 0.453,
+      "similarity_score": 0.547,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All IP communications must utilize IPSec to authenticate and encrypt each IP packet, ensuring protection against unauthorized access, message alteration, and replay attacks, in alignment with CIS Controls v8 and ISO 27001 standards.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 243,
+        "embedding_hash": "d3800b30"
+      }
+    },
+    {
+      "sentence": "IPsec also includes protocols for cryptographic key establishment.",
+      "closest_control": "secure network protocols, such as SSH and HTTPS. 12.4 Establish and Maintain Architecture Diagram(s) Network -Identify-",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "12.4",
+      "distance": 0.449,
+      "similarity_score": 0.551,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "Revised Policy: \"IPsec must be utilized alongside secure network protocols (e.g., SSH, HTTPS) and robust cryptographic key management practices to ensure the secure establishment and maintenance of network architecture and enterprise assets (CIS Controls v8-None).\"",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 2486,
+        "embedding_hash": "abb81e5a"
+      }
+    },
+    {
+      "sentence": "IRM ISSO Internal Revenue Manual Information System Security Officer NARA National Archives and Records Administration NIST NSA OMB National Institute of Standards and Technology National Security Agency Office of Management and Budget An outsourcing provider is a provider of external information system services to an organization through a variety of consumer-producer Outsourcing relationships including but not limited to: joint ventures; business Provider partnerships; outsourcing arrangements",
+      "closest_control": "supplier services  ISOIEC 2013  All rights reserved Changes to the provision of services by suppliers, including maintaining and improving existing information security policies, procedures and controls, shall be managed, taking account of the",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.378,
+      "similarity_score": 0.622,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All outsourcing providers must be rigorously assessed and monitored, including maintaining an inventory and risk rating of vendors, to ensure compliance with established information security policies and contractual obligations (ISO 27001, CIS Controls v8).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 738,
+        "embedding_hash": "14d23700"
+      }
+    },
+    {
+      "sentence": "5) Public key infrastructure (PKI) is a set of policies, processes, server platforms, software, and workstations used for the purpose of administering certificates and public-private key pairs, including the ability to issue, maintain, and revoke public key certificates.",
+      "closest_control": "Securely manage network infrastructure. Example implementations include version-controlled-infrastructure-as- code, and the use of secure network protocols, such as SSH and HTTPS. 12.4 Establish and Maintain Architecture Diagram(s)",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "12.3",
+      "distance": 0.471,
+      "similarity_score": 0.529,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "The organization shall implement a robust Public Key Infrastructure (PKI) to securely manage certificates and key pairs, ensuring the use of version-controlled infrastructure-as-code and secure network protocols such as SSH and HTTPS to safeguard all communications (CIS Controls v8-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 1455,
+        "embedding_hash": "2c8b012d"
+      }
+    },
+    {
+      "sentence": "Class 3 PKI certificates are used for servers and software signing rather than for identifying individuals.",
+      "closest_control": "National Institute of Standards and Technology (NIST) Digital Identity Guidelines  https:pages.nist.gov800-63-3 National Institute of Standards and Technology (NIST) FIPS 140-2  https: nvlpubs.nist.govnistpubsFIPSNIST.FIPS.140-2.pdf National Institute of Standards and Technology (NIST) FIPS 140-3  h",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "18.5  Perform Periodic Internal Penetration Tests",
+      "distance": 0.542,
+      "similarity_score": 0.458,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "Class 3 PKI certificates shall be utilized for both server and software signing as well as for securely identifying individuals, in compliance with NIST Digital Identity Guidelines and ISO 27001 standards for the protection of personally identifiable information.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 2149,
+        "embedding_hash": "29ab72ce"
+      }
+    },
+    {
+      "sentence": "Class 4 certificates are used for business-to-business transactions.",
+      "closest_control": "main enterprise. Most data security and privacy regulations require their protection extend to third-party service providers, such as with Health Insurance Portability and Accountability Act (HIPAA) Business Associate agreements in healthcare, Federal Financial Institutions Examination Council (FFIE",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "OVERVIEW",
+      "distance": 0.545,
+      "similarity_score": 0.455,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "Class 4 certificates must be utilized for business-to-business transactions while ensuring compliance with relevant data security and privacy regulations, including protections for third-party service providers as mandated by HIPAA (CIS Controls v8-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 1662,
+        "embedding_hash": "2c5989dd"
+      }
+    },
+    {
+      "sentence": "Risk-bBased decision (RBD) is a decision made by individuals responsible for ensuring security by utilizing a wide variety of information, analysis, assessment and processes.",
+      "closest_control": "2) assess the realistic likelihood of the occurrence of the risks identified in 6.1.2 c) 1); and 3) determine the levels of risk; e) evaluates the information security risks: 1) compare the results of risk analysis with the risk criteria established in 6.1.2 a); and 2) prioritize the analysed risks ",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "6.1.2",
+      "distance": 0.454,
+      "similarity_score": 0.546,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "Risk-Based Decision (RBD) entails a systematic assessment of identified risks, evaluating their likelihood and impact to prioritize and communicate effective risk responses, in accordance with ISO 27001 and NIST CSF-RA-07 guidelines.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 167,
+        "embedding_hash": "7361db18"
+      }
+    },
+    {
+      "sentence": "The type of information taken into account when making a risk-based decision may change based on life cycle phase and decision is made taking entire posture of the system into account.",
+      "closest_control": "formally based on objectives or threat environment. Tier 2: Risk Informed Risk management practices are",
+      "framework": "NIST CSF",
+      "control_id": null,
+      "section": "2.0 website and through the CSF 2.0 Reference Tool, which allows users to explore them and",
+      "distance": 0.427,
+      "similarity_score": 0.573,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "Risk-based decisions will be informed by a comprehensive assessment of the system's entire posture, aligned with the evolving threat environment and life cycle phases, in accordance with NIST CSF and ISO 27001 standards.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 769,
+        "embedding_hash": "5656cf8e"
+      }
+    },
+    {
+      "sentence": "Some examples of information taken into account are formal and informal risk assessments, risk analysis, assessments, recommended risk mitigation strategies, and business impact.",
+      "closest_control": "Information security risk assessment The organization shall perform information security risk assessments at planned intervals or when significant changes are proposed or occur, taking account of the criteria established in 6.1.2 a). The organization shall retain documented information of the result",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "8.2",
+      "distance": 0.352,
+      "similarity_score": 0.648,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "The organization shall conduct regular information security risk assessments, incorporating both formal and informal methods, to evaluate and prioritize risks against established criteria, ensuring timely implementation of recommended mitigation strategies (ISO 27001-None, ISO 27001-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 269,
+        "embedding_hash": "1bb6de28"
+      }
+    },
+    {
+      "sentence": "(This list is not intended to be all inclusive).",
+      "closest_control": "dealing with user privacy. These may require compliance to regional or sector-specific data protection requirements. These factors make traditional approaches to security, like control (of processes, code sources, run-time environment, etc.), inspection, and testing, much more challenging. Also, the",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "OVERVIEW",
+      "distance": 0.721,
+      "similarity_score": 0.279,
+      "status": "Missing",
+      "priority": "High",
+      "suggested_improvement": "Policy Statement: \"Our organization commits to ensuring user privacy by adhering to applicable regional and sector-specific data protection regulations, leveraging the CIS Controls v8 as a framework for comprehensive security practices.\"",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 1766,
+        "embedding_hash": "c92644fa"
+      }
+    },
+    {
+      "sentence": "Term Definition or Description SA SOA SOP SP SRG SRM SSL SSP STIG TCP TD TLS System Administrator Service Oriented Architecture Standard Operating Procedures Special Publications Security Requirements Guide Security Risk Management Secure socket layer (SSL) is a protocol used for protecting private information during transmission via the Internet.",
+      "closest_control": "protected to prevent incomplete transmission, misrouting, unau thorized message alteration, unauthorized disclosure, unauthor ized message duplication or replay. Objective: To ensure that information security is designed and implemented within the development lifecycle of information systems.",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.376,
+      "similarity_score": 0.624,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All systems and applications must implement robust security mechanisms, including SSL protocols, to protect against unauthorized access, data alteration, and transmission vulnerabilities, in accordance with ISO 27001 standards.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 682,
+        "embedding_hash": "b2ec64b5"
+      }
+    },
+    {
+      "sentence": "Note: SSL works by using a public key to encrypt data that's transferred over the SSL connection.",
+      "closest_control": "Encrypt sensitive data at rest on servers, applications, and databases containing sensitive data. Storage-layer encryption, also known as server-side encryption, meets the minimum requirement of this Safeguard. Additional encryption methods may include application- layer encryption, also known as cl",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "3.11",
+      "distance": 0.48,
+      "similarity_score": 0.52,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All sensitive data must be encrypted both at rest and in transit using industry-standard protocols such as TLS and server-side encryption to ensure maximum security and compliance (CIS Controls v8-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 2256,
+        "embedding_hash": "78816c4c"
+      }
+    },
+    {
+      "sentence": "Most web browsers support SSL, and many web sites use the protocol to obtain confidential user information, such as credit card numbers.",
+      "closest_control": "embedded security controls like connection encryption, strong authentication, and phishing reporting buttons. Procedures and tools Web Browser Cybercriminals can exploit web browsers in multiple ways. If they have access to",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "OVERVIEW",
+      "distance": 0.44,
+      "similarity_score": 0.56,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All web browsers must implement SSL encryption for secure data transmission, utilize strong authentication methods, and incorporate phishing reporting mechanisms to protect against cyber threats, in accordance with CIS Controls v8-None.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 1232,
+        "embedding_hash": "350bb72d"
+      }
+    },
+    {
+      "sentence": "By convention, URLs that require an SSL connection start with “https:” instead of “http:”.",
+      "closest_control": "pages.  The mechanism is configured to evaluate the received HTTP header and payment page.  The mechanism is configured to evaluate the received HTTP header and payment page.",
+      "framework": "PCI DSS",
+      "control_id": null,
+      "section": "11.6.1",
+      "distance": 0.66,
+      "similarity_score": 0.34,
+      "status": "Missing",
+      "priority": "High",
+      "suggested_improvement": "All URLs that transmit sensitive data must utilize SSL encryption, indicated by the prefix “https:”, and the system must evaluate HTTP headers to ensure compliance with security standards (PCI DSS-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 706,
+        "embedding_hash": "b654e557"
+      }
+    },
+    {
+      "sentence": "System Security Plan Security Technical Implementation Guide Transmission Control Protocol (TCP) is a standard that defines how to establish and maintain a network conversation via which application programs can exchange data.",
+      "closest_control": "in systems and applications. A.13.1.2 Security of network services Security mechanisms, service levels and management require",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.418,
+      "similarity_score": 0.582,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All network services must implement robust security mechanisms to protect against threats such as incomplete transmission, misrouting, unauthorized alterations, disclosures, duplications, or replay, in accordance with ISO 27001 controls A.13.1.2.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 641,
+        "embedding_hash": "37684ec7"
+      }
+    },
+    {
+      "sentence": "TCP works with the Internet Protocol (IP), which defines how computers send packets of data to each other.",
+      "closest_control": "management, business operations, and communication possible. It consists of hardware and software, systems and devices, and it enables computing and communication between users, services, applications, and processes. Network infrastructure can be cloud, physical, or virtual. Devices embedded with se",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": null,
+      "distance": 0.569,
+      "similarity_score": 0.431,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "The TCP/IP framework facilitates secure and efficient data transmission between diverse hardware and software systems, enabling seamless communication across users, services, applications, and processes in both cloud and on-premises environments (CIS Controls v8-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 139,
+        "embedding_hash": "2e47cd5c"
+      }
+    },
+    {
+      "sentence": "Treasury Directive TransportLayer Security is an authentication and security protocol widely implemented in browsers and web servers.",
+      "closest_control": "Accountability Act Hypertext Transfer Protocol Hypertext Transfer Protocol Secure Infrastructure as a Service Identity and Access Management",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "OVAL",
+      "distance": 0.366,
+      "similarity_score": 0.634,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "**Improved Policy Statement:** All web applications and services must implement Transport Layer Security (TLS) to ensure secure data transmission and authentication, in alignment with CIS Controls v8-None for Identity and Access Management and Infrastructure as a Service.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 236,
+        "embedding_hash": "2e7904d3"
+      }
+    },
+    {
+      "sentence": "URL A uniform resource locator (URL) , previously universal resource locator) - usually pronounced by sounding out each letter, but sometimes pronounced “earl,” is the unique address for a ﬁle that is accessible on the Internet.",
+      "closest_control": "Refers to enterprise assets that are public facing and discoverable through domain name system reconnaissance and network scanning from the public internet outside of the enterprises network. Refers to non-public facing enterprise assets that can only be identified through network scans and reconnai",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": null,
+      "distance": 0.616,
+      "similarity_score": 0.384,
+      "status": "Missing",
+      "priority": "High",
+      "suggested_improvement": "All enterprise assets must utilize DNS filtering services to block access to known malicious domains and ensure URL filtering is maintained and enforced to protect against external threats (CIS Controls v8-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 116,
+        "embedding_hash": "b2eafc74"
+      }
+    },
+    {
+      "sentence": "A common way to get to a Web site is to enter the URL of its home page ﬁle in your web browser’s address line.",
+      "closest_control": "contents of payment pages as received by the consumer browser.  Examine system settings and mechanism configuration settings.",
+      "framework": "PCI DSS",
+      "control_id": null,
+      "section": "11.6.1",
+      "distance": 0.598,
+      "similarity_score": 0.402,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All users must access websites by verifying URLs through secure channels and utilizing up-to-date web browsers to mitigate the risk of cyber exploitation, in accordance with PCI DSS-None and CIS Controls v8-None.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 703,
+        "embedding_hash": "75133d9f"
+      }
+    },
+    {
+      "sentence": "However, any ﬁle within that web site can also be speciﬁed with a URL.",
+      "closest_control": "Enforce and update network-based URL filters to limit an enterprise asset from connecting to potentially malicious or unapproved websites. Example implementations include category-based filtering, reputation-based filtering, or through the use of block lists. Enforce filters for all enterprise asset",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "9.3",
+      "distance": 0.564,
+      "similarity_score": 0.436,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All files accessed on the company website must be filtered through approved network-based URL filters to prevent connections to potentially malicious or unapproved sites, in alignment with CIS Controls v8 and NIST CSF standards.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 2430,
+        "embedding_hash": "17d4df84"
+      }
+    },
+    {
+      "sentence": "Such a ﬁle might be any web (HTML) page other Term Definition or Description than the home page, an image ﬁle, or a program such as a common gateway interface application or Java applet.",
+      "closest_control": "pages.  The mechanism is configured to evaluate the received HTTP header and payment page.  The mechanism is configured to evaluate the received HTTP header and payment page.",
+      "framework": "PCI DSS",
+      "control_id": null,
+      "section": "11.6.1",
+      "distance": 0.598,
+      "similarity_score": 0.402,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All web files, including HTML pages, images, and applications, must be securely evaluated for compliance with HTTP header standards and payment page integrity to protect enterprise assets and sensitive data (PCI DSS-None, CIS Controls v8-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 706,
+        "embedding_hash": "b654e557"
+      }
+    },
+    {
+      "sentence": "The URL contains the name of the protocol to be used to access the ﬁle resource, a domain name that identiﬁes a speciﬁc computer on the Internet, and a pathname, a hierarchical description that speciﬁes the location of a ﬁle in that computer.",
+      "closest_control": "Refers to enterprise assets that are public facing and discoverable through domain name system reconnaissance and network scanning from the public internet outside of the enterprises network. Refers to non-public facing enterprise assets that can only be identified through network scans and reconnai",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": null,
+      "distance": 0.531,
+      "similarity_score": 0.469,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All publicly accessible URLs must be secured and monitored to prevent unauthorized access and ensure that remote file systems are properly configured to limit exposure of sensitive resources, in accordance with CIS Controls v8-None.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 116,
+        "embedding_hash": "b2eafc74"
+      }
+    },
+    {
+      "sentence": "Vendors are commercial suppliers of software or hardware (NISTIR 4734).",
+      "closest_control": "supplier services  ISOIEC 2013  All rights reserved Changes to the provision of services by suppliers, including maintaining and improving existing information security policies, procedures and controls, shall be managed, taking account of the",
+      "framework": "ISO 27001",
+      "control_id": null,
+      "section": "10.2  Continual improvement",
+      "distance": 0.41,
+      "similarity_score": 0.59,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "Improved Policy: Vendors shall be evaluated and managed to ensure the continuous improvement of their information security policies and procedures, in alignment with ISO 27001-A.15.2, to mitigate risks associated with the delivery of supplier services.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 738,
+        "embedding_hash": "14d23700"
+      }
+    },
+    {
+      "sentence": "Vendor More specifically, vendors create or manufacture products for government organizations or contractors.",
+      "closest_control": "service providers, an inventory of these vendors, and a risk rating associated with their potential impact to the business in case of an incident. There should also be language in the contracts to hold them accountable if there is an incident that impacts the enterprise. There are third-party assess",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "OVERVIEW",
+      "distance": 0.427,
+      "similarity_score": 0.573,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All vendors involved in creating or manufacturing products for government organizations or contractors must be documented in an inventory, assigned a risk rating based on their potential impact on the business, and include contractual language that ensures compliance with security standards (CIS Controls v8, NIST CSF).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 1692,
+        "embedding_hash": "a6f2dcdc"
+      }
+    },
+    {
+      "sentence": "Virtual private network is a virtual network, built on top of existing physical VPN networks, that provides a secure communications tunnel for data and other information transmitted between networks.",
+      "closest_control": "Tactics, Techniques, and Procedures United Kingdom Uniform Resource Locator Universal Serial Bus Virtual Private Network",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": "XCCDF",
+      "distance": 0.486,
+      "similarity_score": 0.514,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "Revised Policy: The Virtual Private Network (VPN) must be implemented alongside comprehensive security measures including Intrusion Detection Systems (IDS), Deep Packet Inspection (DPI), and Mobile Device Management (MDM) to ensure robust protection for all transmitted data and information (CIS Controls v8-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 279,
+        "embedding_hash": "7c655e3b"
+      }
+    },
+    {
+      "sentence": "Web Service A web service is a software system that supports interoperable machine-to- machine interaction over a network and fulfills a specific task or a set of tasks.",
+      "closest_control": "Refers to a software functionality or a set of software functionalities, such as the retrieval of specified information or the execution of a set of operations. Services provide a mechanism to enable access to one or more capabilities, where the access is provided using a prescribed interface and ba",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": null,
+      "distance": 0.435,
+      "similarity_score": 0.565,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "**Improved Policy Statement:** A web service is a software system enabling secure and interoperable machine-to-machine interactions over a network, designed to perform specific tasks, including data retrieval and operational execution, in compliance with CIS Controls v8-None.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 183,
+        "embedding_hash": "fa21ec1e"
+      }
+    },
+    {
+      "sentence": "It has an interface described in a machine - processable format (specifically, web service definition language, or WSDL).",
+      "closest_control": "management, business operations, and communication possible. It consists of hardware and software, systems and devices, and it enables computing and communication between users, services, applications, and processes. Network infrastructure can be cloud, physical, or virtual. Devices embedded with se",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": null,
+      "distance": 0.478,
+      "similarity_score": 0.522,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All interfaces must be documented in a machine-processable format, such as WSDL, to ensure standardized communication and interoperability between hardware, software, systems, and services, in alignment with CIS Controls v8-None.",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 139,
+        "embedding_hash": "2e47cd5c"
+      }
+    },
+    {
+      "sentence": "A web service is described using a standard, formal XML notion, called its service description, that provides all details necessary to interact with the service, including message formats (that detail the operations), transport protocols, and location.",
+      "closest_control": "Refers to a software functionality or a set of software functionalities, such as the retrieval of specified information or the execution of a set of operations. Services provide a mechanism to enable access to one or more capabilities, where the access is provided using a prescribed interface and ba",
+      "framework": "CIS Controls v8",
+      "control_id": null,
+      "section": null,
+      "distance": 0.35,
+      "similarity_score": 0.65,
+      "status": "Weak",
+      "priority": "Medium",
+      "suggested_improvement": "All web services must be documented using a formal XML service description that includes comprehensive details on message formats, transport protocols, and access mechanisms to ensure secure interaction and compliance with established operational capabilities (CIS Controls v8-None).",
+      "metadata": {
+        "model_used": "gpt-4o-mini",
+        "chunk_index": 183,
+        "embedding_hash": "fa21ec1e"
+      }
+    }
+  ],
+  "metadata": {
+    "client_name": "IRS",
+    "document_name": "IRS.pdf",
+    "total_sentences": 88,
+    "processed_sentences": 88,
+    "total_recommendations": 88,
+    "report_generated_at": "2025-10-02 11:49:24",
+    "processing_time_seconds": 83.07,
+    "model_used": "gpt-4o-mini",
+    "aligned_count": 8,
+    "weak_count": 75,
+    "missing_count": 5,
+    "high_priority_count": 5,
+    "medium_priority_count": 75,
+    "low_priority_count": 8
+  }
+}
