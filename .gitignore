@@ -1,7 +1,129 @@
-./requirements.txt
-./.gitignore
-./Dockerfile
-./api/__pycache__
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
 venv/
-./venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# Environment Variables
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Reports and Generated Files
+reports/*.pdf
+reports/*.json
+reports/*.csv
+
+# Large Data Files (keep structure, ignore content)
+data/framework_index*.faiss
+data/framework_metadata*.json
+data/uploads/
+data/policies/*.pdf
+data/frameworks_raw/*.pdf
+
+# Temporary Files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Node.js (for frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Frontend Build
+complyai-frontend/dist/
+complyai-frontend/build/
+complyai-frontend/.next/
+complyai-frontend/out/
+complyai-frontend/.nuxt/
+complyai-frontend/.cache/
+complyai-frontend/.parcel-cache/
+
+# Testing
+.coverage
+.pytest_cache/
+.tox/
+.nyc_output
+coverage/
+
+# Docker (if needed later)
+*.tar
+*.gz
+
+# Large Media Files
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.webm
+
+# Compressed Files
+*.zip
+*.rar
+*.7z
+*.tar.gz
+*.tar.bz2
+
+# Config files with sensitive data
+config/local.py
+config/production.py
+secrets.json
