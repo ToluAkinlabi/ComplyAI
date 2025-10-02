@@ -73,6 +73,19 @@ def export_pdf(report_data: Dict[str, Any], client_name: str) -> str:
             alignment=TA_JUSTIFY
         )
         
+        # Enhanced table text style for better wrapping
+        table_text_style = ParagraphStyle(
+            'TableText',
+            parent=styles['Normal'],
+            fontSize=8,
+            leading=10,
+            wordWrap='CJK',
+            allowWidows=1,
+            allowOrphans=1,
+            spaceAfter=2,
+            spaceBefore=2
+        )
+        
         # Build document content
         story = []
         
@@ -111,11 +124,14 @@ def export_pdf(report_data: Dict[str, Any], client_name: str) -> str:
                 if not isinstance(rec, dict):
                     continue
                 
-                # Truncate long text fields to prevent table overflow
+                # Truncate long text fields to prevent table overflow, but allow control_id to wrap
                 status = str(rec.get("status", "Unknown"))[:20]
                 priority = str(rec.get("priority", "Unknown"))[:15]
                 framework = str(rec.get("framework", "Unknown"))[:25]
-                control_id = str(rec.get("control_id", "Unknown"))[:20]
+                
+                # Don't truncate control_id, use Paragraph for wrapping instead
+                control_id_text = str(rec.get("control_id", "Unknown"))
+                control_id_para = Paragraph(control_id_text, table_text_style)
                 
                 # Truncate and clean policy statement
                 policy = str(rec.get("sentence", ""))[:200]
@@ -130,14 +146,14 @@ def export_pdf(report_data: Dict[str, Any], client_name: str) -> str:
                 improvement = improvement.replace('\n', ' ').replace('\r', ' ')
                 
                 # Create paragraphs for better text wrapping
-                policy_para = Paragraph(policy, ParagraphStyle('TableText', fontSize=8, leading=10))
-                improvement_para = Paragraph(improvement, ParagraphStyle('TableText', fontSize=8, leading=10))
+                policy_para = Paragraph(policy, table_text_style)
+                improvement_para = Paragraph(improvement, table_text_style)
                 
                 table_data.append([
                     status,
                     priority,
                     framework,
-                    control_id,
+                    control_id_para,
                     policy_para,
                     improvement_para
                 ])
@@ -147,14 +163,15 @@ def export_pdf(report_data: Dict[str, Any], client_name: str) -> str:
                     remaining = len(detailed_report) - i - 1
                     if remaining > 0:
                         table_data.append([
-                            "...", "...", "...", "...", 
-                            Paragraph(f"... and {remaining} more items", ParagraphStyle('TableText', fontSize=8)),
-                            Paragraph("See JSON report for complete details", ParagraphStyle('TableText', fontSize=8))
+                            "...", "...", "...", 
+                            Paragraph("...", table_text_style),
+                            Paragraph(f"... and {remaining} more items", table_text_style),
+                            Paragraph("See JSON report for complete details", table_text_style)
                         ])
                     break
             
-            # Create table with appropriate column widths
-            col_widths = [0.8*inch, 0.8*inch, 1.2*inch, 1*inch, 2.2*inch, 2.2*inch]
+            # Create table with appropriate column widths - more space for Control ID
+            col_widths = [0.7*inch, 0.7*inch, 1.1*inch, 1.3*inch, 2.1*inch, 2.1*inch]
             
             table = Table(table_data, colWidths=col_widths, repeatRows=1)
             

@@ -27,8 +27,8 @@ const SavedResultsViewer = ({ data }: SavedResultsViewerProps) => {
   const frameworks = Array.from(new Set(data.map((r) => r.Framework || r.framework)));
 
   const filtered = data.filter((r) => {
-    const sentence = r["Policy Sentence"]?.toLowerCase() || "";
-    const suggestion = r["Suggested Improvement"]?.toLowerCase() || "";
+    const sentence = (r["Policy Sentence"] || r["sentence"] || "").toLowerCase();
+    const suggestion = (r["Suggested Improvement"] || r["suggested_improvement"] || "").toLowerCase();
     const matchesSearch = sentence.includes(search.toLowerCase()) || suggestion.includes(search.toLowerCase());
     const matchesPriority = priority === "All" || (r.Priority || r.priority) === priority;
     const matchesFramework = framework === "All" || (r.Framework || r.framework) === framework;
@@ -46,7 +46,13 @@ const SavedResultsViewer = ({ data }: SavedResultsViewerProps) => {
   const exportCSV = () => {
     const headers = ["Status", "Framework", "Priority", "Policy Sentence", "Suggested Improvement"];
     const rows = filtered.map((r) =>
-      [r.Status, r.Framework, r.Priority, r["Policy Sentence"], r["Suggested Improvement"]].map((v) =>
+      [
+        r.Status || r.status || "Unknown",
+        r.Framework || r.framework || "Unknown", 
+        r.Priority || r.priority || "Unknown",
+        r["Policy Sentence"] || r.sentence || "N/A",
+        r["Suggested Improvement"] || r.suggested_improvement || "N/A"
+      ].map((v) =>
         `${v}`.replace(/"/g, '""')
       )
     );
@@ -174,11 +180,28 @@ const SavedResultsViewer = ({ data }: SavedResultsViewerProps) => {
             ) : (
               paginated.map((rec, i) => (
                 <tr key={i} className="border-t dark:border-gray-700">
-                  <td className="px-3 py-2 border dark:border-gray-700">{rec.Status || rec.status}</td>
-                  <td className="px-3 py-2 border dark:border-gray-700">{rec.Framework || rec.framework}</td>
+                  <td className="px-3 py-2 border dark:border-gray-700">
+                    <span className={`px-2 py-1 rounded text-xs font-medium ${
+                      (rec.Status || rec.status) === 'Aligned' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+                      (rec.Status || rec.status) === 'Weak' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
+                      (rec.Status || rec.status) === 'Missing' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
+                      'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+                    }`}>
+                      {rec.Status || rec.status || "Unknown"}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2 border dark:border-gray-700">{rec.Framework || rec.framework || "Unknown"}</td>
                   <td className="px-3 py-2 border dark:border-gray-700">{priorityBadge(rec.Priority || rec.priority)}</td>
-                  <td className="px-3 py-2 border dark:border-gray-700">{(rec["Policy Sentence"] || "")}</td>
-                  <td className="px-3 py-2 border dark:border-gray-700">{(rec["Suggested Improvement"] || "N/A")}</td>
+                  <td className="px-3 py-2 border dark:border-gray-700">{(rec["Policy Sentence"] || rec.sentence || "N/A")}</td>
+                  <td className="px-3 py-2 border dark:border-gray-700">
+                    <div className="max-w-xs overflow-hidden">
+                      {(rec["Suggested Improvement"] || rec.suggested_improvement || "").trim() === "" ? (
+                        <span className="text-gray-400 italic">No suggestion needed</span>
+                      ) : (
+                        <span className="text-sm">{rec["Suggested Improvement"] || rec.suggested_improvement}</span>
+                      )}
+                    </div>
+                  </td>
                 </tr>
               ))
             )}

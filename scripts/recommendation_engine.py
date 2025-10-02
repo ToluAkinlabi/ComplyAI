@@ -4,6 +4,8 @@ from datetime import datetime
 from typing import List, Dict, Any, Tuple
 from concurrent.futures import ThreadPoolExecutor
 import time
+import hashlib
+from functools import lru_cache
 
 from scripts.semantic_engine import semantic_engine
 from scripts.framework_loader import load_frameworks
@@ -18,6 +20,7 @@ except Exception:
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
+# Enhanced configuration with performance optimizations
 CONFIG = {
     "openai_model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
     "max_completion_tokens": int(os.getenv("MAX_COMPLETION_TOKENS", "200")),
@@ -25,6 +28,11 @@ CONFIG = {
     "aligned_threshold": float(os.getenv("ALIGNED_THRESHOLD", "0.7")),
     "weak_threshold": float(os.getenv("WEAK_THRESHOLD", "0.4")),
     "max_suggestions": int(os.getenv("MAX_SUGGESTIONS", "3")),
+    # Performance optimization settings
+    "batch_size": 10,
+    "suggestion_batch_size": 5,
+    "max_concurrent_workers": 3,
+    "cache_similarity": True,
 }
 
 # Parse temperature once
@@ -32,6 +40,60 @@ try:
     CONFIG["temperature"] = float(CONFIG["temperature_env"])
 except Exception:
     CONFIG["temperature"] = 0.6
+
+# Caching system for performance optimization
+_similarity_cache = {}
+_cache_max_size = 1000
+
+@lru_cache(maxsize=500)
+def _get_sentence_hash(sentence: str) -> str:
+    """Generate hash for sentence caching"""
+    return hashlib.md5(sentence.lower().encode()).hexdigest()[:16]
+
+def _get_cached_similarity(sentence_hash: str):
+    """Get cached similarity results"""
+    return _similarity_cache.get(sentence_hash)
+
+def _cache_similarity(sentence_hash: str, results):
+    """Cache similarity results with size limit"""
+    if len(_similarity_cache) >= _cache_max_size:
+        # Remove oldest entries
+        oldest_keys = list(_similarity_cache.keys())[:100]
+        for key in oldest_keys:
+            del _similarity_cache[key]
+    _similarity_cache[sentence_hash] = results
+
+def _extract_control_id_optimized(best: Dict, index: int) -> str:
+    """Optimized control ID extraction with fallbacks"""
+    control_id = (
+        best.get("control_id") or 
+        best.get("id") or 
+        best.get("control_number") or 
+        best.get("requirement_id") or
+        f"{best.get('framework', 'UNK')}-{index+1:03d}"
+    )
+    
+    if not control_id or control_id == "Unknown":
+        control_id = f"{best.get('framework', 'UNKNOWN')}-REQ-{index+1:03d}"
+    
+    return control_id
+
+@lru_cache(maxsize=100)
+def _extract_section_optimized(framework: str, section: str, category: str, domain: str) -> str:
+    """Cached section extraction"""
+    return section or category or domain or "General"
+
+def _optimize_memory_usage():
+    """Clean up memory periodically"""
+    import gc
+    
+    # Clear caches if they get too large
+    if len(_similarity_cache) > 800:
+        _similarity_cache.clear()
+        logger.info("🧹 Cleared similarity cache")
+    
+    # Force garbage collection
+    gc.collect()
 
 # OpenAI client setup
 OPENAI_NEW_API = False
@@ -131,11 +193,11 @@ def suggest_improvement(sentence: str, closest_controls_with_metadata: List[Dict
             return "No relevant controls found."
 
         context_parts, citations = [], []
-        for i, control_data in enumerate(closest_controls_with_metadata[:2], 1):  # Reduced to top 2
+        for i, control_data in enumerate(closest_controls_with_metadata[:2], 1):
             if not isinstance(control_data, dict):
                 continue
             
-            control_text = control_data.get("text", "Unknown")[:200]  # Truncate long controls
+            control_text = control_data.get("text", "Unknown")[:200]
             framework = control_data.get("framework", "Unknown")
             control_id = control_data.get("control_id", "Unknown")
             confidence = float(control_data.get("similarity_score", 0.0) or 0.0)
@@ -148,7 +210,7 @@ def suggest_improvement(sentence: str, closest_controls_with_metadata: List[Dict
 
         prompt = (
             "As a compliance expert, provide a concise improved policy statement.\n\n"
-            f"Current Policy: {sentence[:300]}\n\n"  # Truncate long sentences
+            f"Current Policy: {sentence[:300]}\n\n"
             f"Reference Controls:\n" + "\n".join(context_parts) + 
             f"\n\nProvide ONE improved policy sentence (max 2 lines) that addresses the gap. "
             f"Cite: {', '.join(citations)}"
@@ -164,11 +226,9 @@ def suggest_improvement_batch(sentences_and_controls: List[Tuple[str, List[Dict]
     if not sentences_and_controls:
         return []
     
-    # For small batches, use combined approach
     if len(sentences_and_controls) <= 3:
         return _batch_suggest_combined(sentences_and_controls)
     
-    # For larger batches, use parallel processing with limited workers
     return _batch_suggest_parallel(sentences_and_controls)
 
 def _batch_suggest_combined(sentences_and_controls: List[Tuple[str, List[Dict]]]) -> List[str]:
@@ -177,12 +237,11 @@ def _batch_suggest_combined(sentences_and_controls: List[Tuple[str, List[Dict]]]
         batch_prompt = "You are a compliance expert. Provide concise policy improvements for each:\n\n"
         
         for i, (sentence, controls) in enumerate(sentences_and_controls, 1):
-            # Get top control only for brevity
             if controls and isinstance(controls[0], dict):
                 control = controls[0]
                 framework = control.get("framework", "Unknown")
                 control_id = control.get("control_id", "Unknown")
-                control_text = control.get("text", "Unknown")[:150]  # Truncate
+                control_text = control.get("text", "Unknown")[:150]
                 
                 batch_prompt += (
                     f"POLICY {i}: {sentence[:200]}\n"
@@ -211,7 +270,6 @@ def _batch_suggest_combined(sentences_and_controls: List[Tuple[str, List[Dict]]]
         if current_improvement:
             improvements.append(current_improvement.strip())
         
-        # Ensure correct count
         while len(improvements) < len(sentences_and_controls):
             improvements.append("Unable to generate specific improvement.")
         
@@ -228,13 +286,13 @@ def _batch_suggest_parallel(sentences_and_controls: List[Tuple[str, List[Dict]]]
         return suggest_improvement(sentence, controls)
     
     try:
-        with ThreadPoolExecutor(max_workers=2) as executor:  # Limited to 2 concurrent calls
+        with ThreadPoolExecutor(max_workers=CONFIG["max_concurrent_workers"]) as executor:
             futures = [executor.submit(process_single, item) for item in sentences_and_controls]
             results = []
             
             for future in futures:
                 try:
-                    result = future.result(timeout=20)  # Reduced timeout
+                    result = future.result(timeout=15)
                     results.append(result)
                 except Exception as e:
                     logger.error(f"❌ Error in parallel suggestion: {e}")
@@ -307,14 +365,25 @@ def generate_recommendations(policy_sentences: List[str], client_name: str = "Cl
     recommendations: List[Dict[str, Any]] = []
     weak_sentences = []
     
-    logger.info(f"🔍 Processing {len(policy_sentences)} policy sentences")
+    logger.info(f"🔍 Processing {len(policy_sentences)} policy sentences with caching")
 
-    # First pass: analyze sentences and collect weak ones
+    # Main processing loop with caching optimization
     for i, sentence in enumerate(policy_sentences):
         try:
-            results_with_metadata = semantic_engine.retrieve_with_metadata(
-                sentence, top_k=CONFIG["max_suggestions"]
-            )
+            # Add caching for similarity calculations
+            sentence_hash = _get_sentence_hash(sentence)
+            cached_result = _get_cached_similarity(sentence_hash)
+            
+            if cached_result and CONFIG.get("cache_similarity", True):
+                results_with_metadata = cached_result
+                logger.debug(f"📋 Using cached similarity for sentence {i+1}")
+            else:
+                results_with_metadata = semantic_engine.retrieve_with_metadata(
+                    sentence, top_k=CONFIG["max_suggestions"]
+                )
+                # Cache the result
+                if CONFIG.get("cache_similarity", True):
+                    _cache_similarity(sentence_hash, results_with_metadata)
             
             if not isinstance(results_with_metadata, list) or not results_with_metadata:
                 logger.warning(f"⚠️ No results for sentence {i+1}")
@@ -326,21 +395,31 @@ def generate_recommendations(policy_sentences: List[str], client_name: str = "Cl
                 continue
 
             sim = float(best.get("similarity_score", 0.0) or 0.0)
+            
+            # Optimized extraction functions
+            control_id = _extract_control_id_optimized(best, i)
+            section = _extract_section_optimized(
+                best.get("framework", ""),
+                best.get("section", ""),
+                best.get("category", ""),
+                best.get("domain", "")
+            )
+            
             if sim >= CONFIG["aligned_threshold"]:
                 status, priority = "Aligned", "Low"
             elif sim >= CONFIG["weak_threshold"]:
                 status, priority = "Weak", "Medium"
-                weak_sentences.append((i, sentence, results_with_metadata))
+                weak_sentences.append((i, sentence, results_with_metadata[:2]))
             else:
                 status, priority = "Missing", "High"
-                weak_sentences.append((i, sentence, results_with_metadata))
+                weak_sentences.append((i, sentence, results_with_metadata[:2]))
 
             rec = {
-                "sentence": sentence[:500],  # Truncate long sentences for PDF
-                "closest_control": best.get("text", "")[:300],  # Truncate for PDF
+                "sentence": sentence[:500],
+                "closest_control": best.get("text", "")[:300],
                 "framework": best.get("framework", "Unknown"),
-                "control_id": best.get("control_id", "Unknown"),
-                "section": best.get("section", "General"),
+                "control_id": str(control_id),
+                "section": str(section),
                 "distance": round(1 - sim, 3),
                 "similarity_score": round(sim, 3),
                 "status": status,
@@ -353,13 +432,13 @@ def generate_recommendations(policy_sentences: List[str], client_name: str = "Cl
                 },
             }
             recommendations.append(rec)
-            logger.info(f"✅ Processed sentence {i+1}/{len(policy_sentences)}: {status} (sim: {sim:.3f})")
+            logger.info(f"✅ Processed sentence {i+1}/{len(policy_sentences)}: {status} (sim: {sim:.3f}) - Control: {control_id}")
 
         except Exception as e:
             logger.error(f"❌ Error processing sentence {i+1}: {e}")
             continue
 
-    # Second pass: Generate suggestions in batches
+    # Generate suggestions in batches for performance
     if weak_sentences:
         logger.info(f"🤖 Generating {len(weak_sentences)} AI suggestions using batch processing...")
         
@@ -374,8 +453,7 @@ def generate_recommendations(policy_sentences: List[str], client_name: str = "Cl
         # Update recommendations with suggestions
         for (_, sentence, _), suggestion in zip(weak_sentences, suggestions):
             for rec in recommendations:
-                if rec["sentence"].startswith(sentence[:100]):  # Match by first 100 chars
-                    # Truncate suggestion for PDF compatibility
+                if rec["sentence"].startswith(sentence[:100]):
                     rec["suggested_improvement"] = suggestion[:400]
                     break
 
@@ -383,6 +461,9 @@ def generate_recommendations(policy_sentences: List[str], client_name: str = "Cl
     
     end_time = datetime.now()
     processing_time = (end_time - start_time).total_seconds()
+    
+    # Clean up memory
+    _optimize_memory_usage()
     
     report_data = {
         "executive_summary": executive_summary,

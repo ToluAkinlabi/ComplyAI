@@ -4,11 +4,13 @@ import Dropzone from "./Dropzone";
 import { toast } from "react-hot-toast";
 
 interface UploadFormProps {
-  file: File | null;
-  setFile: (file: File | null) => void;
+    setFile: (file: File | null) => void;
+    file: File | null;
+    onUploadStart?: () => void;
+    onUploadComplete?: (result: any) => void;
 }
 
-const UploadForm = ({ file, setFile }: UploadFormProps) => {
+const UploadForm = ({ file, setFile, onUploadStart, onUploadComplete }: UploadFormProps) => {
   const [clientName, setClientName] = useState("");
   const [loading, setLoading] = useState(false);
   const [reportUrl, setReportUrl] = useState<string | null>(null);
@@ -25,6 +27,10 @@ const UploadForm = ({ file, setFile }: UploadFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (onUploadStart) {
+      onUploadStart();
+    }
 
     if (!file || !clientName.trim()) {
       toast.error("Please provide both the client name and a valid PDF file.");
@@ -44,6 +50,9 @@ const UploadForm = ({ file, setFile }: UploadFormProps) => {
       if (res.status === 200 && res.data.report_url) {
         setReportUrl(res.data.report_url);
         toast.success("✅ Report generated successfully!");
+        if (onUploadComplete) {
+          onUploadComplete(res.data);
+        }
       } else {
         toast.error("⚠️ Report generated, but no PDF returned.");
       }

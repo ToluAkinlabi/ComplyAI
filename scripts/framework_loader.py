@@ -6,6 +6,9 @@ import os
 import json
 import logging
 from typing import List, Dict
+import pickle
+import hashlib
+from pathlib import Path
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -41,6 +44,26 @@ def load_frameworks() -> List[Dict]:
 
     logger.info(f"Loaded {len(data)} frameworks")
     return data
+
+def load_frameworks_cached():
+    cache_file = "data/framework_cache.pkl"
+    metadata_files = list(Path("data").glob("framework_metadata*.json"))
+    
+    # Check if cache is valid
+    if Path(cache_file).exists():
+        cache_time = Path(cache_file).stat().st_mtime
+        latest_metadata = max(f.stat().st_mtime for f in metadata_files)
+        
+        if cache_time > latest_metadata:
+            with open(cache_file, 'rb') as f:
+                return pickle.load(f)
+    
+    # Load and cache
+    frameworks = load_frameworks()
+    with open(cache_file, 'wb') as f:
+        pickle.dump(frameworks, f)
+    
+    return frameworks
 
 def parse_and_save_frameworks():
     """
