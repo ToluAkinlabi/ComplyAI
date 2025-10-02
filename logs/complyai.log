@@ -699,3 +699,14 @@ A detailed migration guide is available here: https://github.com/openai/openai-p
 2025-10-01 17:52:47.071 | INFO     | api.main:delete_report:271 - Deleted JSON report: BSU_Compliance_Report.json
 2025-10-01 17:53:10.446 | INFO     | api.main:upload_policy:129 - Processing file: IRS.pdf for client: IRS
 2025-10-01 17:54:06.916 | INFO     | api.main:upload_policy:141 - Extracted 104 sentences, 88 after grouping
+2025-10-01 21:31:28.757 | INFO     | api.main:upload_policy:126 - Processing file: IRS.pdf for client: IRS
+2025-10-01 21:32:25.259 | INFO     | api.main:upload_policy:142 - Extracted 104 raw lines; 88 semantic groups.
+2025-10-02 00:02:12.320 | INFO     | api.main:upload_policy:126 - Processing file: IRS.pdf for client: IRS
+2025-10-02 00:03:04.757 | INFO     | api.main:upload_policy:142 - Extracted 104 raw lines; 88 semantic groups.
+2025-10-02 10:39:30.315 | INFO     | api.main:lifespan:58 - 🚀 Starting ComplyAI initialization...
+2025-10-02 10:39:30.315 | INFO     | api.main:lifespan:67 - 📚 Loading compliance frameworks...
+2025-10-02 10:39:30.328 | INFO     | api.main:lifespan:73 - Loaded 5 frameworks with 9665 total sentences
+2025-10-02 10:39:30.329 | INFO     | api.main:lifespan:76 - 🔧 Building semantic search index...
+2025-10-02 10:39:30.438 | INFO     | api.main:lifespan:96 - ✅ Semantic index built successfully with 4788 vectors
+2025-10-02 10:39:30.438 | INFO     | api.main:lifespan:105 - ✅ ComplyAI initialized successfully!
+2025-10-02 10:45:42.227 | INFO     | api.main:lifespan:115 - 🔄 ComplyAI shutting down...
