@@ -10,7 +10,7 @@ import sys
 import platform
 from datetime import datetime
 from contextlib import asynccontextmanager
-from typing import Optional
+from typing import Optional, Dict, Any
 import tempfile
 import asyncio 
 
@@ -27,9 +27,20 @@ from scripts.security_hardening import apply_owasp_hardening
 
 # Local imports
 from scripts import docparser, recommendation_engine, pdf_exporter
+from scripts.storage_backend import supabase_storage_enabled, upload_file_to_supabase
 from scripts.semantic_engine import semantic_engine, is_valid_sentence, group_semantic_sentences
 from scripts.framework_loader import load_frameworks
-from scripts.auth import users_db, verify_password, create_access_token, admin_required
+from scripts.auth import (
+    authenticate_user,
+    create_access_token,
+    admin_required,
+    init_auth_storage,
+    require_authenticated_user_if_enabled,
+    get_user_claims,
+    DEFAULT_ADMIN_EMAIL,
+)
+from database.report_store import create_report_record
+from database.session import ensure_database_ready
 
 # Import route modules
 from api.dashboard import router as dashboard_router
@@ -62,6 +73,12 @@ async def lifespan(app: FastAPI):
     
     try:
         logger.info("🚀 Starting ComplyAI initialization...")
+
+        # Validate database schema readiness (or initialize when allowed).
+        ensure_database_ready()
+
+        # Initialize auth persistence before serving requests.
+        init_auth_storage()
         
         # Validate environment
         required_env_vars = ["OPENAI_API_KEY", "OPENAI_MODEL"]
@@ -135,8 +152,11 @@ apply_owasp_hardening(app)
 os.makedirs("data/uploads", exist_ok=True)
 os.makedirs("reports", exist_ok=True)
 
-# Serve reports folder
-app.mount("/reports", StaticFiles(directory="reports"), name="reports")
+# Serve reports folder only when auth is not enforced.
+if os.getenv("REQUIRE_AUTH", "false").lower() != "true":
+    app.mount("/reports", StaticFiles(directory="reports"), name="reports")
+else:
+    logger.info("REQUIRE_AUTH=true detected; static /reports mount disabled")
 
 def validate_app_health() -> bool:
     """Check if the application is properly initialized"""
@@ -167,13 +187,20 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     try:
         logger.info(f"Login attempt for user: {form_data.username}")
 
-        user = users_db.get(form_data.username)
-        
-        if not user or not verify_password(form_data.password, user["hashed_password"]):
+        user = authenticate_user(form_data.username, form_data.password)
+
+        if not user:
             logger.warning(f"Failed login attempt for user: {form_data.username}")
             raise HTTPException(status_code=401, detail="Invalid credentials")
 
-        access_token = create_access_token(data={"sub": user["email"], "role": user["role"]})
+        access_token = create_access_token(
+            data={
+                "sub": user["email"],
+                "role": user.get("role", "user"),
+                "org_id": user.get("org_id"),
+                "user_id": user.get("user_id"),
+            }
+        )
         logger.info(f"Successful login for user: {form_data.username}")
         
         return {"access_token": access_token, "token_type": "bearer"}
@@ -185,15 +212,19 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         raise HTTPException(status_code=500, detail="Authentication service temporarily unavailable")
 
 @app.post("/upload-policy/")
-async def upload_policy(file: UploadFile = File(...), client_name: str = Form(...)):
+async def upload_policy(request: Request, file: UploadFile = File(...), client_name: str = Form(...)):
     """Upload and analyze policy document"""
     start_time = datetime.now()
     temp_file_path: Optional[str] = None
+    current_user = require_authenticated_user_if_enabled(request) or get_user_claims(DEFAULT_ADMIN_EMAIL)
 
     try:
         # Add timeout for the upload process
         try:
-            await asyncio.wait_for(_process_upload_policy(file, client_name, start_time), timeout=300)
+            return await asyncio.wait_for(
+                _process_upload_policy(file, client_name, start_time, current_user=current_user),
+                timeout=300,
+            )
         except asyncio.TimeoutError:
             raise HTTPException(status_code=408, detail="Request timeout - document too large or complex")
     finally:
@@ -204,7 +235,12 @@ async def upload_policy(file: UploadFile = File(...), client_name: str = Form(..
             except Exception as e:
                 logger.warning(f"Failed to cleanup temporary file {temp_file_path}: {e}")
 
-async def _process_upload_policy(file: UploadFile, client_name: str, start_time: datetime):
+async def _process_upload_policy(
+    file: UploadFile,
+    client_name: str,
+    start_time: datetime,
+    current_user: Optional[Dict[str, Any]] = None,
+):
     temp_file_path: Optional[str] = None
     try:
         # Validate inputs
@@ -283,6 +319,11 @@ async def _process_upload_policy(file: UploadFile, client_name: str, start_time:
 
         # Generate PDF report
         output_path = pdf_exporter.export_pdf(report_data, client_name)
+        report_filename = os.path.basename(output_path)
+
+        # Attach tenancy ownership metadata before serializing JSON report.
+        report_data.setdefault("metadata", {})["organization_id"] = (current_user or {}).get("org_id")
+        report_data.setdefault("metadata", {})["created_by_user_id"] = (current_user or {}).get("user_id")
 
         # Save JSON report
         safe_client_name = re.sub(r"[^A-Za-z0-9_\-]+", "_", client_name) or "Client"
@@ -316,6 +357,36 @@ async def _process_upload_policy(file: UploadFile, client_name: str, start_time:
         
         if os.path.exists(json_path):
             response_data["json_report_url"] = f"/reports/{json_filename}"
+
+        # Optionally mirror artifacts to Supabase Storage for cloud durability.
+        if supabase_storage_enabled():
+            try:
+                storage_prefix = f"org-{(current_user or {}).get('org_id') or 'public'}"
+                report_object = f"{storage_prefix}/{report_filename}"
+                json_object = f"{storage_prefix}/{json_filename}"
+                report_storage_url = upload_file_to_supabase(output_path, report_object)
+                json_storage_url = upload_file_to_supabase(json_path, json_object)
+                if report_storage_url:
+                    response_data["report_storage_url"] = report_storage_url
+                if json_storage_url:
+                    response_data["json_storage_url"] = json_storage_url
+            except Exception as storage_error:
+                logger.warning(f"Failed to mirror report artifacts to Supabase Storage: {storage_error}")
+
+        # Persist registry record for org-scoped report access.
+        try:
+            create_report_record(
+                client_name=client_name,
+                document_name=file.filename,
+                report_data=report_data,
+                report_file_name=report_filename,
+                json_file_name=json_filename,
+                file_size=file_size,
+                processing_time_seconds=processing_time,
+                user=current_user,
+            )
+        except Exception as db_error:
+            logger.warning(f"Failed to persist report record: {db_error}")
                 
         return response_data
             

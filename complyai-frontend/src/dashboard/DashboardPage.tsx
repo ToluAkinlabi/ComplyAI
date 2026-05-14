@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
 import SavedResultsViewer from "./SavedResultsViewer";
 import CompareModal from "../components/CompareModal";
 import useIsMobile from "../hooks/useIsMobile";
+import { api, API_BASE_URL, buildApiUrl } from "../api";
 
 interface DashboardSummary {
   total_reports: number;
@@ -53,8 +53,8 @@ const DashboardPage = () => {
 
       // Fetch dashboard summary and reports list
       const [summaryResponse, reportsListResponse] = await Promise.all([
-        axios.get("http://localhost:8000/dashboard/summary"),
-        axios.get("http://localhost:8000/list-json-reports/")
+        api.get("/dashboard/summary"),
+        api.get("/list-json-reports/")
       ]);
 
       // Set dashboard data
@@ -69,7 +69,7 @@ const DashboardPage = () => {
       if (summaryResponse.data.recent_reports?.length > 0) {
         const latestReport = summaryResponse.data.recent_reports[0];
         try {
-          const reportResponse = await axios.get(`http://localhost:8000/reports/${latestReport.filename}/json`);
+          const reportResponse = await api.get(`/reports/${latestReport.filename}/json`);
           setData(reportResponse.data.detailed_report || []);
         } catch (reportErr) {
           console.warn("Could not load latest report details:", reportErr);
@@ -82,7 +82,9 @@ const DashboardPage = () => {
     } catch (err: any) {
       console.error("Dashboard loading error:", err);
       if (err.code === 'ECONNREFUSED') {
-        setError("Cannot connect to backend server. Please ensure the server is running on http://localhost:8000");
+        setError(`Cannot connect to backend server. Please ensure the server is running on ${API_BASE_URL}`);
+      } else if (err.response?.status === 401) {
+        setError("You are not authenticated. Sign in first or disable REQUIRE_AUTH for local development.");
       } else {
         setError(err.response?.data?.detail || err.message || "Failed to load dashboard data");
       }
@@ -95,7 +97,7 @@ const DashboardPage = () => {
     try {
       setRebuilding(true);
       const toastId = toast.loading("Rebuilding semantic index...");
-      await axios.post("http://localhost:8000/rebuild-index/");
+      await api.post("/rebuild-index/");
       toast.success("✅ Index rebuilt successfully!", { id: toastId });
       
       // Reload dashboard data after rebuild
@@ -111,7 +113,7 @@ const DashboardPage = () => {
   const downloadCSV = async (reportFilename: string) => {
     try {
       const toastId = toast.loading("Downloading CSV...");
-      const response = await axios.get(`http://localhost:8000/reports/${reportFilename}/csv`, {
+      const response = await api.get(`/reports/${reportFilename}/csv`, {
         responseType: 'blob'
       });
       
@@ -369,7 +371,7 @@ const DashboardPage = () => {
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex gap-2">
                             <a
-                              href={`http://localhost:8000/reports/${report.filename.replace('.json', '.pdf')}`}
+                              href={buildApiUrl(`/reports/${report.filename.replace('.json', '.pdf')}`)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 transition"

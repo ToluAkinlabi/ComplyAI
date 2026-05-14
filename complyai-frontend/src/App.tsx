@@ -1,10 +1,9 @@
 // src/App.tsx
 
 import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Sidebar from "./components/Sidebar";
-import MobileSidebarToggle from "./components/MobileSidebarToggle";
 import Header from "./components/Header";
 import UploadPage from "./pages/UploadPage";
 import ReportPage from "./pages/ReportPage";

@@ -1,7 +1,7 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import Dropzone from "./Dropzone";
 import { toast } from "react-hot-toast";
+import { api, buildApiUrl } from "../api";
 
 interface UploadFormProps {
     setFile: (file: File | null) => void;
@@ -43,12 +43,12 @@ const UploadForm = ({ file, setFile, onUploadStart, onUploadComplete }: UploadFo
 
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:8000/upload-policy/", formData, {
+      const res = await api.post("/upload-policy/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (res.status === 200 && res.data.report_url) {
-        setReportUrl(res.data.report_url);
+        setReportUrl(buildApiUrl(res.data.report_url));
         toast.success("✅ Report generated successfully!");
         if (onUploadComplete) {
           onUploadComplete(res.data);
@@ -85,6 +85,7 @@ const UploadForm = ({ file, setFile, onUploadStart, onUploadComplete }: UploadFo
             <input
               type="file"
               accept=".pdf"
+              title="Upload PDF file"
               onChange={(e) => setFile(e.target.files?.[0] || null)}
               className="block w-full border rounded py-2 px-3 text-[14] file:bg-blue-600 file:text-white file:rounded file:border-none dark:text-gray-800"
             />

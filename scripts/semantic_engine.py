@@ -13,10 +13,15 @@ from dataclasses import dataclass
 from sklearn.cluster import AgglomerativeClustering
 import numpy as np
 from sentence_transformers import SentenceTransformer
+from sentence_transformers import CrossEncoder
 
 # Configuration
 CONFIG = {
     "model_name": os.getenv("SEMANTIC_MODEL", "all-mpnet-base-v2"),
+    "enable_reranker": os.getenv("ENABLE_RERANKER", "false").lower() == "true",
+    "reranker_model_name": os.getenv("RERANKER_MODEL", "cross-encoder/ms-marco-MiniLM-L-6-v2"),
+    "reranker_candidate_multiplier": int(os.getenv("RERANKER_CANDIDATE_MULTIPLIER", "4")),
+    "reranker_top_n": int(os.getenv("RERANKER_TOP_N", "20")),
     "window_size": int(os.getenv("CHUNK_WINDOW_SIZE", "3")),
     "stride": int(os.getenv("CHUNK_STRIDE", "1")),
     "grouping_threshold": float(os.getenv("GROUPING_THRESHOLD", "0.7")),
@@ -50,8 +55,17 @@ class ChunkMetadata:
 class EnhancedSemanticEngine:
     def __init__(self):
         self.model = model
+        self.reranker = None
         self.index = None
         self.chunks_metadata: List[ChunkMetadata] = []
+
+        if CONFIG["enable_reranker"]:
+            try:
+                self.reranker = CrossEncoder(CONFIG["reranker_model_name"])
+                logger.info(f"✅ Reranker enabled with model {CONFIG['reranker_model_name']}")
+            except Exception as e:
+                logger.warning(f"⚠️ Failed to initialize reranker: {e}")
+                self.reranker = None
 
     def is_valid_sentence(self, sentence: str) -> bool:
         if not sentence or len(sentence.strip()) < CONFIG["min_sentence_length"]:
@@ -189,7 +203,12 @@ class EnhancedSemanticEngine:
 
         q = self.model.encode([query])
         q = self.normalize_vectors(q)
-        scores, indices = self.index.search(q, top_k)
+        candidate_k = top_k
+        if self.reranker is not None:
+            candidate_k = max(top_k * CONFIG["reranker_candidate_multiplier"], CONFIG["reranker_top_n"], top_k)
+        candidate_k = min(candidate_k, len(self.chunks_metadata))
+
+        scores, indices = self.index.search(q, candidate_k)
 
         results = []
         for score, idx in zip(scores[0], indices[0]):
@@ -204,10 +223,23 @@ class EnhancedSemanticEngine:
                     "metadata": {
                         "chunk_index": c.chunk_index,
                         "embedding_hash": c.embedding_hash,
-                        "original_sentences_count": len(c.original_sentences) if c.original_sentences else 0
+                        "original_sentences_count": len(c.original_sentences) if c.original_sentences else 0,
+                        "reranker_score": None,
                     }
                 })
-        return results
+
+        if self.reranker is not None and results:
+            try:
+                pairs = [[query, item["text"]] for item in results]
+                rerank_scores = self.reranker.predict(pairs)
+                for item, rerank_score in zip(results, rerank_scores):
+                    item["metadata"]["reranker_score"] = float(rerank_score)
+
+                results.sort(key=lambda item: item["metadata"].get("reranker_score", -9999.0), reverse=True)
+            except Exception as e:
+                logger.warning(f"⚠️ Reranking failed, using vector ranking only: {e}")
+
+        return results[:top_k]
 
     @staticmethod
     def normalize_vectors(vectors):

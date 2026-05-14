@@ -5,24 +5,35 @@ import csv
 import io
 from datetime import datetime
 from typing import Dict, Any
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import Response
 import logging
+from scripts.auth import require_authenticated_user_if_enabled
+from database.report_store import get_report_record_for_user, list_report_records_for_user, report_path_for_name
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
+
+def _read_json_report_for_user(report_name: str, current_user):
+    record = get_report_record_for_user(current_user, report_name)
+    if current_user is not None and record is None:
+        raise HTTPException(status_code=404, detail="Report not found")
+
+    report_path = report_path_for_name(report_name)
+    if not os.path.exists(report_path):
+        raise HTTPException(status_code=404, detail="Report not found")
+
+    with open(report_path, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
 @router.get("/dashboard/summary")
-async def get_dashboard_summary():
+async def get_dashboard_summary(request: Request):
     """Get dashboard summary data from all reports"""
+    current_user = require_authenticated_user_if_enabled(request)
     try:
-        reports_dir = "reports"
-        if not os.path.exists(reports_dir):
-            return {"total_reports": 0, "recent_reports": [], "summary_stats": {}}
-        
-        json_files = [f for f in os.listdir(reports_dir) if f.endswith(".json")]
-        
-        if not json_files:
+        json_records = list_report_records_for_user(current_user, include_type="json")
+        if not json_records:
             return {"total_reports": 0, "recent_reports": [], "summary_stats": {}}
         
         recent_reports = []
@@ -30,9 +41,14 @@ async def get_dashboard_summary():
         framework_stats = {}
         
         # Process up to 10 most recent reports
-        for filename in sorted(json_files, reverse=True)[:10]:
+        for record in json_records[:10]:
             try:
-                file_path = os.path.join(reports_dir, filename)
+                if not record.json_file_name:
+                    continue
+
+                file_path = report_path_for_name(record.json_file_name)
+                if not os.path.exists(file_path):
+                    continue
                 with open(file_path, 'r', encoding='utf-8') as f:
                     report_data = json.load(f)
                 
@@ -57,7 +73,7 @@ async def get_dashboard_summary():
                 file_stat = os.stat(file_path)
                 
                 recent_reports.append({
-                    "filename": filename,
+                    "filename": record.json_file_name,
                     "client_name": metadata.get("client_name", "Unknown"),
                     "document_name": metadata.get("document_name", "Unknown"),
                     "generated_at": metadata.get("report_generated_at", "Unknown"),
@@ -70,7 +86,7 @@ async def get_dashboard_summary():
                 })
                 
             except Exception as e:
-                logger.warning(f"Error processing report {filename}: {e}")
+                logger.warning(f"Error processing report {getattr(record, 'json_file_name', 'unknown')}: {e}")
                 continue
         
         # Calculate percentages
@@ -87,7 +103,7 @@ async def get_dashboard_summary():
         }
         
         return {
-            "total_reports": len(json_files),
+            "total_reports": len(json_records),
             "recent_reports": recent_reports,
             "summary_stats": summary_stats
         }
@@ -97,22 +113,25 @@ async def get_dashboard_summary():
         raise HTTPException(status_code=500, detail="Error retrieving dashboard data")
 
 @router.get("/dashboard/stats")
-async def get_dashboard_stats():
+async def get_dashboard_stats(request: Request):
     """Get aggregated statistics for dashboard charts"""
+    current_user = require_authenticated_user_if_enabled(request)
     try:
-        reports_dir = "reports"
-        if not os.path.exists(reports_dir):
+        json_records = list_report_records_for_user(current_user, include_type="json")
+        if not json_records:
             return {"framework_distribution": [], "status_trends": [], "recent_activity": []}
-        
-        json_files = [f for f in os.listdir(reports_dir) if f.endswith(".json")]
         
         framework_counts = {}
         status_counts = {"Aligned": 0, "Weak": 0, "Missing": 0}
         daily_activity = {}
         
-        for filename in json_files:
+        for record in json_records:
             try:
-                file_path = os.path.join(reports_dir, filename)
+                if not record.json_file_name:
+                    continue
+                file_path = report_path_for_name(record.json_file_name)
+                if not os.path.exists(file_path):
+                    continue
                 with open(file_path, 'r', encoding='utf-8') as f:
                     report_data = json.load(f)
                 
@@ -139,7 +158,7 @@ async def get_dashboard_stats():
                         status_counts[status] += 1
                         
             except Exception as e:
-                logger.warning(f"Error processing stats for {filename}: {e}")
+                logger.warning(f"Error processing stats for {getattr(record, 'json_file_name', 'unknown')}: {e}")
                 continue
         
         # Format for frontend
@@ -169,8 +188,9 @@ async def get_dashboard_stats():
         raise HTTPException(status_code=500, detail="Error retrieving dashboard statistics")
 
 @router.get("/reports/{report_name}/json")
-async def get_report_json(report_name: str):
+async def get_report_json(report_name: str, request: Request):
     """Get JSON report data"""
+    current_user = require_authenticated_user_if_enabled(request)
     try:
         # Validate filename
         if not re.match(r"^[A-Za-z0-9_.-]+\.json$", report_name):
@@ -179,15 +199,7 @@ async def get_report_json(report_name: str):
         if ".." in report_name or "/" in report_name or "\\" in report_name:
             raise HTTPException(status_code=400, detail="Invalid report name")
             
-        report_path = os.path.join("reports", report_name)
-        
-        if not os.path.exists(report_path):
-            raise HTTPException(status_code=404, detail="Report not found")
-
-        with open(report_path, 'r', encoding='utf-8') as f:
-            report_data = json.load(f)
-            
-        return report_data
+        return _read_json_report_for_user(report_name, current_user)
         
     except HTTPException:
         raise
@@ -196,21 +208,16 @@ async def get_report_json(report_name: str):
         raise HTTPException(status_code=500, detail="Error retrieving report data")
 
 @router.get("/reports/{report_name}/csv")
-async def export_report_csv(report_name: str):
+async def export_report_csv(report_name: str, request: Request):
     """Export report data as CSV"""
+    current_user = require_authenticated_user_if_enabled(request)
     try:
         # Validate filename
         json_name = report_name.replace('.csv', '.json')
         if not re.match(r"^[A-Za-z0-9_.-]+\.json$", json_name):
             raise HTTPException(status_code=400, detail="Invalid report name format")
         
-        report_path = os.path.join("reports", json_name)
-        
-        if not os.path.exists(report_path):
-            raise HTTPException(status_code=404, detail="Report not found")
-
-        with open(report_path, 'r', encoding='utf-8') as f:
-            report_data = json.load(f)
+        report_data = _read_json_report_for_user(json_name, current_user)
             
         detailed_report = report_data.get("detailed_report", [])
         

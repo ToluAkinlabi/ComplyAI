@@ -1,9 +1,9 @@
 // src/pages/ReportPage.tsx
 
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { FiTrash2, FiDownload } from "react-icons/fi";
 import toast from "react-hot-toast"; 
+import { api, buildApiUrl } from "../api";
 
 interface Report {
     name: string;
@@ -22,7 +22,7 @@ const ReportPage = () => {
     // Fetch reports from the server
     const fetchReports = async () => {
         try {
-            const res = await axios.get("http://localhost:8000/list-reports/");
+            const res = await api.get("/list-reports/");
             setReports(res.data.reports);
         } catch (error) {
             console.error("Failed to fetch reports", error);
@@ -49,7 +49,7 @@ const ReportPage = () => {
                       onClick={async () => {
                           toast.dismiss(t.id);
                           try {
-                              await axios.delete(`http://localhost:8000/delete-report/${name}`);
+                              await api.delete(`/delete-report/${name}`);
                               setReports(reports.filter((r) => r.name !== name));
                               toast.success("Report deleted!", { duration: 3000 });
                           } catch {
@@ -95,7 +95,7 @@ const ReportPage = () => {
                             </div>
                             <div className="flex justify-between items-center text-sm pt-2 border-t">
                                 <a
-                                    href={`http://localhost:8000/reports/${report.name}`}
+                                    href={buildApiUrl(`/reports/${report.name}`)}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex items-center space-x-1 text-blue-600 hover:underline"

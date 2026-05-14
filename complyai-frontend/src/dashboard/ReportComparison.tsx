@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Pie } from "react-chartjs-2";
+import { api } from "../api";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -24,8 +25,8 @@ const ReportComparison = ({ reports }: Props) => {
       try {
         const fetched = await Promise.all(
           reports.map(async (filename) => {
-            const res = await fetch(`http://localhost:8000/reports/${filename}`);
-            const data = await res.json();
+            const res = await api.get(`/reports/${filename}/json`);
+            const data = res.data;
             return { name: filename, summary: data.executive_summary };
           })
         );

@@ -1,5 +1,6 @@
 import os
 import logging
+import re
 from datetime import datetime
 from typing import List, Dict, Any, Tuple
 from concurrent.futures import ThreadPoolExecutor
@@ -22,11 +23,14 @@ logging.basicConfig(level=logging.INFO)
 
 # Enhanced configuration with performance optimizations
 CONFIG = {
-    "openai_model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+    "openai_model": os.getenv("OPENAI_MODEL", "gpt-4.1-mini"),
     "max_completion_tokens": int(os.getenv("MAX_COMPLETION_TOKENS", "200")),
     "temperature_env": os.getenv("OPENAI_TEMPERATURE", "0.6"),
     "aligned_threshold": float(os.getenv("ALIGNED_THRESHOLD", "0.7")),
     "weak_threshold": float(os.getenv("WEAK_THRESHOLD", "0.4")),
+    "min_confidence_margin": float(os.getenv("MIN_CONFIDENCE_MARGIN", "0.05")),
+    "keyword_overlap_aligned": float(os.getenv("KEYWORD_OVERLAP_ALIGNED", "0.35")),
+    "keyword_overlap_weak": float(os.getenv("KEYWORD_OVERLAP_WEAK", "0.2")),
     "max_suggestions": int(os.getenv("MAX_SUGGESTIONS", "3")),
     # Performance optimization settings
     "batch_size": 10,
@@ -94,6 +98,33 @@ def _optimize_memory_usage():
     
     # Force garbage collection
     gc.collect()
+
+
+def _keyword_overlap_score(a: str, b: str) -> float:
+    """Compute lightweight token overlap score for semantic confidence calibration."""
+    tokens_a = {t for t in re.findall(r"[a-zA-Z]{3,}", a.lower())}
+    tokens_b = {t for t in re.findall(r"[a-zA-Z]{3,}", b.lower())}
+    if not tokens_a or not tokens_b:
+        return 0.0
+    overlap = tokens_a.intersection(tokens_b)
+    return len(overlap) / float(len(tokens_a))
+
+
+def _classify_alignment(similarity: float, confidence_margin: float, keyword_overlap: float) -> Tuple[str, str, str]:
+    """Classify alignment using semantic score, rank-margin confidence, and lexical overlap."""
+    aligned_threshold = CONFIG["aligned_threshold"]
+    weak_threshold = CONFIG["weak_threshold"]
+    min_margin = CONFIG["min_confidence_margin"]
+    overlap_aligned = CONFIG["keyword_overlap_aligned"]
+    overlap_weak = CONFIG["keyword_overlap_weak"]
+
+    if similarity >= aligned_threshold and (confidence_margin >= min_margin or keyword_overlap >= overlap_aligned):
+        return "Aligned", "Low", "Strong semantic match"
+
+    if similarity >= weak_threshold or keyword_overlap >= overlap_weak:
+        return "Weak", "Medium", "Partial control coverage"
+
+    return "Missing", "High", "Insufficient semantic and lexical alignment"
 
 # OpenAI client setup
 OPENAI_NEW_API = False
@@ -395,6 +426,9 @@ def generate_recommendations(policy_sentences: List[str], client_name: str = "Cl
                 continue
 
             sim = float(best.get("similarity_score", 0.0) or 0.0)
+            second_best_sim = float(results_with_metadata[1].get("similarity_score", 0.0) or 0.0) if len(results_with_metadata) > 1 else 0.0
+            confidence_margin = max(0.0, sim - second_best_sim)
+            keyword_overlap = _keyword_overlap_score(sentence, best.get("text", ""))
             
             # Optimized extraction functions
             control_id = _extract_control_id_optimized(best, i)
@@ -405,13 +439,11 @@ def generate_recommendations(policy_sentences: List[str], client_name: str = "Cl
                 best.get("domain", "")
             )
             
-            if sim >= CONFIG["aligned_threshold"]:
-                status, priority = "Aligned", "Low"
-            elif sim >= CONFIG["weak_threshold"]:
-                status, priority = "Weak", "Medium"
+            status, priority, classification_reason = _classify_alignment(sim, confidence_margin, keyword_overlap)
+
+            if status == "Weak":
                 weak_sentences.append((i, sentence, results_with_metadata[:2]))
-            else:
-                status, priority = "Missing", "High"
+            elif status == "Missing":
                 weak_sentences.append((i, sentence, results_with_metadata[:2]))
 
             rec = {
@@ -422,13 +454,17 @@ def generate_recommendations(policy_sentences: List[str], client_name: str = "Cl
                 "section": str(section),
                 "distance": round(1 - sim, 3),
                 "similarity_score": round(sim, 3),
+                "confidence_margin": round(confidence_margin, 3),
+                "keyword_overlap": round(keyword_overlap, 3),
                 "status": status,
                 "priority": priority,
+                "classification_reason": classification_reason,
                 "suggested_improvement": "",
                 "metadata": {
                     "model_used": CONFIG["openai_model"],
                     "chunk_index": (best.get("metadata", {}) or {}).get("chunk_index"),
                     "embedding_hash": (best.get("metadata", {}) or {}).get("embedding_hash"),
+                    "reranker_score": (best.get("metadata", {}) or {}).get("reranker_score"),
                 },
             }
             recommendations.append(rec)
