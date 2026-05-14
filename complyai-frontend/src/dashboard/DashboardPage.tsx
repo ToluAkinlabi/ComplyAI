@@ -29,6 +29,15 @@ interface DashboardSummary {
   };
 }
 
+interface UsageQuota {
+  organization_id: number | null;
+  monthly_limit: number;
+  used: number;
+  remaining: number | null;
+  is_limited: boolean;
+  usage_percent: number | null;
+}
+
 const DashboardPage = () => {
   const isMobile = useIsMobile();
   
@@ -38,6 +47,7 @@ const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [availableReports, setAvailableReports] = useState<string[]>([]);
+  const [quota, setQuota] = useState<UsageQuota | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rebuilding, setRebuilding] = useState(false);
   const [selectedView, setSelectedView] = useState<'overview' | 'detailed'>('overview');
@@ -52,13 +62,15 @@ const DashboardPage = () => {
       setError("");
 
       // Fetch dashboard summary and reports list
-      const [summaryResponse, reportsListResponse] = await Promise.all([
+      const [summaryResponse, reportsListResponse, usageResponse] = await Promise.all([
         api.get("/dashboard/summary"),
-        api.get("/list-json-reports/")
+        api.get("/list-json-reports/"),
+        api.get("/usage/quota"),
       ]);
 
       // Set dashboard data
       setSummary(summaryResponse.data);
+      setQuota(usageResponse.data || null);
 
       // Set available reports for comparison
       const reports = reportsListResponse.data.reports || [];
@@ -140,6 +152,15 @@ const DashboardPage = () => {
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  const usageBarWidthClass = (percent: number | null) => {
+    const value = percent || 0;
+    if (value >= 100) return "w-full";
+    if (value >= 75) return "w-3/4";
+    if (value >= 50) return "w-1/2";
+    if (value >= 25) return "w-1/4";
+    return "w-[10%]";
   };
 
   if (loading) {
@@ -265,6 +286,23 @@ const DashboardPage = () => {
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Requires attention</p>
               </div>
             </div>
+
+            {quota && quota.is_limited ? (
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-lg shadow space-y-3">
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Monthly Usage</h3>
+                  <span className="text-sm text-gray-600 dark:text-gray-300">
+                    {quota.used} / {quota.monthly_limit} reports
+                  </span>
+                </div>
+                <div className="h-3 w-full bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+                  <div className={`h-full bg-blue-600 ${usageBarWidthClass(quota.usage_percent)}`}></div>
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Remaining this month: {quota.remaining ?? "Unlimited"}
+                </p>
+              </div>
+            ) : null}
 
             {/* Status Breakdown & Top Frameworks */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

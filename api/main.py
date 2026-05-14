@@ -20,6 +20,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
+from pydantic import BaseModel, EmailStr, Field
 
 # CORS and Security imports
 from scripts.cors import setup_cors
@@ -30,11 +31,30 @@ from scripts import docparser, recommendation_engine, pdf_exporter
 from scripts.storage_backend import supabase_storage_enabled, upload_file_to_supabase
 from scripts.semantic_engine import semantic_engine, is_valid_sentence, group_semantic_sentences
 from scripts.framework_loader import load_frameworks
+from scripts.usage_limits import enforce_monthly_report_limit
+from scripts.usage_limits import get_usage_snapshot
+from scripts.audit_log import write_audit_log
+from scripts.idempotency import get_cached_upload_response, store_upload_response
+from scripts.password_reset import consume_password_reset_token, create_password_reset_token
+from scripts.retention import purge_expired_reports, retention_window_days
 from scripts.auth import (
+    accept_user_invite,
+    assert_login_not_locked,
     authenticate_user,
+    clear_login_failures,
+    create_user_invite,
     create_access_token,
+    create_refresh_token,
     admin_required,
+    get_current_user,
     init_auth_storage,
+    list_user_invites,
+    preview_invite_token,
+    register_login_failure,
+    REPORT_WRITE_ROLES,
+    require_roles,
+    refresh_access_token,
+    revoke_refresh_token,
     require_authenticated_user_if_enabled,
     get_user_claims,
     DEFAULT_ADMIN_EMAIL,
@@ -65,6 +85,30 @@ class AppState:
         self.initialization_error = None
 
 app_state = AppState()
+
+
+class InviteRequest(BaseModel):
+    email: EmailStr
+    role: str = Field(default="member", min_length=3, max_length=32)
+
+
+class RegisterInviteRequest(BaseModel):
+    invite_token: str = Field(min_length=16)
+    full_name: str = Field(default="", max_length=120)
+    password: str = Field(min_length=8, max_length=128)
+
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str = Field(min_length=16)
+
+
+class PasswordResetRequest(BaseModel):
+    email: EmailStr
+
+
+class PasswordResetConfirmRequest(BaseModel):
+    token: str = Field(min_length=16)
+    new_password: str = Field(min_length=8, max_length=128)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -187,11 +231,35 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     try:
         logger.info(f"Login attempt for user: {form_data.username}")
 
+        try:
+            assert_login_not_locked(form_data.username)
+        except HTTPException as lock_exc:
+            write_audit_log(
+                organization_id=None,
+                user_id=None,
+                event_type="auth",
+                action="login",
+                status="failure",
+                details={"email": form_data.username, "reason": "account_locked"},
+            )
+            raise lock_exc
+
         user = authenticate_user(form_data.username, form_data.password)
 
         if not user:
+            register_login_failure(form_data.username)
             logger.warning(f"Failed login attempt for user: {form_data.username}")
+            write_audit_log(
+                organization_id=None,
+                user_id=None,
+                event_type="auth",
+                action="login",
+                status="failure",
+                details={"email": form_data.username, "reason": "invalid_credentials"},
+            )
             raise HTTPException(status_code=401, detail="Invalid credentials")
+
+            clear_login_failures(form_data.username)
 
         access_token = create_access_token(
             data={
@@ -201,9 +269,21 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
                 "user_id": user.get("user_id"),
             }
         )
+        refresh_token = None
+        if user.get("user_id") is not None:
+            refresh_token = create_refresh_token(user_id=int(user["user_id"]))
+
+        write_audit_log(
+            organization_id=user.get("org_id"),
+            user_id=user.get("user_id"),
+            event_type="auth",
+            action="login",
+            status="success",
+            details={"email": form_data.username},
+        )
         logger.info(f"Successful login for user: {form_data.username}")
         
-        return {"access_token": access_token, "token_type": "bearer"}
+        return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
     
     except HTTPException:
         raise
@@ -211,20 +291,186 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         logger.error(f"Login error: {e}")
         raise HTTPException(status_code=500, detail="Authentication service temporarily unavailable")
 
+
+@app.post("/auth/refresh")
+async def refresh_token(payload: RefreshTokenRequest):
+    """Exchange refresh token for a new access token and rotated refresh token."""
+    access_token, new_refresh_token = refresh_access_token(payload.refresh_token)
+    return {"access_token": access_token, "refresh_token": new_refresh_token, "token_type": "bearer"}
+
+
+@app.post("/auth/logout")
+async def logout(payload: RefreshTokenRequest, user=Depends(get_current_user)):
+    """Revoke refresh token and record logout audit trail."""
+    revoke_refresh_token(payload.refresh_token)
+    write_audit_log(
+        organization_id=user.get("org_id"),
+        user_id=user.get("user_id"),
+        event_type="auth",
+        action="logout",
+        status="success",
+        details={"email": user.get("email")},
+    )
+    return {"success": True}
+
+
+@app.post("/auth/invite")
+async def invite_user(payload: InviteRequest, user=Depends(admin_required)):
+    """Invite a user into the current organization."""
+    invite_token = create_user_invite(actor=user, email=str(payload.email), role=payload.role)
+    write_audit_log(
+        organization_id=user.get("org_id"),
+        user_id=user.get("user_id"),
+        event_type="identity",
+        action="invite_user",
+        resource_type="user_invite",
+        resource_id=str(payload.email),
+        status="success",
+        details={"role": payload.role},
+    )
+    return {
+        "success": True,
+        "invite_token": invite_token,
+        "message": "Invite created. In production, deliver this token via email.",
+    }
+
+
+@app.post("/auth/register-invite")
+async def register_from_invite(payload: RegisterInviteRequest):
+    """Complete invite registration and return auth tokens."""
+    claims = accept_user_invite(
+        invite_token=payload.invite_token,
+        full_name=payload.full_name,
+        password=payload.password,
+    )
+    access_token = create_access_token(
+        data={
+            "sub": claims["email"],
+            "role": claims.get("role", "user"),
+            "org_id": claims.get("org_id"),
+            "user_id": claims.get("user_id"),
+        }
+    )
+    refresh_token = None
+    if claims.get("user_id") is not None:
+        refresh_token = create_refresh_token(user_id=int(claims["user_id"]))
+
+    write_audit_log(
+        organization_id=claims.get("org_id"),
+        user_id=claims.get("user_id"),
+        event_type="identity",
+        action="accept_invite",
+        resource_type="user",
+        resource_id=claims.get("email"),
+        status="success",
+    )
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+
+
+@app.post("/auth/password-reset/request")
+async def request_password_reset(payload: PasswordResetRequest):
+    """Create a password reset token for a user (response does not reveal account existence)."""
+    reset_token = create_password_reset_token(email=str(payload.email))
+
+    write_audit_log(
+        organization_id=None,
+        user_id=None,
+        event_type="identity",
+        action="password_reset_request",
+        resource_type="user",
+        resource_id=str(payload.email),
+        status="success",
+    )
+
+    response: Dict[str, Any] = {
+        "success": True,
+        "message": "If the account exists, a password reset token has been issued.",
+    }
+    if reset_token:
+        # Local/dev fallback until email delivery provider is integrated.
+        response["reset_token"] = reset_token
+    return response
+
+
+@app.post("/auth/password-reset/confirm")
+async def confirm_password_reset(payload: PasswordResetConfirmRequest):
+    """Consume password reset token and rotate account password."""
+    result = consume_password_reset_token(token=payload.token, new_password=payload.new_password)
+    write_audit_log(
+        organization_id=None,
+        user_id=result.get("user_id"),
+        event_type="identity",
+        action="password_reset_confirm",
+        resource_type="user",
+        resource_id=result.get("email"),
+        status="success",
+    )
+    return {"success": True}
+
+
+@app.get("/usage/quota")
+async def usage_quota(user=Depends(get_current_user)):
+    """Return monthly report quota usage for the authenticated user's organization."""
+    return get_usage_snapshot(user)
+
+
+@app.get("/auth/invites")
+async def list_invites(user=Depends(admin_required)):
+    """List all organization invites (admin only)."""
+    return {"invites": list_user_invites(actor=user)}
+
+
+@app.get("/auth/invite/preview/{invite_token}")
+async def preview_invite(invite_token: str):
+    """Preview invite details by token (public, no auth required)."""
+    return preview_invite_token(invite_token=invite_token)
+
+
 @app.post("/upload-policy/")
 async def upload_policy(request: Request, file: UploadFile = File(...), client_name: str = Form(...)):
     """Upload and analyze policy document"""
     start_time = datetime.now()
     temp_file_path: Optional[str] = None
     current_user = require_authenticated_user_if_enabled(request) or get_user_claims(DEFAULT_ADMIN_EMAIL)
+    require_roles(current_user, REPORT_WRITE_ROLES, detail="Your role does not allow generating reports")
+    idempotency_key = request.headers.get("Idempotency-Key")
 
     try:
+        if idempotency_key and file.filename:
+            try:
+                cached = get_cached_upload_response(
+                    idempotency_key=idempotency_key,
+                    client_name=client_name,
+                    filename=file.filename,
+                    user=current_user,
+                )
+            except ValueError as key_error:
+                raise HTTPException(status_code=409, detail=str(key_error))
+
+            if cached is not None:
+                return cached
+
+        # Enforce org-level quota before starting expensive processing.
+        enforce_monthly_report_limit(current_user)
+
         # Add timeout for the upload process
         try:
-            return await asyncio.wait_for(
+            response_payload = await asyncio.wait_for(
                 _process_upload_policy(file, client_name, start_time, current_user=current_user),
                 timeout=300,
             )
+            if idempotency_key and file.filename:
+                try:
+                    store_upload_response(
+                        idempotency_key=idempotency_key,
+                        client_name=client_name,
+                        filename=file.filename,
+                        user=current_user,
+                        response_payload=response_payload,
+                    )
+                except ValueError as key_error:
+                    raise HTTPException(status_code=409, detail=str(key_error))
+            return response_payload
         except asyncio.TimeoutError:
             raise HTTPException(status_code=408, detail="Request timeout - document too large or complex")
     finally:
@@ -234,6 +480,22 @@ async def upload_policy(request: Request, file: UploadFile = File(...), client_n
                 os.remove(temp_file_path)
             except Exception as e:
                 logger.warning(f"Failed to cleanup temporary file {temp_file_path}: {e}")
+
+
+@app.post("/admin/purge-reports")
+async def purge_old_reports(user=Depends(admin_required)):
+    """Purge report files and DB records older than retention policy window."""
+    result = purge_expired_reports()
+    write_audit_log(
+        organization_id=user.get("org_id"),
+        user_id=user.get("user_id"),
+        event_type="admin",
+        action="purge_reports",
+        resource_type="retention",
+        status="success",
+        details={"retention_days": retention_window_days(), **result},
+    )
+    return {"success": True, "retention_days": retention_window_days(), **result}
 
 async def _process_upload_policy(
     file: UploadFile,
@@ -387,6 +649,17 @@ async def _process_upload_policy(
             )
         except Exception as db_error:
             logger.warning(f"Failed to persist report record: {db_error}")
+
+        write_audit_log(
+            organization_id=(current_user or {}).get("org_id"),
+            user_id=(current_user or {}).get("user_id"),
+            event_type="report",
+            action="upload_policy",
+            resource_type="report",
+            resource_id=report_filename,
+            status="success",
+            details={"client_name": client_name, "document_name": file.filename},
+        )
                 
         return response_data
             
@@ -394,6 +667,15 @@ async def _process_upload_policy(
         raise
     except Exception as e:
         logger.error(f"Unexpected error processing policy upload: {e}", exc_info=True)
+        write_audit_log(
+            organization_id=(current_user or {}).get("org_id"),
+            user_id=(current_user or {}).get("user_id"),
+            event_type="report",
+            action="upload_policy",
+            resource_type="report",
+            status="failure",
+            details={"client_name": client_name, "document_name": file.filename if file else None},
+        )
         raise HTTPException(status_code=500, detail="An unexpected error occurred while processing the document")
     finally:
         if temp_file_path and os.path.exists(temp_file_path):

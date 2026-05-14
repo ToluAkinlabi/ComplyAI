@@ -24,6 +24,7 @@ ComplyAI is an AI tool for cybersecurity compliance and audit assessment. It com
 - `STRICT_MIGRATIONS`: set to `true` to require all tables to already exist (migration-only mode).
 - `USE_DB_AUTH`: set to `false` to disable DB-backed auth and use in-memory fallback.
 - `REQUIRE_AUTH`: set to `true` to require bearer authentication for report and dashboard API endpoints.
+- `MONTHLY_REPORT_LIMIT_PER_ORG`: optional hard cap on reports generated per org per calendar month (`0` disables limit).
 - `ENABLE_SUPABASE_STORAGE`: set to `true` to mirror report artifacts to Supabase Storage.
 - `SUPABASE_URL`: Supabase project URL used for storage upload.
 - `SUPABASE_SERVICE_ROLE_KEY`: service role key used for storage upload API calls.
@@ -78,3 +79,15 @@ ComplyAI is an AI tool for cybersecurity compliance and audit assessment. It com
 - New reports are registered in the database with `organization_id` and `created_by_user_id`.
 - Dashboard/report endpoints now resolve report access through this registry, enforcing org scope when auth is enabled.
 - Report history endpoint with pagination/search/status filtering: `GET /reports/history`.
+
+## Identity and Session Endpoints
+
+- `POST /login`: issues `access_token` and `refresh_token`.
+- `POST /auth/refresh`: rotates refresh token and returns a new access token.
+- `POST /auth/logout`: revokes refresh token.
+- `POST /auth/invite` (admin): creates an organization-scoped invite token.
+- `POST /auth/register-invite`: accepts invite token and creates/activates user membership.
+
+## Usage Meter Endpoint
+
+- `GET /usage/quota`: returns org-level monthly usage snapshot for dashboard meter.

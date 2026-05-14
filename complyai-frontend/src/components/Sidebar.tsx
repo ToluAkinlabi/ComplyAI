@@ -1,7 +1,7 @@
 // src/components/Sidebar.tsx
 
 import { NavLink } from "react-router-dom";
-import { FaFileUpload, FaFileAlt, FaTachometerAlt } from "react-icons/fa";
+import { FaFileUpload, FaFileAlt, FaTachometerAlt, FaUsers } from "react-icons/fa";
 import ThemeToggle from "./ThemeToggle";
 
 interface SidebarProps {
@@ -43,6 +43,14 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
         >
             <FaTachometerAlt />
             <span>Dashboard</span>
+        </NavLink>
+
+        <NavLink
+          to="/dashboard/invites"
+          className={({ isActive }) => `flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-700 transition ${isActive ? "bg-gray-700" : ""}`}
+        >
+          <FaUsers />
+          <span>Team</span>
         </NavLink>
     </nav>
   );

@@ -76,3 +76,69 @@ class ComplianceReport(Base):
 
     organization = relationship("Organization", back_populates="reports")
     created_by = relationship("User", back_populates="reports")
+
+
+class UserInvite(Base):
+    __tablename__ = "user_invites"
+
+    id = Column(Integer, primary_key=True)
+    organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False, index=True)
+    email = Column(String(255), nullable=False, index=True)
+    role = Column(String(32), default="member", nullable=False)
+    token_hash = Column(String(255), nullable=False, unique=True)
+    invited_by_user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    expires_at = Column(DateTime, nullable=False)
+    accepted_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class RefreshToken(Base):
+    __tablename__ = "refresh_tokens"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    token_hash = Column(String(255), nullable=False, unique=True)
+    expires_at = Column(DateTime, nullable=False)
+    revoked_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class AuditLog(Base):
+    __tablename__ = "audit_logs"
+
+    id = Column(Integer, primary_key=True)
+    organization_id = Column(Integer, nullable=True, index=True)
+    user_id = Column(Integer, nullable=True, index=True)
+    event_type = Column(String(100), nullable=False, index=True)
+    action = Column(String(100), nullable=False)
+    resource_type = Column(String(100), nullable=True)
+    resource_id = Column(String(255), nullable=True)
+    status = Column(String(16), default="success", nullable=False)
+    details = Column(JSON, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class PasswordResetToken(Base):
+    __tablename__ = "password_reset_tokens"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    token_hash = Column(String(255), nullable=False, unique=True, index=True)
+    expires_at = Column(DateTime, nullable=False)
+    used_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class UploadIdempotencyKey(Base):
+    __tablename__ = "upload_idempotency_keys"
+    __table_args__ = (UniqueConstraint("organization_id", "user_id", "idempotency_key", name="uq_upload_idempotency_scope"),)
+
+    id = Column(Integer, primary_key=True)
+    organization_id = Column(Integer, nullable=True, index=True)
+    user_id = Column(Integer, nullable=True, index=True)
+    idempotency_key = Column(String(128), nullable=False)
+    request_fingerprint = Column(String(255), nullable=False)
+    response_payload = Column(JSON, nullable=True)
+    status = Column(String(32), default="processing", nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    completed_at = Column(DateTime, nullable=True)

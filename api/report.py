@@ -4,7 +4,8 @@ from datetime import datetime
 from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import FileResponse
 import logging
-from scripts.auth import require_authenticated_user_if_enabled
+from scripts.auth import REPORT_DELETE_ROLES, require_authenticated_user_if_enabled, require_roles
+from scripts.audit_log import write_audit_log
 from database.report_store import (
     delete_report_record_for_user,
     get_report_record_for_user,
@@ -146,6 +147,7 @@ async def list_report_history(
 async def delete_report(report_name: str, request: Request):
     """Delete a report and its associated JSON file with validation"""
     current_user = require_authenticated_user_if_enabled(request)
+    require_roles(current_user, REPORT_DELETE_ROLES, detail="Only admins can delete reports")
     try:
         # Enhanced filename validation
         if not re.match(r"^[A-Za-z0-9_.-]+\.(pdf|json)$", report_name):
@@ -204,6 +206,16 @@ async def delete_report(report_name: str, request: Request):
                 logger.warning(f"Failed to delete associated file {associated_file}: {e}")
 
         delete_report_record_for_user(current_user, report_name)
+
+        write_audit_log(
+            organization_id=(current_user or {}).get("org_id"),
+            user_id=(current_user or {}).get("user_id"),
+            event_type="report",
+            action="delete_report",
+            resource_type="report",
+            resource_id=report_name,
+            status="success",
+        )
 
         return {"success": True, "detail": "Report deleted successfully"}
     

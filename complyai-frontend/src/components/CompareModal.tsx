@@ -1,9 +1,8 @@
 // src/components/CompareModal.tsx
 
-import { useEffect, useState } from "react";
-import Select from "react-select";
+import { useState } from "react";
+import Select, { MultiValue } from "react-select";
 import ReportComparison from "../dashboard/ReportComparison";
-import toast from "react-hot-toast";
 import "./CompareModal.css"; 
 
 interface CompareModalProps {
@@ -12,8 +11,13 @@ interface CompareModalProps {
   reportNames: string[];
 }
 
+interface ReportOption {
+  value: string;
+  label: string;
+}
+
 const CompareModal = ({ isOpen, onClose, reportNames }: CompareModalProps) => {
-  const [selectedOptions, setSelectedOptions] = useState<any[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<ReportOption[]>([]);
 
   /* Toast messages are commented out to avoid cluttering the UI with notifications.
   useEffect(() => {
@@ -23,7 +27,7 @@ const CompareModal = ({ isOpen, onClose, reportNames }: CompareModalProps) => {
     if (!isOpen) setSelectedOptions([]);
   }, [isOpen]); */
 
-  const options = reportNames.map((name) => ({ value: name, label: name }));
+  const options: ReportOption[] = reportNames.map((name) => ({ value: name, label: name }));
 
   if (!isOpen) return null;
 
@@ -42,7 +46,7 @@ const CompareModal = ({ isOpen, onClose, reportNames }: CompareModalProps) => {
           isMulti
           options={options}
           value={selectedOptions}
-          onChange={setSelectedOptions}
+          onChange={(newValue: MultiValue<ReportOption>) => setSelectedOptions([...newValue])}
           className="mb-4"
         />
 

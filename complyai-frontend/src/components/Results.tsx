@@ -10,6 +10,12 @@ interface ResultsProps {
 const Results = ({ executiveSummary, recommendations }: ResultsProps) => {
     const [selectedFramework, setSelectedFramework] = useState<string>("All");
 
+    const formatSummaryValue = (value: unknown): string => {
+        if (value === null || value === undefined) return "";
+        if (typeof value === "object") return JSON.stringify(value);
+        return String(value);
+    };
+
     if (!executiveSummary || !recommendations) return null;
 
     const frameworkOptions = useMemo(() => {
@@ -29,7 +35,7 @@ const Results = ({ executiveSummary, recommendations }: ResultsProps) => {
                 <h2 className="text-xl font-semibold mb-1">Executive Summary</h2>
                 <div className="bg-white p-4 rounded shadow">
                     {Object.entries(executiveSummary).map(([key, value]) => (
-                        <p key={key}><strong>{key}:</strong> {value}</p>
+                        <p key={key}><strong>{key}:</strong> {formatSummaryValue(value)}</p>
                     ))}
                 </div>
             </div>
@@ -39,6 +45,7 @@ const Results = ({ executiveSummary, recommendations }: ResultsProps) => {
                 <div>
                     <label className="text-sm font-medium mr-2">Filter by Framework:</label>
                     <select
+                        title="Filter recommendations by framework"
                         value={selectedFramework}
                         onChange={(e) => setSelectedFramework(e.target.value)}
                         className="border rounded px-2 py-1 text-sm"
